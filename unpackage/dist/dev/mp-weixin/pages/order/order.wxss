@@ -1,0 +1,86 @@
+@charset "UTF-8";
+/**
+ * 下方引入的为uView UI的集成样式文件，为scss预处理器，其中包含了一些"u-"开头的自定义变量
+ * 使用的时候，请将下面的一行复制到您的uniapp项目根目录的uni.scss中即可
+ * uView自定义的css类名和scss变量，均以"u-"开头，不会造成冲突，请放心使用 
+ */
+.item.data-v-127632e4 {
+  margin: 30rpx 0;
+  margin-top: 44rpx;
+}
+.item.data-v-127632e4:first-child {
+  margin-top: 0;
+}
+.item.data-v-127632e4:last-child {
+  margin-bottom: 0;
+}
+.item .title.data-v-127632e4 {
+  font-size: 30rpx;
+  position: relative;
+  line-height: 1;
+  padding-left: 22rpx;
+}
+.item .title.data-v-127632e4:before {
+  width: 4px;
+  height: 15px;
+  -webkit-border-radius: 100rpx;
+          border-radius: 100rpx;
+  background-color: #606266;
+  content: '';
+  position: absolute;
+  left: 6rpx;
+  top: -1px;
+}
+.item .color-box.data-v-127632e4 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+          justify-content: space-between;
+  color: #fff;
+  text-align: center;
+  margin-top: 20rpx;
+}
+.item .color-box .color-item.data-v-127632e4 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+          flex: 1;
+  margin: 0 8rpx;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+          flex-direction: column;
+  -webkit-border-radius: 6rpx;
+          border-radius: 6rpx;
+  padding: 12rpx 0;
+}
+.item .color-box .color-title.data-v-127632e4 {
+  font-size: 28rpx;
+}
+.item .color-box .color-value.data-v-127632e4 {
+  font-size: 24rpx;
+}
+.demo-layout.data-v-127632e4 {
+  height: 70rpx;
+  -webkit-border-radius: 8rpx;
+          border-radius: 8rpx;
+  border: 1rpx #303133 solid;
+  margin: 20rpx 0;
+}
+.bg-purple.data-v-127632e4 {
+  background: #ffffff;
+}
+.bg-purple-light.data-v-127632e4 {
+  background: #e5e9f2;
+}
+.bg-purple-dark.data-v-127632e4 {
+  background: #99a9bf;
+}
+
