@@ -1806,420 +1806,404 @@ uni$1;exports.default = _default;
 
 /***/ }),
 
-/***/ 10:
-/*!**********************************************************************************************************!*\
-  !*** ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib/runtime/componentNormalizer.js ***!
-  \**********************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return normalizeComponent; });
-/* globals __VUE_SSR_CONTEXT__ */
-
-// IMPORTANT: Do NOT use ES2015 features in this file (except for modules).
-// This module is a runtime utility for cleaner component module output and will
-// be included in the final webpack user bundle.
-
-function normalizeComponent (
-  scriptExports,
-  render,
-  staticRenderFns,
-  functionalTemplate,
-  injectStyles,
-  scopeId,
-  moduleIdentifier, /* server only */
-  shadowMode, /* vue-cli only */
-  components, // fixed by xxxxxx auto components
-  renderjs // fixed by xxxxxx renderjs
-) {
-  // Vue.extend constructor export interop
-  var options = typeof scriptExports === 'function'
-    ? scriptExports.options
-    : scriptExports
-
-  // fixed by xxxxxx auto components
-  if (components) {
-    if (!options.components) {
-      options.components = {}
-    }
-    var hasOwn = Object.prototype.hasOwnProperty
-    for (var name in components) {
-      if (hasOwn.call(components, name) && !hasOwn.call(options.components, name)) {
-        options.components[name] = components[name]
-      }
-    }
-  }
-  // fixed by xxxxxx renderjs
-  if (renderjs) {
-    (renderjs.beforeCreate || (renderjs.beforeCreate = [])).unshift(function() {
-      this[renderjs.__module] = this
-    });
-    (options.mixins || (options.mixins = [])).push(renderjs)
-  }
-
-  // render functions
-  if (render) {
-    options.render = render
-    options.staticRenderFns = staticRenderFns
-    options._compiled = true
-  }
-
-  // functional template
-  if (functionalTemplate) {
-    options.functional = true
-  }
-
-  // scopedId
-  if (scopeId) {
-    options._scopeId = 'data-v-' + scopeId
-  }
-
-  var hook
-  if (moduleIdentifier) { // server build
-    hook = function (context) {
-      // 2.3 injection
-      context =
-        context || // cached call
-        (this.$vnode && this.$vnode.ssrContext) || // stateful
-        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
-      // 2.2 with runInNewContext: true
-      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
-        context = __VUE_SSR_CONTEXT__
-      }
-      // inject component styles
-      if (injectStyles) {
-        injectStyles.call(this, context)
-      }
-      // register component module identifier for async chunk inferrence
-      if (context && context._registeredComponents) {
-        context._registeredComponents.add(moduleIdentifier)
-      }
-    }
-    // used by ssr in case component is cached and beforeCreate
-    // never gets called
-    options._ssrRegister = hook
-  } else if (injectStyles) {
-    hook = shadowMode
-      ? function () { injectStyles.call(this, this.$root.$options.shadowRoot) }
-      : injectStyles
-  }
-
-  if (hook) {
-    if (options.functional) {
-      // for template-only hot-reload because in that case the render fn doesn't
-      // go through the normalizer
-      options._injectStyles = hook
-      // register for functioal component in vue file
-      var originalRender = options.render
-      options.render = function renderWithStyleInjection (h, context) {
-        hook.call(context)
-        return originalRender(h, context)
-      }
-    } else {
-      // inject component registration as beforeCreate hook
-      var existing = options.beforeCreate
-      options.beforeCreate = existing
-        ? [].concat(existing, hook)
-        : [hook]
-    }
-  }
-
-  return {
-    exports: scriptExports,
-    options: options
-  }
-}
-
-
-/***/ }),
-
-/***/ 1019:
-/*!********************************************************************************************!*\
-  !*** /Users/chengyongming/WeChatProjects/mini-car/components/xiujun-time-selector/date.js ***!
-  \********************************************************************************************/
+/***/ 111:
+/*!***************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/pages/example/components.config.js ***!
+  \***************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.timeStamp = timeStamp;exports.dateData = dateData;exports.timeData = timeData; //字符串拼接
-function strFormat(str) {
-  return str < 10 ? "0".concat(str) : str;
-}
-//时间戳转日期
-function timeStamp(time) {
-  var dates = new Date(time);
-  var year = dates.getFullYear();
-  var month = dates.getMonth() + 1;
-  var date = dates.getDate();
-  var day = dates.getDay();
-  var hour = dates.getHours();
-  var min = dates.getMinutes();
-  var days = ['日', '一', '二', '三', '四', '五', '六'];
-  return {
-    allDate: "".concat(year, "/").concat(strFormat(month), "/").concat(strFormat(date)), //注:此处ios系统如"-"分割无法显示,只能用"/"分割符
-    date: "".concat(strFormat(month), "-").concat(strFormat(date)), //返回的日期 07-01
-    day: "\u661F\u671F".concat(days[day]), //返回的礼拜天数  星期一
-    hour: strFormat(hour) + ':' + strFormat(min) //返回的时钟 08:00
-  };
-}
-//获取最近7天的日期和礼拜天数
-function dateData() {
-  var time = [];
-  var date = new Date();
-  var now = date.getTime(); //获取当前日期的时间戳
-  var timeStr = 3600 * 24 * 1000; //一天的时间戳
-  for (var i = 0; i < 7; i++) {
-    var timeObj = {};
-    timeObj.date = timeStamp(now + timeStr * i).date; //保存日期
-    timeObj.timeStamp = now + timeStr * i; //保存时间戳
-    if (i == 0) {
-      timeObj.week = '今天';
-    } else if (i == 1) {
-      timeObj.week = '明天';
-    } else if (i == 2) {
-      timeObj.week = '后天';
-    } else {
-      timeObj.week = timeStamp(now + timeStr * i).day;
-    }
-    time.push(timeObj);
-  }
-  return time;
-}
-//时间数组
-function timeData() {var startTime = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '08:00';var endTime = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '18:30';var timeInterval = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0.5;
-  var time = [];
-  var date = timeStamp(Date.now()).allDate;
-  var startDate = "".concat(date, " ").concat(startTime);
-  var endDate = "".concat(date, " ").concat(endTime);
-  var startTimeStamp = new Date(startDate).getTime();
-  var endTimeStamp = new Date(endDate).getTime();
-  var timeStr = 3600 * 1000 * timeInterval;
-  console.log(startTimeStamp);
-  var count = 0;
-  for (var i = startTimeStamp; i <= endTimeStamp; i = i + timeStr) {
-    var timeObj = {};
-    timeObj.time = timeStamp(i).hour;
-    timeObj.disable = 1;
-    timeObj.index = count;
-    time.push(timeObj);
-    count++;
-  }
-  console.log(JSON.stringify(time));
-  return time;
-}
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default =
+[{
+  groupName: '基础组件',
+  groupName_en: 'Basic components',
+  list: [{
+    path: '/pages/componentsC/color/index',
+    icon: 'color',
+    title: 'Color 色彩',
+    title_en: 'Color' },
+  {
+    path: '/pages/componentsA/icon/index',
+    icon: 'icon',
+    title: 'Icon 图标',
+    title_en: 'Icon' },
+  {
+    path: '/pages/componentsB/image/index',
+    icon: 'image',
+    title: 'Image 图片',
+    title_en: 'Image' },
+  {
+    path: '/pages/componentsC/button/index',
+    icon: 'button',
+    title: 'Button 按钮',
+    title_en: 'Button' },
+  {
+    path: '/pages/componentsC/layout/index',
+    icon: 'layout',
+    title: 'Layout 布局',
+    title_en: 'Layout' },
+  {
+    path: '/pages/componentsC/cell/index',
+    icon: 'cell',
+    title: 'Cell 单元格',
+    title_en: 'Cell' },
+  {
+    path: '/pages/componentsC/badge/index',
+    icon: 'badge',
+    title: 'Badge 徽标数',
+    title_en: 'Badge' },
+  {
+    path: '/pages/componentsA/tag/index',
+    icon: 'tag',
+    title: 'Tag 标签',
+    title_en: 'Tag' }] },
 
-/***/ }),
-
-/***/ 11:
-/*!**********************************************************************!*\
-  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/index.js ***!
-  \**********************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;
-var _mixin = _interopRequireDefault(__webpack_require__(/*! ./libs/mixin/mixin.js */ 12));
-
-
-
-var _request = _interopRequireDefault(__webpack_require__(/*! ./libs/request */ 13));
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-var _queryParams = _interopRequireDefault(__webpack_require__(/*! ./libs/function/queryParams.js */ 17));
-
-var _route = _interopRequireDefault(__webpack_require__(/*! ./libs/function/route.js */ 18));
-
-var _timeFormat = _interopRequireDefault(__webpack_require__(/*! ./libs/function/timeFormat.js */ 19));
-
-var _timeFrom = _interopRequireDefault(__webpack_require__(/*! ./libs/function/timeFrom.js */ 20));
-
-var _colorGradient = _interopRequireDefault(__webpack_require__(/*! ./libs/function/colorGradient.js */ 21));
-
-var _guid = _interopRequireDefault(__webpack_require__(/*! ./libs/function/guid.js */ 22));
-
-var _color = _interopRequireDefault(__webpack_require__(/*! ./libs/function/color.js */ 23));
-
-var _type2icon = _interopRequireDefault(__webpack_require__(/*! ./libs/function/type2icon.js */ 24));
-
-var _randomArray = _interopRequireDefault(__webpack_require__(/*! ./libs/function/randomArray.js */ 25));
-
-var _deepClone = _interopRequireDefault(__webpack_require__(/*! ./libs/function/deepClone.js */ 15));
-
-var _deepMerge = _interopRequireDefault(__webpack_require__(/*! ./libs/function/deepMerge.js */ 14));
-
-var _addUnit = _interopRequireDefault(__webpack_require__(/*! ./libs/function/addUnit.js */ 26));
-
-
-var _test = _interopRequireDefault(__webpack_require__(/*! ./libs/function/test.js */ 16));
-
-var _random = _interopRequireDefault(__webpack_require__(/*! ./libs/function/random.js */ 27));
-
-var _trim = _interopRequireDefault(__webpack_require__(/*! ./libs/function/trim.js */ 28));
-
-var _toast = _interopRequireDefault(__webpack_require__(/*! ./libs/function/toast.js */ 29));
-
-var _getParent = _interopRequireDefault(__webpack_require__(/*! ./libs/function/getParent.js */ 30));
-
-var _$parent = _interopRequireDefault(__webpack_require__(/*! ./libs/function/$parent.js */ 31));
-
-
-
-var _sys = __webpack_require__(/*! ./libs/function/sys.js */ 32);
-
-var _debounce = _interopRequireDefault(__webpack_require__(/*! ./libs/function/debounce.js */ 33));
-
-var _throttle = _interopRequireDefault(__webpack_require__(/*! ./libs/function/throttle.js */ 34));
-
-
-
-var _config = _interopRequireDefault(__webpack_require__(/*! ./libs/config/config.js */ 35));
-
-var _zIndex = _interopRequireDefault(__webpack_require__(/*! ./libs/config/zIndex.js */ 36));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };} // 引入全局mixin
-// 引入关于是否mixin集成小程序分享的配置
-// import wxshare from './libs/mixin/mpShare.js'
-// 全局挂载引入http相关请求拦截插件
-function wranning(str) {// 开发环境进行信息输出,主要是一些报错信息
-  // 这个环境的来由是在程序编写时候,点击hx编辑器运行调试代码的时候,详见:
-  // 	https://uniapp.dcloud.io/frame?id=%e5%bc%80%e5%8f%91%e7%8e%af%e5%a2%83%e5%92%8c%e7%94%9f%e4%ba%a7%e7%8e%af%e5%a2%83
-  if (true) {console.warn(str);}} // 尝试判断在根目录的/store中是否有$u.mixin.js，此文件uView默认为需要挂在到全局的vuex的state变量
-// HX2.6.11版本,放到try中,控制台依然会警告,暂时不用此方式，
-// let vuexStore = {};
-// try {
-// 	vuexStore = require("@/store/$u.mixin.js");
-// } catch (e) {
-// 	//TODO handle the exception
-// }
-// post类型对象参数转为get类型url参数
-var $u = { queryParams: _queryParams.default, route: _route.default, timeFormat: _timeFormat.default, date: _timeFormat.default, // 另名date
-  timeFrom: _timeFrom.default, colorGradient: _colorGradient.default.colorGradient, guid: _guid.default, color: _color.default, sys: _sys.sys, os: _sys.os, type2icon: _type2icon.default, randomArray: _randomArray.default, wranning: wranning, get: _request.default.get, post: _request.default.post,
-  put: _request.default.put,
-  'delete': _request.default.delete,
-  hexToRgb: _colorGradient.default.hexToRgb,
-  rgbToHex: _colorGradient.default.rgbToHex,
-  test: _test.default,
-  random: _random.default,
-  deepClone: _deepClone.default,
-  deepMerge: _deepMerge.default,
-  getParent: _getParent.default,
-  $parent: _$parent.default,
-  addUnit: _addUnit.default,
-  trim: _trim.default,
-  type: ['primary', 'success', 'error', 'warning', 'info'],
-  http: _request.default,
-  toast: _toast.default,
-  config: _config.default, // uView配置信息相关，比如版本号
-  zIndex: _zIndex.default,
-  debounce: _debounce.default,
-  throttle: _throttle.default };
-
-
-var install = function install(Vue) {
-  Vue.mixin(_mixin.default);
-  if (Vue.prototype.openShare) {
-    Vue.mixin(mpShare);
-  }
-  // Vue.mixin(vuexStore);
-  // 时间格式化，同时两个名称，date和timeFormat
-  Vue.filter('timeFormat', function (timestamp, format) {
-    return (0, _timeFormat.default)(timestamp, format);
-  });
-  Vue.filter('date', function (timestamp, format) {
-    return (0, _timeFormat.default)(timestamp, format);
-  });
-  // 将多久以前的方法，注入到全局过滤器
-  Vue.filter('timeFrom', function (timestamp, format) {
-    return (0, _timeFrom.default)(timestamp, format);
-  });
-  Vue.prototype.$u = $u;
-};var _default =
 
 {
-  install: install };exports.default = _default;
+  groupName: '表单组件',
+  groupName_en: 'Form components',
+  list: [{
+    path: '/pages/componentsA/form/index',
+    icon: 'form',
+    title: 'Form 表单',
+    title_en: 'Form' },
+  {
+    path: '/pages/componentsA/calendar/index',
+    icon: 'calendar',
+    title: 'Calendar 日历',
+    title_en: 'Calendar' },
+  {
+    path: '/pages/componentsA/select/index',
+    icon: 'select',
+    title: 'Select 列选择器',
+    title_en: 'Select' },
+  {
+    path: '/pages/componentsA/keyboard/index',
+    icon: 'keyboard',
+    title: 'Keyboard 键盘',
+    title_en: 'Keyboard' },
+  {
+    path: '/pages/componentsB/picker/index',
+    icon: 'picker',
+    title: 'Picker 选择器',
+    title_en: 'Picker' },
+  {
+    path: '/pages/componentsB/rate/index',
+    icon: 'rate',
+    title: 'Rate 评分',
+    title_en: 'Rate' },
+  {
+    path: '/pages/componentsB/search/index',
+    icon: 'search',
+    title: 'Search 搜索',
+    title_en: 'Search' },
+  {
+    path: '/pages/componentsC/numberBox/index',
+    icon: 'numberBox',
+    title: 'NumberBox 步进器',
+    title_en: 'NumberBox' },
+  {
+    path: '/pages/componentsB/upload/index',
+    icon: 'upload',
+    title: 'Upload 上传',
+    title_en: 'Upload' },
+  {
+    path: '/pages/componentsA/verificationCode/index',
+    icon: 'verificationCode',
+    title: 'VerificationCode 验证码倒计时',
+    title_en: 'VerificationCode' },
+  {
+    path: '/pages/componentsA/field/index',
+    icon: 'field',
+    title: 'Field 输入框',
+    title_en: 'Field' },
+  {
+    path: '/pages/componentsB/checkbox/index',
+    icon: 'checkbox',
+    title: 'Checkbox 复选框',
+    title_en: 'Checkbox' },
+  {
+    path: '/pages/componentsB/radio/index',
+    icon: 'radio',
+    title: 'Radio 单选框',
+    title_en: 'Radio' },
+  {
+    path: '/pages/componentsB/switch/index',
+    icon: 'switch',
+    title: 'Switch 开关选择器',
+    title_en: 'Switch' },
+  {
+    path: '/pages/componentsA/slider/index',
+    icon: 'slider',
+    title: 'Slider 滑动选择器',
+    title_en: 'Slider' }] },
+
+{
+  groupName: '数据组件',
+  groupName_en: 'Data components',
+  list: [{
+    path: '/pages/componentsC/progress/index',
+    icon: 'progress',
+    title: 'Progress 进度条',
+    title_en: 'Progress' },
+  {
+    path: '/pages/componentsB/table/index',
+    icon: 'table',
+    title: 'Table 表格',
+    title_en: 'Table' },
+  {
+    path: '/pages/componentsC/countDown/index',
+    icon: 'countDown',
+    title: 'CountDown 倒计时',
+    title_en: 'CountDown' },
+  {
+    path: '/pages/componentsC/countTo/index',
+    icon: 'countTo',
+    title: 'CountTo 数字滚动',
+    title_en: 'CountTo' }] },
+
+{
+  groupName: '反馈组件',
+  groupName_en: 'Feedback components',
+  list: [{
+    path: '/pages/componentsC/actionSheet/index',
+    icon: 'actionSheet',
+    title: 'ActionSheet 操作菜单',
+    title_en: 'ActionSheet' },
+  {
+    path: '/pages/componentsC/alertTips/index',
+    icon: 'alertTips',
+    title: 'AlertTips 警告提示',
+    title_en: 'AlertTips' },
+  {
+    path: '/pages/componentsA/toast/index',
+    icon: 'toast',
+    title: 'Toast 消息提示',
+    title_en: 'Toast' },
+  {
+    path: '/pages/componentsB/noticeBar/index',
+    icon: 'noticeBar',
+    title: 'NoticeBar 滚动通知',
+    title_en: 'NoticeBar' },
+  {
+    path: '/pages/componentsA/topTips/index',
+    icon: 'topTips',
+    title: 'TopTips 顶部提示',
+    title_en: 'TopTips' },
+  {
+    path: '/pages/componentsB/swipeAction/index',
+    icon: 'swipeAction',
+    title: 'SwipeAction 滑动单元格',
+    title_en: 'SwipeAction' },
+  {
+    path: '/pages/componentsC/collapse/index',
+    icon: 'collapse',
+    title: 'Collapse 折叠面板',
+    title_en: 'Collapse' },
+  {
+    path: '/pages/componentsC/popup/index',
+    icon: 'popup',
+    title: 'Popup 弹出层',
+    title_en: 'Popup' },
+  {
+    path: '/pages/componentsA/modal/index',
+    icon: 'modal',
+    title: 'Modal 模态框',
+    title_en: 'Modal' },
+  {
+    path: '/pages/componentsA/fullScreen/index',
+    icon: 'pressingScreen',
+    title: 'fullScreen 压窗屏',
+    title_en: 'fullScreen' }] },
+
+{
+  groupName: '布局组件',
+  groupName_en: 'Layout components',
+  list: [{
+    path: '/pages/componentsB/line/index',
+    icon: 'line',
+    title: 'Line 线条',
+    title_en: 'Line' },
+  {
+    path: '/pages/componentsB/card/index',
+    icon: 'card',
+    title: 'Card 卡片',
+    title_en: 'Card' },
+  {
+    path: '/pages/componentsC/mask/index',
+    icon: 'mask',
+    title: 'Mask 遮罩层',
+    title_en: 'Mask' },
+
+
+  {
+    path: '/pages/componentsA/noNetwork/index',
+    icon: 'noNetwork',
+    title: 'NoNetwork 无网络提示',
+    title_en: 'NoNetwork' },
+
+
+  {
+    path: '/pages/componentsC/grid/index',
+    icon: 'grid',
+    title: 'Grid 宫格布局',
+    title_en: 'Grid' },
+  {
+    path: '/pages/componentsB/swiper/index',
+    icon: 'swiper',
+    title: 'Swiper 轮播图',
+    title_en: 'Swiper' },
+  {
+    path: '/pages/componentsA/timeLine/index',
+    icon: 'timeLine',
+    title: 'TimeLine 时间轴',
+    title_en: 'TimeLine' },
+  {
+    path: '/pages/componentsB/skeleton/index',
+    icon: 'skeleton',
+    title: 'Skeleton 骨架屏',
+    title_en: 'Skeleton' },
+  {
+    path: '/pages/componentsB/sticky/index',
+    icon: 'sticky',
+    title: 'Sticky 吸顶',
+    title_en: 'Sticky' },
+
+
+  {
+    path: '/pages/componentsB/waterfall/index',
+    icon: 'waterfall',
+    title: 'Waterfall 瀑布流',
+    title_en: 'Waterfall' },
+
+
+  {
+    path: '/pages/componentsB/divider/index',
+    icon: 'divider',
+    title: 'Divider 分割线',
+    title_en: 'Divider' }] },
+
+{
+  groupName: '导航组件',
+  groupName_en: 'Navigation components',
+  list: [{
+    path: '/pages/componentsB/dropdown/index',
+    icon: 'dropdown',
+    title: 'Dropdown 下拉菜单',
+    title_en: 'Dropdown' },
+  {
+    path: '/pages/componentsB/tabbar/index',
+    icon: 'tabbar',
+    title: 'Tabbar 底部导航栏',
+    title_en: 'Tabbar' },
+  {
+    path: '/pages/componentsA/backTop/index',
+    icon: 'backTop',
+    title: 'BackTop 返回顶部',
+    title_en: 'BackTop' },
+  {
+    path: '/pages/componentsA/navbar/index',
+    icon: 'navbar',
+    title: 'Navbar 导航栏',
+    title_en: 'Navbar' },
+  {
+    path: '/pages/componentsA/tabs/index',
+    icon: 'tabs',
+    title: 'Tabs 标签',
+    title_en: 'Tabs' },
+
+
+  {
+    path: '/pages/template/order/index',
+    icon: 'tabsSwiper',
+    title: 'TabsSwiper 全屏选项卡',
+    title_en: 'TabsSwiper' },
+
+
+  {
+    path: '/pages/componentsC/subsection/index',
+    icon: 'subsection',
+    title: 'Subsection 分段器',
+    title_en: 'Subsection' },
+  {
+    path: '/pages/componentsA/indexList/index',
+    icon: 'indexList',
+    title: 'IndexList 索引列表',
+    title_en: 'IndexList' },
+  {
+    path: '/pages/componentsB/steps/index',
+    icon: 'steps',
+    title: 'Steps 步骤条',
+    title_en: 'Steps' },
+  {
+    path: '/pages/componentsA/empty/index',
+    icon: 'empty',
+    title: 'Empty 内容为空',
+    title_en: 'Empty' },
+  {
+    path: '/pages/componentsC/section/index',
+    icon: 'section',
+    title: 'Section 查看更多',
+    title_en: 'Section' }] },
+
+{
+  groupName: '其他组件',
+  groupName_en: 'Other components',
+  list: [{
+    path: '/pages/componentsA/parse/index',
+    icon: 'parse',
+    title: 'Parse 富文本解析器',
+    title_en: 'Parse' },
+  {
+    path: '/pages/componentsC/messageInput/index',
+    icon: 'messageInput',
+    title: 'MessageInput 验证码输入',
+    title_en: 'MessageInput' },
+  {
+    path: '/pages/componentsA/avatarCropper/index',
+    icon: 'avatarCropper',
+    title: 'AvatarCropper 头像裁剪',
+    title_en: 'AvatarCropper' },
+  {
+    path: '/pages/componentsC/loadmore/index',
+    icon: 'loadmore',
+    title: 'Loadmore 加载更多',
+    title_en: 'Loadmore' },
+  {
+    path: '/pages/componentsB/readMore/index',
+    icon: 'readMore',
+    title: 'ReadMore 展开阅读更多',
+    title_en: 'ReadMore' },
+  {
+    path: '/pages/componentsA/lazyLoad/index',
+    icon: 'lazyLoad',
+    title: 'LazyLoad 懒加载',
+    title_en: 'LazyLoad' },
+  {
+    path: '/pages/componentsC/gap/index',
+    icon: 'gap',
+    title: 'Gap 间隔槽',
+    title_en: 'Gap' },
+  {
+    path: '/pages/componentsA/avatar/index',
+    icon: 'avatar',
+    title: 'Avatar 头像',
+    title_en: 'Avatar' },
+  {
+    path: '/pages/componentsC/link/index',
+    icon: 'link',
+    title: 'Link 超链接',
+    title_en: 'Link' },
+  {
+    path: '/pages/componentsB/loading/index',
+    icon: 'loading',
+    title: 'Loading 加载动画',
+    title_en: 'Loading' }] }];exports.default = _default;
 
 /***/ }),
 
-/***/ 12:
-/*!*********************************************************************************!*\
-  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/mixin/mixin.js ***!
-  \*********************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(uni) {module.exports = {
-  data: function data() {
-    return {};
-  },
-  onLoad: function onLoad() {
-    // getRect挂载到$u上，因为这方法需要使用in(this)，所以无法把它独立成一个单独的文件导出
-    this.$u.getRect = this.$uGetRect;
-  },
-  methods: {
-    // 查询节点信息
-    // 目前此方法在支付宝小程序中无法获取组件跟接点的尺寸，为支付宝的bug(2020-07-21)
-    // 解决办法为在组件根部再套一个没有任何作用的view元素
-    $uGetRect: function $uGetRect(selector, all) {var _this = this;
-      return new Promise(function (resolve) {
-        uni.createSelectorQuery().
-        in(_this)[all ? 'selectAll' : 'select'](selector).
-        boundingClientRect(function (rect) {
-          if (all && Array.isArray(rect) && rect.length) {
-            resolve(rect);
-          }
-          if (!all && rect) {
-            resolve(rect);
-          }
-        }).
-        exec();
-      });
-    },
-    getParentData: function getParentData() {var _this2 = this;var parentName = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
-      // 避免在created中去定义parent变量
-      if (!this.parent) this.parent = false;
-      // 这里的本质原理是，通过获取父组件实例(也即u-radio-group的this)
-      // 将父组件this中对应的参数，赋值给本组件(u-radio的this)的parentData对象中对应的属性
-      // 之所以需要这么做，是因为所有端中，头条小程序不支持通过this.parent.xxx去监听父组件参数的变化
-      this.parent = this.$u.$parent.call(this, parentName);
-      if (this.parent) {
-        // 历遍parentData中的属性，将parent中的同名属性赋值给parentData
-        Object.keys(this.parentData).map(function (key) {
-          _this2.parentData[key] = _this2.parent[key];
-        });
-      }
-    },
-    // 阻止事件冒泡
-    preventEvent: function preventEvent(e) {
-      e && e.stopPropagation && e.stopPropagation();
-    } },
-
-  onReachBottom: function onReachBottom() {
-    uni.$emit('uOnReachBottom');
-  } };
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
-
-/***/ }),
-
-/***/ 1258:
+/***/ 1146:
 /*!***********************************************************************************!*\
   !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/util/province.js ***!
   \***********************************************************************************/
@@ -2231,7 +2215,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 
-/***/ 1259:
+/***/ 1147:
 /*!*******************************************************************************!*\
   !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/util/city.js ***!
   \*******************************************************************************/
@@ -2243,7 +2227,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 
-/***/ 1260:
+/***/ 1148:
 /*!*******************************************************************************!*\
   !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/util/area.js ***!
   \*******************************************************************************/
@@ -2255,188 +2239,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 
-/***/ 13:
-/*!***********************************************************************************!*\
-  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/request/index.js ***!
-  \***********************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _deepMerge = _interopRequireDefault(__webpack_require__(/*! ../function/deepMerge */ 14));
-var _test = _interopRequireDefault(__webpack_require__(/*! ../function/test */ 16));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}function _createClass(Constructor, protoProps, staticProps) {if (protoProps) _defineProperties(Constructor.prototype, protoProps);if (staticProps) _defineProperties(Constructor, staticProps);return Constructor;}var
-Request = /*#__PURE__*/function () {_createClass(Request, [{ key: "setConfig",
-    // 设置全局默认配置
-    value: function setConfig(customConfig) {
-      // 深度合并对象，否则会造成对象深层属性丢失
-      this.config = (0, _deepMerge.default)(this.config, customConfig);
-    }
-
-    // 主要请求部分
-  }, { key: "request", value: function request() {var _this = this;var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-      // 检查请求拦截
-      if (this.interceptor.request && typeof this.interceptor.request === 'function') {
-        var tmpConfig = {};
-        var interceptorRequest = this.interceptor.request(options);
-        if (interceptorRequest === false) {
-          // 返回一个处于pending状态中的Promise，来取消原promise，避免进入then()回调
-          return new Promise(function () {});
-        }
-        this.options = interceptorRequest;
-      }
-      options.dataType = options.dataType || this.config.dataType;
-      options.responseType = options.responseType || this.config.responseType;
-      options.url = options.url || '';
-      options.params = options.params || {};
-      options.header = Object.assign(this.config.header, options.header);
-      options.method = options.method || this.config.method;
-
-      return new Promise(function (resolve, reject) {
-        options.complete = function (response) {
-          // 请求返回后，隐藏loading(如果请求返回快的话，可能会没有loading)
-          uni.hideLoading();
-          // 清除定时器，如果请求回来了，就无需loading
-          clearTimeout(_this.config.timer);
-          _this.config.timer = null;
-          // 判断用户对拦截返回数据的要求，如果originalData为true，返回所有的数据(response)到拦截器，否则只返回response.data
-          if (_this.config.originalData) {
-            // 判断是否存在拦截器
-            if (_this.interceptor.response && typeof _this.interceptor.response === 'function') {
-              var resInterceptors = _this.interceptor.response(response);
-              // 如果拦截器不返回false，就将拦截器返回的内容给this.$u.post的then回调
-              if (resInterceptors !== false) {
-                resolve(resInterceptors);
-              } else {
-                // 如果拦截器返回false，意味着拦截器定义者认为返回有问题，直接接入catch回调
-                reject(response);
-              }
-            } else {
-              // 如果要求返回原始数据，就算没有拦截器，也返回最原始的数据
-              resolve(response);
-            }
-          } else {
-            if (response.statusCode == 200) {
-              if (_this.interceptor.response && typeof _this.interceptor.response === 'function') {
-                var _resInterceptors = _this.interceptor.response(response.data);
-                if (_resInterceptors !== false) {
-                  resolve(_resInterceptors);
-                } else {
-                  reject(response.data);
-                }
-              } else {
-                // 如果不是返回原始数据(originalData=false)，且没有拦截器的情况下，返回纯数据给then回调
-                resolve(response.data);
-              }
-            } else {
-              // 不返回原始数据的情况下，服务器状态码不为200，modal弹框提示
-              // if(response.errMsg) {
-              // 	uni.showModal({
-              // 		title: response.errMsg
-              // 	});
-              // }
-              reject(response);
-            }
-          }
-        };
-
-        // 判断用户传递的URL是否/开头,如果不是,加上/，这里使用了uView的test.js验证库的url()方法
-        options.url = _test.default.url(options.url) ? options.url : _this.config.baseUrl + (options.url.indexOf('/') == 0 ?
-        options.url : '/' + options.url);
-
-        // 是否显示loading
-        // 加一个是否已有timer定时器的判断，否则有两个同时请求的时候，后者会清除前者的定时器id
-        // 而没有清除前者的定时器，导致前者超时，一直显示loading
-        if (_this.config.showLoading && !_this.config.timer) {
-          _this.config.timer = setTimeout(function () {
-            uni.showLoading({
-              title: _this.config.loadingText,
-              mask: _this.config.loadingMask });
-
-            _this.config.timer = null;
-          }, _this.config.loadingTime);
-        }
-        uni.request(options);
-      });
-      // .catch(res => {
-      // 	// 如果返回reject()，不让其进入this.$u.post().then().catch()后面的catct()
-      // 	// 因为很多人都会忘了写后面的catch()，导致报错捕获不到catch
-      // 	return new Promise(()=>{});
-      // })
-    } }]);
-
-  function Request() {var _this2 = this;_classCallCheck(this, Request);
-    this.config = {
-      baseUrl: '', // 请求的根域名
-      // 默认的请求头
-      header: {},
-      method: 'POST',
-      // 设置为json，返回后uni.request会对数据进行一次JSON.parse
-      dataType: 'json',
-      // 此参数无需处理，因为5+和支付宝小程序不支持，默认为text即可
-      responseType: 'text',
-      showLoading: true, // 是否显示请求中的loading
-      loadingText: '请求中...',
-      loadingTime: 800, // 在此时间内，请求还没回来的话，就显示加载中动画，单位ms
-      timer: null, // 定时器
-      originalData: false, // 是否在拦截器中返回服务端的原始数据，见文档说明
-      loadingMask: true // 展示loading的时候，是否给一个透明的蒙层，防止触摸穿透
-    };
-
-    // 拦截器
-    this.interceptor = {
-      // 请求前的拦截
-      request: null,
-      // 请求后的拦截
-      response: null };
-
-
-    // get请求
-    this.get = function (url) {var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};var header = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-      return _this2.request({
-        method: 'GET',
-        url: url,
-        header: header,
-        data: data });
-
-    };
-
-    // post请求
-    this.post = function (url) {var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};var header = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-      return _this2.request({
-        url: url,
-        method: 'POST',
-        header: header,
-        data: data });
-
-    };
-
-    // put请求，不支持支付宝小程序(HX2.6.15)
-    this.put = function (url) {var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};var header = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-      return _this2.request({
-        url: url,
-        method: 'PUT',
-        header: header,
-        data: data });
-
-    };
-
-    // delete请求，不支持支付宝和头条小程序(HX2.6.15)
-    this.delete = function (url) {var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};var header = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-      return _this2.request({
-        url: url,
-        method: 'DELETE',
-        header: header,
-        data: data });
-
-    };
-  }return Request;}();var _default =
-
-new Request();exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
-
-/***/ }),
-
-/***/ 1303:
+/***/ 1170:
 /*!*****************************************************************************************************!*\
   !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/components/u-parse/libs/MpHtmlParser.js ***!
   \*****************************************************************************************************/
@@ -2450,9 +2253,9 @@ new Request();exports.default = _default;
  * @author JinYufeng
  * @listens MIT
  */
-var cfg = __webpack_require__(/*! ./config.js */ 1304),
+var cfg = __webpack_require__(/*! ./config.js */ 1171),
 blankChar = cfg.blankChar,
-CssHandler = __webpack_require__(/*! ./CssHandler.js */ 1305),
+CssHandler = __webpack_require__(/*! ./CssHandler.js */ 1172),
 windowWidth = uni.getSystemInfoSync().windowWidth;
 var emoji;
 
@@ -3027,7 +2830,7 @@ module.exports = MpHtmlParser;
 
 /***/ }),
 
-/***/ 1304:
+/***/ 1171:
 /*!***********************************************************************************************!*\
   !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/components/u-parse/libs/config.js ***!
   \***********************************************************************************************/
@@ -3117,14 +2920,14 @@ module.exports = cfg;
 
 /***/ }),
 
-/***/ 1305:
+/***/ 1172:
 /*!***************************************************************************************************!*\
   !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/components/u-parse/libs/CssHandler.js ***!
   \***************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var cfg = __webpack_require__(/*! ./config.js */ 1304),
+var cfg = __webpack_require__(/*! ./config.js */ 1171),
 isLetter = function isLetter(c) {return c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z';};
 
 function CssHandler(tagStyle) {
@@ -3227,2335 +3030,2199 @@ parser.prototype.Content = function () {
 
 /***/ }),
 
-/***/ 1334:
-/*!**********************************************************************************!*\
-  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/util/emitter.js ***!
-  \**********************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ 13:
+/*!**********************************************************************************************************!*\
+  !*** ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib/runtime/componentNormalizer.js ***!
+  \**********************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; /**
-                                                                                                      * 递归使用 call 方式this指向
-                                                                                                      * @param componentName // 需要找的组件的名称
-                                                                                                      * @param eventName // 事件名称
-                                                                                                      * @param params // 需要传递的参数
-                                                                                                      */
-function _broadcast(componentName, eventName, params) {
-  // 循环子节点找到名称一样的子节点 否则 递归 当前子节点
-  this.$children.map(function (child) {
-    if (componentName === child.$options.name) {
-      child.$emit.apply(child, [eventName].concat(params));
-    } else {
-      _broadcast.apply(child, [componentName, eventName].concat(params));
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return normalizeComponent; });
+/* globals __VUE_SSR_CONTEXT__ */
+
+// IMPORTANT: Do NOT use ES2015 features in this file (except for modules).
+// This module is a runtime utility for cleaner component module output and will
+// be included in the final webpack user bundle.
+
+function normalizeComponent (
+  scriptExports,
+  render,
+  staticRenderFns,
+  functionalTemplate,
+  injectStyles,
+  scopeId,
+  moduleIdentifier, /* server only */
+  shadowMode, /* vue-cli only */
+  components, // fixed by xxxxxx auto components
+  renderjs // fixed by xxxxxx renderjs
+) {
+  // Vue.extend constructor export interop
+  var options = typeof scriptExports === 'function'
+    ? scriptExports.options
+    : scriptExports
+
+  // fixed by xxxxxx auto components
+  if (components) {
+    if (!options.components) {
+      options.components = {}
     }
-  });
-}var _default =
-{
-  methods: {
-    /**
-              * 派发 (向上查找) (一个)
-              * @param componentName // 需要找的组件的名称
-              * @param eventName // 事件名称
-              * @param params // 需要传递的参数
-              */
-    dispatch: function dispatch(componentName, eventName, params) {
-      var parent = this.$parent || this.$root; //$parent 找到最近的父节点 $root 根节点
-      var name = parent.$options.name; // 获取当前组件实例的name
-      // 如果当前有节点 && 当前没名称 且 当前名称等于需要传进来的名称的时候就去查找当前的节点
-      // 循环出当前名称的一样的组件实例
-      while (parent && (!name || name !== componentName)) {
-        parent = parent.$parent;
-        if (parent) {
-          name = parent.$options.name;
-        }
+    var hasOwn = Object.prototype.hasOwnProperty
+    for (var name in components) {
+      if (hasOwn.call(components, name) && !hasOwn.call(options.components, name)) {
+        options.components[name] = components[name]
       }
-      // 有节点表示当前找到了name一样的实例
-      if (parent) {
-        parent.$emit.apply(parent, [eventName].concat(params));
+    }
+  }
+  // fixed by xxxxxx renderjs
+  if (renderjs) {
+    (renderjs.beforeCreate || (renderjs.beforeCreate = [])).unshift(function() {
+      this[renderjs.__module] = this
+    });
+    (options.mixins || (options.mixins = [])).push(renderjs)
+  }
+
+  // render functions
+  if (render) {
+    options.render = render
+    options.staticRenderFns = staticRenderFns
+    options._compiled = true
+  }
+
+  // functional template
+  if (functionalTemplate) {
+    options.functional = true
+  }
+
+  // scopedId
+  if (scopeId) {
+    options._scopeId = 'data-v-' + scopeId
+  }
+
+  var hook
+  if (moduleIdentifier) { // server build
+    hook = function (context) {
+      // 2.3 injection
+      context =
+        context || // cached call
+        (this.$vnode && this.$vnode.ssrContext) || // stateful
+        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
+      // 2.2 with runInNewContext: true
+      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
+        context = __VUE_SSR_CONTEXT__
       }
-    },
-    /**
-        * 广播 (向下查找) (广播多个)
-        * @param componentName // 需要找的组件的名称
-        * @param eventName // 事件名称
-        * @param params // 需要传递的参数
-        */
-    broadcast: function broadcast(componentName, eventName, params) {
-      _broadcast.call(this, componentName, eventName, params);
-    } } };exports.default = _default;
+      // inject component styles
+      if (injectStyles) {
+        injectStyles.call(this, context)
+      }
+      // register component module identifier for async chunk inferrence
+      if (context && context._registeredComponents) {
+        context._registeredComponents.add(moduleIdentifier)
+      }
+    }
+    // used by ssr in case component is cached and beforeCreate
+    // never gets called
+    options._ssrRegister = hook
+  } else if (injectStyles) {
+    hook = shadowMode
+      ? function () { injectStyles.call(this, this.$root.$options.shadowRoot) }
+      : injectStyles
+  }
+
+  if (hook) {
+    if (options.functional) {
+      // for template-only hot-reload because in that case the render fn doesn't
+      // go through the normalizer
+      options._injectStyles = hook
+      // register for functioal component in vue file
+      var originalRender = options.render
+      options.render = function renderWithStyleInjection (h, context) {
+        hook.call(context)
+        return originalRender(h, context)
+      }
+    } else {
+      // inject component registration as beforeCreate hook
+      var existing = options.beforeCreate
+      options.beforeCreate = existing
+        ? [].concat(existing, hook)
+        : [hook]
+    }
+  }
+
+  return {
+    exports: scriptExports,
+    options: options
+  }
+}
+
 
 /***/ }),
 
-/***/ 1335:
-/*!******************************************************************************************!*\
-  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/util/async-validator.js ***!
-  \******************************************************************************************/
+/***/ 130:
+/*!******************************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/components/u-avatar-cropper/weCropper.js ***!
+  \******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-/* WEBPACK VAR INJECTION */(function(process) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;function _extends() {
-  _extends = Object.assign || function (target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];
+/* WEBPACK VAR INJECTION */(function(uni, global) {/**
+ * we-cropper v1.3.9
+ * (c) 2020 dlhandsome
+ * @license MIT
+ */
+(function (global, factory) {
+   true ? module.exports = factory() :
+  undefined;
+})(this, function () {
+  'use strict';
 
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
+  var device = void 0;
+  var TOUCH_STATE = ['touchstarted', 'touchmoved', 'touchended'];
 
-    return target;
-  };
-
-  return _extends.apply(this, arguments);
-}
-
-/* eslint no-console:0 */
-var formatRegExp = /%[sdj%]/g;
-var warning = function warning() {}; // don't print warning message when in production env or node runtime
-
-if (typeof process !== 'undefined' && Object({"NODE_ENV":"development","VUE_APP_NAME":"mini-car","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}) && "development" !== 'production' && typeof window !==
-'undefined' && typeof document !== 'undefined') {
-  warning = function warning(type, errors) {
-    if (typeof console !== 'undefined' && console.warn) {
-      if (errors.every(function (e) {
-        return typeof e === 'string';
-      })) {
-        console.warn(type, errors);
-      }
-    }
-  };
-}
-
-function convertFieldsError(errors) {
-  if (!errors || !errors.length) return null;
-  var fields = {};
-  errors.forEach(function (error) {
-    var field = error.field;
-    fields[field] = fields[field] || [];
-    fields[field].push(error);
-  });
-  return fields;
-}
-
-function format() {
-  for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-    args[_key] = arguments[_key];
+  function firstLetterUpper(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
   }
 
-  var i = 1;
-  var f = args[0];
-  var len = args.length;
+  function setTouchState(instance) {
+    var arg = [],
+    len = arguments.length - 1;
+    while (len-- > 0) {arg[len] = arguments[len + 1];}
 
-  if (typeof f === 'function') {
-    return f.apply(null, args.slice(1));
-  }
-
-  if (typeof f === 'string') {
-    var str = String(f).replace(formatRegExp, function (x) {
-      if (x === '%%') {
-        return '%';
+    TOUCH_STATE.forEach(function (key, i) {
+      if (arg[i] !== undefined) {
+        instance[key] = arg[i];
       }
-
-      if (i >= len) {
-        return x;
-      }
-
-      switch (x) {
-        case '%s':
-          return String(args[i++]);
-
-        case '%d':
-          return Number(args[i++]);
-
-        case '%j':
-          try {
-            return JSON.stringify(args[i++]);
-          } catch (_) {
-            return '[Circular]';
-          }
-
-          break;
-
-        default:
-          return x;}
-
     });
+  }
 
-    for (var arg = args[i]; i < len; arg = args[++i]) {
-      str += " " + arg;
+  function validator(instance, o) {
+    Object.defineProperties(instance, o);
+  }
+
+  function getDevice() {
+    if (!device) {
+      device = uni.getSystemInfoSync();
     }
-
-    return str;
+    return device;
   }
 
-  return f;
-}
+  var tmp = {};
 
-function isNativeStringType(type) {
-  return type === 'string' || type === 'url' || type === 'hex' || type === 'email' || type === 'pattern';
-}
+  var ref = getDevice();
+  var pixelRatio = ref.pixelRatio;
 
-function isEmptyValue(value, type) {
-  if (value === undefined || value === null) {
-    return true;
+  var DEFAULT = {
+    id: {
+      default: 'cropper',
+      get: function get() {
+        return tmp.id;
+      },
+      set: function set(value) {
+        if (typeof value !== 'string') {
+          console.error("id：" + value + " is invalid");
+        }
+        tmp.id = value;
+      } },
+
+    width: {
+      default: 750,
+      get: function get() {
+        return tmp.width;
+      },
+      set: function set(value) {
+        if (typeof value !== 'number') {
+          console.error("width：" + value + " is invalid");
+        }
+        tmp.width = value;
+      } },
+
+    height: {
+      default: 750,
+      get: function get() {
+        return tmp.height;
+      },
+      set: function set(value) {
+        if (typeof value !== 'number') {
+          console.error("height：" + value + " is invalid");
+        }
+        tmp.height = value;
+      } },
+
+    pixelRatio: {
+      default: pixelRatio,
+      get: function get() {
+        return tmp.pixelRatio;
+      },
+      set: function set(value) {
+        if (typeof value !== 'number') {
+          console.error("pixelRatio：" + value + " is invalid");
+        }
+        tmp.pixelRatio = value;
+      } },
+
+    scale: {
+      default: 2.5,
+      get: function get() {
+        return tmp.scale;
+      },
+      set: function set(value) {
+        if (typeof value !== 'number') {
+          console.error("scale：" + value + " is invalid");
+        }
+        tmp.scale = value;
+      } },
+
+    zoom: {
+      default: 5,
+      get: function get() {
+        return tmp.zoom;
+      },
+      set: function set(value) {
+        if (typeof value !== 'number') {
+          console.error("zoom：" + value + " is invalid");
+        } else if (value < 0 || value > 10) {
+          console.error("zoom should be ranged in 0 ~ 10");
+        }
+        tmp.zoom = value;
+      } },
+
+    src: {
+      default: '',
+      get: function get() {
+        return tmp.src;
+      },
+      set: function set(value) {
+        if (typeof value !== 'string') {
+          console.error("src：" + value + " is invalid");
+        }
+        tmp.src = value;
+      } },
+
+    cut: {
+      default: {},
+      get: function get() {
+        return tmp.cut;
+      },
+      set: function set(value) {
+        if (typeof value !== 'object') {
+          console.error("cut：" + value + " is invalid");
+        }
+        tmp.cut = value;
+      } },
+
+    boundStyle: {
+      default: {},
+      get: function get() {
+        return tmp.boundStyle;
+      },
+      set: function set(value) {
+        if (typeof value !== 'object') {
+          console.error("boundStyle：" + value + " is invalid");
+        }
+        tmp.boundStyle = value;
+      } },
+
+    onReady: {
+      default: null,
+      get: function get() {
+        return tmp.ready;
+      },
+      set: function set(value) {
+        tmp.ready = value;
+      } },
+
+    onBeforeImageLoad: {
+      default: null,
+      get: function get() {
+        return tmp.beforeImageLoad;
+      },
+      set: function set(value) {
+        tmp.beforeImageLoad = value;
+      } },
+
+    onImageLoad: {
+      default: null,
+      get: function get() {
+        return tmp.imageLoad;
+      },
+      set: function set(value) {
+        tmp.imageLoad = value;
+      } },
+
+    onBeforeDraw: {
+      default: null,
+      get: function get() {
+        return tmp.beforeDraw;
+      },
+      set: function set(value) {
+        tmp.beforeDraw = value;
+      } } };
+
+
+
+  var ref$1 = getDevice();
+  var windowWidth = ref$1.windowWidth;
+
+  function prepare() {
+    var self = this;
+
+    // v1.4.0 版本中将不再自动绑定we-cropper实例
+    self.attachPage = function () {
+      var pages = getCurrentPages();
+      // 获取到当前page上下文
+      var pageContext = pages[pages.length - 1];
+      // 把this依附在Page上下文的wecropper属性上，便于在page钩子函数中访问
+      Object.defineProperty(pageContext, 'wecropper', {
+        get: function get() {
+          console.warn(
+          'Instance will not be automatically bound to the page after v1.4.0\n\n' +
+          'Please use a custom instance name instead\n\n' +
+          'Example: \n' +
+          'this.mycropper = new WeCropper(options)\n\n' +
+          '// ...\n' +
+          'this.mycropper.getCropperImage()');
+
+          return self;
+        },
+        configurable: true });
+
+    };
+
+    self.createCtx = function () {
+      var id = self.id;
+      var targetId = self.targetId;
+
+      if (id) {
+        self.ctx = self.ctx || uni.createCanvasContext(id);
+        self.targetCtx = self.targetCtx || uni.createCanvasContext(targetId);
+      } else {
+        console.error("constructor: create canvas context failed, 'id' must be valuable");
+      }
+    };
+
+    self.deviceRadio = windowWidth / 750;
   }
 
-  if (type === 'array' && Array.isArray(value) && !value.length) {
-    return true;
+  var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !==
+  'undefined' ? self : {};
+
+
+
+
+
+  function createCommonjsModule(fn, module) {
+    return module = {
+      exports: {} },
+    fn(module, module.exports), module.exports;
   }
 
-  if (isNativeStringType(type) && typeof value === 'string' && !value) {
-    return true;
-  }
+  var tools = createCommonjsModule(function (module, exports) {
+    /**
+                                                                * String type check
+                                                                */
+    exports.isStr = function (v) {
+      return typeof v === 'string';
+    };
+    /**
+        * Number type check
+        */
+    exports.isNum = function (v) {
+      return typeof v === 'number';
+    };
+    /**
+        * Array type check
+        */
+    exports.isArr = Array.isArray;
+    /**
+                                    * undefined type check
+                                    */
+    exports.isUndef = function (v) {
+      return v === undefined;
+    };
 
-  return false;
-}
+    exports.isTrue = function (v) {
+      return v === true;
+    };
 
-function asyncParallelArray(arr, func, callback) {
-  var results = [];
-  var total = 0;
-  var arrLength = arr.length;
+    exports.isFalse = function (v) {
+      return v === false;
+    };
+    /**
+        * Function type check
+        */
+    exports.isFunc = function (v) {
+      return typeof v === 'function';
+    };
+    /**
+        * Quick object check - this is primarily used to tell
+        * Objects from primitive values when we know the value
+        * is a JSON-compliant type.
+        */
+    exports.isObj = exports.isObject = function (obj) {
+      return obj !== null && typeof obj === 'object';
+    };
 
-  function count(errors) {
-    results.push.apply(results, errors);
-    total++;
+    /**
+        * Strict object type check. Only returns true
+        * for plain JavaScript objects.
+        */
+    var _toString = Object.prototype.toString;
+    exports.isPlainObject = function (obj) {
+      return _toString.call(obj) === '[object Object]';
+    };
 
-    if (total === arrLength) {
-      callback(results);
-    }
-  }
+    /**
+        * Check whether the object has the property.
+        */
+    var hasOwnProperty = Object.prototype.hasOwnProperty;
+    exports.hasOwn = function (obj, key) {
+      return hasOwnProperty.call(obj, key);
+    };
 
-  arr.forEach(function (a) {
-    func(a, count);
+    /**
+        * Perform no operation.
+        * Stubbing args to make Flow happy without leaving useless transpiled code
+        * with ...rest (https://flow.org/blog/2017/05/07/Strict-Function-Call-Arity/)
+        */
+    exports.noop = function (a, b, c) {};
+
+    /**
+                                           * Check if val is a valid array index.
+                                           */
+    exports.isValidArrayIndex = function (val) {
+      var n = parseFloat(String(val));
+      return n >= 0 && Math.floor(n) === n && isFinite(val);
+    };
   });
-}
 
-function asyncSerialArray(arr, func, callback) {
-  var index = 0;
-  var arrLength = arr.length;
+  var tools_7 = tools.isFunc;
+  var tools_10 = tools.isPlainObject;
 
-  function next(errors) {
-    if (errors && errors.length) {
-      callback(errors);
+  var EVENT_TYPE = ['ready', 'beforeImageLoad', 'beforeDraw', 'imageLoad'];
+
+  function observer() {
+    var self = this;
+
+    self.on = function (event, fn) {
+      if (EVENT_TYPE.indexOf(event) > -1) {
+        if (tools_7(fn)) {
+          event === 'ready' ?
+          fn(self) :
+          self["on" + firstLetterUpper(event)] = fn;
+        }
+      } else {
+        console.error("event: " + event + " is invalid");
+      }
+      return self;
+    };
+  }
+
+  function wxPromise(fn) {
+    return function (obj) {
+      var args = [],
+      len = arguments.length - 1;
+      while (len-- > 0) {args[len] = arguments[len + 1];}
+
+      if (obj === void 0) obj = {};
+      return new Promise(function (resolve, reject) {
+        obj.success = function (res) {
+          resolve(res);
+        };
+        obj.fail = function (err) {
+          reject(err);
+        };
+        fn.apply(void 0, [obj].concat(args));
+      });
+    };
+  }
+
+  function draw(ctx, reserve) {
+    if (reserve === void 0) reserve = false;
+
+    return new Promise(function (resolve) {
+      ctx.draw(reserve, resolve);
+    });
+  }
+
+  var getImageInfo = wxPromise(uni.getImageInfo);
+
+  var canvasToTempFilePath = wxPromise(uni.canvasToTempFilePath);
+
+  var base64 = createCommonjsModule(function (module, exports) {
+    /*! http://mths.be/base64 v0.1.0 by @mathias | MIT license */
+    (function (root) {
+
+      // Detect free variables `exports`.
+      var freeExports =  true && exports;
+
+      // Detect free variable `module`.
+      var freeModule =  true && module &&
+      module.exports == freeExports && module;
+
+      // Detect free variable `global`, from Node.js or Browserified code, and use
+      // it as `root`.
+      var freeGlobal = typeof commonjsGlobal == 'object' && commonjsGlobal;
+      if (freeGlobal.global === freeGlobal || freeGlobal.window === freeGlobal) {
+        root = freeGlobal;
+      }
+
+      /*--------------------------------------------------------------------------*/
+
+      var InvalidCharacterError = function InvalidCharacterError(message) {
+        this.message = message;
+      };
+      InvalidCharacterError.prototype = new Error();
+      InvalidCharacterError.prototype.name = 'InvalidCharacterError';
+
+      var error = function error(message) {
+        // Note: the error messages used throughout this file match those used by
+        // the native `atob`/`btoa` implementation in Chromium.
+        throw new InvalidCharacterError(message);
+      };
+
+      var TABLE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+      // http://whatwg.org/html/common-microsyntaxes.html#space-character
+      var REGEX_SPACE_CHARACTERS = /[\t\n\f\r ]/g;
+
+      // `decode` is designed to be fully compatible with `atob` as described in the
+      // HTML Standard. http://whatwg.org/html/webappapis.html#dom-windowbase64-atob
+      // The optimized base64-decoding algorithm used is based on @atk’s excellent
+      // implementation. https://gist.github.com/atk/1020396
+      var decode = function decode(input) {
+        input = String(input).
+        replace(REGEX_SPACE_CHARACTERS, '');
+        var length = input.length;
+        if (length % 4 == 0) {
+          input = input.replace(/==?$/, '');
+          length = input.length;
+        }
+        if (
+        length % 4 == 1 ||
+        // http://whatwg.org/C#alphanumeric-ascii-characters
+        /[^+a-zA-Z0-9/]/.test(input))
+        {
+          error(
+          'Invalid character: the string to be decoded is not correctly encoded.');
+
+        }
+        var bitCounter = 0;
+        var bitStorage;
+        var buffer;
+        var output = '';
+        var position = -1;
+        while (++position < length) {
+          buffer = TABLE.indexOf(input.charAt(position));
+          bitStorage = bitCounter % 4 ? bitStorage * 64 + buffer : buffer;
+          // Unless this is the first of a group of 4 characters…
+          if (bitCounter++ % 4) {
+            // …convert the first 8 bits to a single ASCII character.
+            output += String.fromCharCode(
+            0xFF & bitStorage >> (-2 * bitCounter & 6));
+
+          }
+        }
+        return output;
+      };
+
+      // `encode` is designed to be fully compatible with `btoa` as described in the
+      // HTML Standard: http://whatwg.org/html/webappapis.html#dom-windowbase64-btoa
+      var encode = function encode(input) {
+        input = String(input);
+        if (/[^\0-\xFF]/.test(input)) {
+          // Note: no need to special-case astral symbols here, as surrogates are
+          // matched, and the input is supposed to only contain ASCII anyway.
+          error(
+          'The string to be encoded contains characters outside of the ' +
+          'Latin1 range.');
+
+        }
+        var padding = input.length % 3;
+        var output = '';
+        var position = -1;
+        var a;
+        var b;
+        var c;
+        var buffer;
+        // Make sure any padding is handled outside of the loop.
+        var length = input.length - padding;
+
+        while (++position < length) {
+          // Read three bytes, i.e. 24 bits.
+          a = input.charCodeAt(position) << 16;
+          b = input.charCodeAt(++position) << 8;
+          c = input.charCodeAt(++position);
+          buffer = a + b + c;
+          // Turn the 24 bits into four chunks of 6 bits each, and append the
+          // matching character for each of them to the output.
+          output +=
+          TABLE.charAt(buffer >> 18 & 0x3F) +
+          TABLE.charAt(buffer >> 12 & 0x3F) +
+          TABLE.charAt(buffer >> 6 & 0x3F) +
+          TABLE.charAt(buffer & 0x3F);
+
+        }
+
+        if (padding == 2) {
+          a = input.charCodeAt(position) << 8;
+          b = input.charCodeAt(++position);
+          buffer = a + b;
+          output +=
+          TABLE.charAt(buffer >> 10) +
+          TABLE.charAt(buffer >> 4 & 0x3F) +
+          TABLE.charAt(buffer << 2 & 0x3F) +
+          '=';
+
+        } else if (padding == 1) {
+          buffer = input.charCodeAt(position);
+          output +=
+          TABLE.charAt(buffer >> 2) +
+          TABLE.charAt(buffer << 4 & 0x3F) +
+          '==';
+
+        }
+
+        return output;
+      };
+
+      var base64 = {
+        'encode': encode,
+        'decode': decode,
+        'version': '0.1.0' };
+
+
+      // Some AMD build optimizers, like r.js, check for specific condition patterns
+      // like the following:
+      if (
+      false)
+      {} else if (freeExports && !freeExports.nodeType) {
+        if (freeModule) {// in Node.js or RingoJS v0.8.0+
+          freeModule.exports = base64;
+        } else {// in Narwhal or RingoJS v0.7.0-
+          for (var key in base64) {
+            base64.hasOwnProperty(key) && (freeExports[key] = base64[key]);
+          }
+        }
+      } else {// in Rhino or a web browser
+        root.base64 = base64;
+      }
+
+    })(commonjsGlobal);
+  });
+
+  function makeURI(strData, type) {
+    return 'data:' + type + ';base64,' + strData;
+  }
+
+  function fixType(type) {
+    type = type.toLowerCase().replace(/jpg/i, 'jpeg');
+    var r = type.match(/png|jpeg|bmp|gif/)[0];
+    return 'image/' + r;
+  }
+
+  function encodeData(data) {
+    var str = '';
+    if (typeof data === 'string') {
+      str = data;
+    } else {
+      for (var i = 0; i < data.length; i++) {
+        str += String.fromCharCode(data[i]);
+      }
+    }
+    return base64.encode(str);
+  }
+
+  /**
+     * 获取图像区域隐含的像素数据
+     * @param canvasId canvas标识
+     * @param x 将要被提取的图像数据矩形区域的左上角 x 坐标
+     * @param y 将要被提取的图像数据矩形区域的左上角 y 坐标
+     * @param width 将要被提取的图像数据矩形区域的宽度
+     * @param height 将要被提取的图像数据矩形区域的高度
+     * @param done 完成回调
+     */
+  function getImageData(canvasId, x, y, width, height, done) {
+    uni.canvasGetImageData({
+      canvasId: canvasId,
+      x: x,
+      y: y,
+      width: width,
+      height: height,
+      success: function success(res) {
+        done(res, null);
+      },
+      fail: function fail(res) {
+        done(null, res);
+      } });
+
+  }
+
+  /**
+     * 生成bmp格式图片
+     * 按照规则生成图片响应头和响应体
+     * @param oData 用来描述 canvas 区域隐含的像素数据 { data, width, height } = oData
+     * @returns {*} base64字符串
+     */
+  function genBitmapImage(oData) {
+    //
+    // BITMAPFILEHEADER: http://msdn.microsoft.com/en-us/library/windows/desktop/dd183374(v=vs.85).aspx
+    // BITMAPINFOHEADER: http://msdn.microsoft.com/en-us/library/dd183376.aspx
+    //
+    var biWidth = oData.width;
+    var biHeight = oData.height;
+    var biSizeImage = biWidth * biHeight * 3;
+    var bfSize = biSizeImage + 54; // total header size = 54 bytes
+
+    //
+    //  typedef struct tagBITMAPFILEHEADER {
+    //  	WORD bfType;
+    //  	DWORD bfSize;
+    //  	WORD bfReserved1;
+    //  	WORD bfReserved2;
+    //  	DWORD bfOffBits;
+    //  } BITMAPFILEHEADER;
+    //
+    var BITMAPFILEHEADER = [
+    // WORD bfType -- The file type signature; must be "BM"
+    0x42, 0x4D,
+    // DWORD bfSize -- The size, in bytes, of the bitmap file
+    bfSize & 0xff, bfSize >> 8 & 0xff, bfSize >> 16 & 0xff, bfSize >> 24 & 0xff,
+    // WORD bfReserved1 -- Reserved; must be zero
+    0, 0,
+    // WORD bfReserved2 -- Reserved; must be zero
+    0, 0,
+    // DWORD bfOffBits -- The offset, in bytes, from the beginning of the BITMAPFILEHEADER structure to the bitmap bits.
+    54, 0, 0, 0];
+
+
+    //
+    //  typedef struct tagBITMAPINFOHEADER {
+    //  	DWORD biSize;
+    //  	LONG  biWidth;
+    //  	LONG  biHeight;
+    //  	WORD  biPlanes;
+    //  	WORD  biBitCount;
+    //  	DWORD biCompression;
+    //  	DWORD biSizeImage;
+    //  	LONG  biXPelsPerMeter;
+    //  	LONG  biYPelsPerMeter;
+    //  	DWORD biClrUsed;
+    //  	DWORD biClrImportant;
+    //  } BITMAPINFOHEADER, *PBITMAPINFOHEADER;
+    //
+    var BITMAPINFOHEADER = [
+    // DWORD biSize -- The number of bytes required by the structure
+    40, 0, 0, 0,
+    // LONG biWidth -- The width of the bitmap, in pixels
+    biWidth & 0xff, biWidth >> 8 & 0xff, biWidth >> 16 & 0xff, biWidth >> 24 & 0xff,
+    // LONG biHeight -- The height of the bitmap, in pixels
+    biHeight & 0xff, biHeight >> 8 & 0xff, biHeight >> 16 & 0xff, biHeight >> 24 & 0xff,
+    // WORD biPlanes -- The number of planes for the target device. This value must be set to 1
+    1, 0,
+    // WORD biBitCount -- The number of bits-per-pixel, 24 bits-per-pixel -- the bitmap
+    // has a maximum of 2^24 colors (16777216, Truecolor)
+    24, 0,
+    // DWORD biCompression -- The type of compression, BI_RGB (code 0) -- uncompressed
+    0, 0, 0, 0,
+    // DWORD biSizeImage -- The size, in bytes, of the image. This may be set to zero for BI_RGB bitmaps
+    biSizeImage & 0xff, biSizeImage >> 8 & 0xff, biSizeImage >> 16 & 0xff, biSizeImage >> 24 & 0xff,
+    // LONG biXPelsPerMeter, unused
+    0, 0, 0, 0,
+    // LONG biYPelsPerMeter, unused
+    0, 0, 0, 0,
+    // DWORD biClrUsed, the number of color indexes of palette, unused
+    0, 0, 0, 0,
+    // DWORD biClrImportant, unused
+    0, 0, 0, 0];
+
+
+    var iPadding = (4 - biWidth * 3 % 4) % 4;
+
+    var aImgData = oData.data;
+
+    var strPixelData = '';
+    var biWidth4 = biWidth << 2;
+    var y = biHeight;
+    var fromCharCode = String.fromCharCode;
+
+    do {
+      var iOffsetY = biWidth4 * (y - 1);
+      var strPixelRow = '';
+      for (var x = 0; x < biWidth; x++) {
+        var iOffsetX = x << 2;
+        strPixelRow += fromCharCode(aImgData[iOffsetY + iOffsetX + 2]) +
+        fromCharCode(aImgData[iOffsetY + iOffsetX + 1]) +
+        fromCharCode(aImgData[iOffsetY + iOffsetX]);
+      }
+
+      for (var c = 0; c < iPadding; c++) {
+        strPixelRow += String.fromCharCode(0);
+      }
+
+      strPixelData += strPixelRow;
+    } while (--y);
+
+    var strEncoded = encodeData(BITMAPFILEHEADER.concat(BITMAPINFOHEADER)) + encodeData(strPixelData);
+
+    return strEncoded;
+  }
+
+  /**
+     * 转换为图片base64
+     * @param canvasId canvas标识
+     * @param x 将要被提取的图像数据矩形区域的左上角 x 坐标
+     * @param y 将要被提取的图像数据矩形区域的左上角 y 坐标
+     * @param width 将要被提取的图像数据矩形区域的宽度
+     * @param height 将要被提取的图像数据矩形区域的高度
+     * @param type 转换图片类型
+     * @param done 完成回调
+     */
+  function convertToImage(canvasId, x, y, width, height, type, done) {
+    if (done === void 0) done = function done() {};
+
+    if (type === undefined) {
+      type = 'png';
+    }
+    type = fixType(type);
+    if (/bmp/.test(type)) {
+      getImageData(canvasId, x, y, width, height, function (data, err) {
+        var strData = genBitmapImage(data);
+        tools_7(done) && done(makeURI(strData, 'image/' + type), err);
+      });
+    } else {
+      console.error('暂不支持生成\'' + type + '\'类型的base64图片');
+    }
+  }
+
+  var CanvasToBase64 = {
+    convertToImage: convertToImage,
+    // convertToPNG: function (width, height, done) {
+    //   return convertToImage(width, height, 'png', done)
+    // },
+    // convertToJPEG: function (width, height, done) {
+    //   return convertToImage(width, height, 'jpeg', done)
+    // },
+    // convertToGIF: function (width, height, done) {
+    //   return convertToImage(width, height, 'gif', done)
+    // },
+    convertToBMP: function convertToBMP(ref, done) {
+      if (ref === void 0) ref = {};
+      var canvasId = ref.canvasId;
+      var x = ref.x;
+      var y = ref.y;
+      var width = ref.width;
+      var height = ref.height;
+      if (done === void 0) done = function done() {};
+
+      return convertToImage(canvasId, x, y, width, height, 'bmp', done);
+    } };
+
+
+  function methods() {
+    var self = this;
+
+    var boundWidth = self.width; // 裁剪框默认宽度，即整个画布宽度
+    var boundHeight = self.height; // 裁剪框默认高度，即整个画布高度
+
+    var id = self.id;
+    var targetId = self.targetId;
+    var pixelRatio = self.pixelRatio;
+
+    var ref = self.cut;
+    var x = ref.x;
+    if (x === void 0) x = 0;
+    var y = ref.y;
+    if (y === void 0) y = 0;
+    var width = ref.width;
+    if (width === void 0) width = boundWidth;
+    var height = ref.height;
+    if (height === void 0) height = boundHeight;
+
+    self.updateCanvas = function (done) {
+      if (self.croperTarget) {
+        //  画布绘制图片
+        self.ctx.drawImage(
+        self.croperTarget,
+        self.imgLeft,
+        self.imgTop,
+        self.scaleWidth,
+        self.scaleHeight);
+
+      }
+      tools_7(self.onBeforeDraw) && self.onBeforeDraw(self.ctx, self);
+
+      self.setBoundStyle(self.boundStyle); //	设置边界样式
+
+      self.ctx.draw(false, done);
+      return self;
+    };
+
+    self.pushOrigin = self.pushOrign = function (src) {
+      self.src = src;
+
+      tools_7(self.onBeforeImageLoad) && self.onBeforeImageLoad(self.ctx, self);
+
+      return getImageInfo({
+        src: src }).
+
+      then(function (res) {
+        var innerAspectRadio = res.width / res.height;
+        var customAspectRadio = width / height;
+
+        self.croperTarget = res.path;
+
+        if (innerAspectRadio < customAspectRadio) {
+          self.rectX = x;
+          self.baseWidth = width;
+          self.baseHeight = width / innerAspectRadio;
+          self.rectY = y - Math.abs((height - self.baseHeight) / 2);
+        } else {
+          self.rectY = y;
+          self.baseWidth = height * innerAspectRadio;
+          self.baseHeight = height;
+          self.rectX = x - Math.abs((width - self.baseWidth) / 2);
+        }
+
+        self.imgLeft = self.rectX;
+        self.imgTop = self.rectY;
+        self.scaleWidth = self.baseWidth;
+        self.scaleHeight = self.baseHeight;
+
+        self.update();
+
+        return new Promise(function (resolve) {
+          self.updateCanvas(resolve);
+        });
+      }).
+      then(function () {
+        tools_7(self.onImageLoad) && self.onImageLoad(self.ctx, self);
+      });
+    };
+
+    self.removeImage = function () {
+      self.src = '';
+      self.croperTarget = '';
+      return draw(self.ctx);
+    };
+
+    self.getCropperBase64 = function (done) {
+      if (done === void 0) done = function done() {};
+
+      CanvasToBase64.convertToBMP({
+        canvasId: id,
+        x: x,
+        y: y,
+        width: width,
+        height: height },
+      done);
+    };
+
+    self.getCropperImage = function (opt, fn) {
+      var customOptions = opt;
+
+      var canvasOptions = {
+        canvasId: id,
+        x: x,
+        y: y,
+        width: width,
+        height: height };
+
+
+      var task = function task() {
+        return Promise.resolve();
+      };
+
+      if (
+      tools_10(customOptions) &&
+      customOptions.original)
+      {
+        // original mode
+        task = function task() {
+          self.targetCtx.drawImage(
+          self.croperTarget,
+          self.imgLeft * pixelRatio,
+          self.imgTop * pixelRatio,
+          self.scaleWidth * pixelRatio,
+          self.scaleHeight * pixelRatio);
+
+
+          canvasOptions = {
+            canvasId: targetId,
+            x: x * pixelRatio,
+            y: y * pixelRatio,
+            width: width * pixelRatio,
+            height: height * pixelRatio };
+
+
+          return draw(self.targetCtx);
+        };
+      }
+
+      return task().
+      then(function () {
+        if (tools_10(customOptions)) {
+          canvasOptions = Object.assign({}, canvasOptions, customOptions);
+        }
+
+        if (tools_7(customOptions)) {
+          fn = customOptions;
+        }
+
+        var arg = canvasOptions.componentContext ?
+        [canvasOptions, canvasOptions.componentContext] :
+        [canvasOptions];
+
+        return canvasToTempFilePath.apply(null, arg);
+      }).
+      then(function (res) {
+        var tempFilePath = res.tempFilePath;
+
+        return tools_7(fn) ?
+        fn.call(self, tempFilePath, null) :
+        tempFilePath;
+      }).
+      catch(function (err) {
+        if (tools_7(fn)) {
+          fn.call(self, null, err);
+        } else {
+          throw err;
+        }
+      });
+    };
+  }
+
+  /**
+     * 获取最新缩放值
+     * @param oldScale 上一次触摸结束后的缩放值
+     * @param oldDistance 上一次触摸结束后的双指距离
+     * @param zoom 缩放系数
+     * @param touch0 第一指touch对象
+     * @param touch1 第二指touch对象
+     * @returns {*}
+     */
+  var getNewScale = function getNewScale(oldScale, oldDistance, zoom, touch0, touch1) {
+    var xMove, yMove, newDistance;
+    // 计算二指最新距离
+    xMove = Math.round(touch1.x - touch0.x);
+    yMove = Math.round(touch1.y - touch0.y);
+    newDistance = Math.round(Math.sqrt(xMove * xMove + yMove * yMove));
+
+    return oldScale + 0.001 * zoom * (newDistance - oldDistance);
+  };
+
+  function update() {
+    var self = this;
+
+    if (!self.src) {
       return;
     }
 
-    var original = index;
-    index = index + 1;
-
-    if (original < arrLength) {
-      func(arr[original], next);
-    } else {
-      callback([]);
-    }
-  }
-
-  next([]);
-}
-
-function flattenObjArr(objArr) {
-  var ret = [];
-  Object.keys(objArr).forEach(function (k) {
-    ret.push.apply(ret, objArr[k]);
-  });
-  return ret;
-}
-
-function asyncMap(objArr, option, func, callback) {
-  if (option.first) {
-    var _pending = new Promise(function (resolve, reject) {
-      var next = function next(errors) {
-        callback(errors);
-        return errors.length ? reject({
-          errors: errors,
-          fields: convertFieldsError(errors) }) :
-        resolve();
-      };
-
-      var flattenArr = flattenObjArr(objArr);
-      asyncSerialArray(flattenArr, func, next);
-    });
-
-    _pending["catch"](function (e) {
-      return e;
-    });
-
-    return _pending;
-  }
-
-  var firstFields = option.firstFields || [];
-
-  if (firstFields === true) {
-    firstFields = Object.keys(objArr);
-  }
-
-  var objArrKeys = Object.keys(objArr);
-  var objArrLength = objArrKeys.length;
-  var total = 0;
-  var results = [];
-  var pending = new Promise(function (resolve, reject) {
-    var next = function next(errors) {
-      results.push.apply(results, errors);
-      total++;
-
-      if (total === objArrLength) {
-        callback(results);
-        return results.length ? reject({
-          errors: results,
-          fields: convertFieldsError(results) }) :
-        resolve();
-      }
+    self.__oneTouchStart = function (touch) {
+      self.touchX0 = Math.round(touch.x);
+      self.touchY0 = Math.round(touch.y);
     };
 
-    if (!objArrKeys.length) {
-      callback(results);
-      resolve();
-    }
-
-    objArrKeys.forEach(function (key) {
-      var arr = objArr[key];
-
-      if (firstFields.indexOf(key) !== -1) {
-        asyncSerialArray(arr, func, next);
-      } else {
-        asyncParallelArray(arr, func, next);
+    self.__oneTouchMove = function (touch) {
+      var xMove, yMove;
+      // 计算单指移动的距离
+      if (self.touchended) {
+        return self.updateCanvas();
       }
-    });
-  });
-  pending["catch"](function (e) {
-    return e;
-  });
-  return pending;
-}
+      xMove = Math.round(touch.x - self.touchX0);
+      yMove = Math.round(touch.y - self.touchY0);
 
-function complementError(rule) {
-  return function (oe) {
-    if (oe && oe.message) {
-      oe.field = oe.field || rule.fullField;
-      return oe;
-    }
+      var imgLeft = Math.round(self.rectX + xMove);
+      var imgTop = Math.round(self.rectY + yMove);
 
-    return {
-      message: typeof oe === 'function' ? oe() : oe,
-      field: oe.field || rule.fullField };
+      self.outsideBound(imgLeft, imgTop);
 
-  };
-}
+      self.updateCanvas();
+    };
 
-function deepMerge(target, source) {
-  if (source) {
-    for (var s in source) {
-      if (source.hasOwnProperty(s)) {
-        var value = source[s];
+    self.__twoTouchStart = function (touch0, touch1) {
+      var xMove, yMove, oldDistance;
 
-        if (typeof value === 'object' && typeof target[s] === 'object') {
-          target[s] = _extends({}, target[s], {}, value);
-        } else {
-          target[s] = value;
-        }
-      }
-    }
+      self.touchX1 = Math.round(self.rectX + self.scaleWidth / 2);
+      self.touchY1 = Math.round(self.rectY + self.scaleHeight / 2);
+
+      // 计算两指距离
+      xMove = Math.round(touch1.x - touch0.x);
+      yMove = Math.round(touch1.y - touch0.y);
+      oldDistance = Math.round(Math.sqrt(xMove * xMove + yMove * yMove));
+
+      self.oldDistance = oldDistance;
+    };
+
+    self.__twoTouchMove = function (touch0, touch1) {
+      var oldScale = self.oldScale;
+      var oldDistance = self.oldDistance;
+      var scale = self.scale;
+      var zoom = self.zoom;
+
+      self.newScale = getNewScale(oldScale, oldDistance, zoom, touch0, touch1);
+
+      //  设定缩放范围
+      self.newScale <= 1 && (self.newScale = 1);
+      self.newScale >= scale && (self.newScale = scale);
+
+      self.scaleWidth = Math.round(self.newScale * self.baseWidth);
+      self.scaleHeight = Math.round(self.newScale * self.baseHeight);
+      var imgLeft = Math.round(self.touchX1 - self.scaleWidth / 2);
+      var imgTop = Math.round(self.touchY1 - self.scaleHeight / 2);
+
+      self.outsideBound(imgLeft, imgTop);
+
+      self.updateCanvas();
+    };
+
+    self.__xtouchEnd = function () {
+      self.oldScale = self.newScale;
+      self.rectX = self.imgLeft;
+      self.rectY = self.imgTop;
+    };
   }
 
-  return target;
-}
-
-/**
-   *  Rule for validating required fields.
-   *
-   *  @param rule The validation rule.
-   *  @param value The value of the field on the source object.
-   *  @param source The source object being validated.
-   *  @param errors An array of errors that this rule may add
-   *  validation errors to.
-   *  @param options The validation options.
-   *  @param options.messages The validation messages.
-   */
-
-function required(rule, value, source, errors, options, type) {
-  if (rule.required && (!source.hasOwnProperty(rule.field) || isEmptyValue(value, type || rule.type))) {
-    errors.push(format(options.messages.required, rule.fullField));
-  }
-}
-
-/**
-   *  Rule for validating whitespace.
-   *
-   *  @param rule The validation rule.
-   *  @param value The value of the field on the source object.
-   *  @param source The source object being validated.
-   *  @param errors An array of errors that this rule may add
-   *  validation errors to.
-   *  @param options The validation options.
-   *  @param options.messages The validation messages.
-   */
-
-function whitespace(rule, value, source, errors, options) {
-  if (/^\s+$/.test(value) || value === '') {
-    errors.push(format(options.messages.whitespace, rule.fullField));
-  }
-}
-
-/* eslint max-len:0 */
-
-var pattern = {
-  // http://emailregex.com/
-  email: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-  url: new RegExp(
-  "^(?!mailto:)(?:(?:http|https|ftp)://|//)(?:\\S+(?::\\S*)?@)?(?:(?:(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[0-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z\\u00a1-\\uffff0-9]+-*)*[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]+-*)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,})))|localhost)(?::\\d{2,5})?(?:(/|\\?|#)[^\\s]*)?$",
-  'i'),
-  hex: /^#?([a-f0-9]{6}|[a-f0-9]{3})$/i };
-
-var types = {
-  integer: function integer(value) {
-    return types.number(value) && parseInt(value, 10) === value;
-  },
-  "float": function _float(value) {
-    return types.number(value) && !types.integer(value);
-  },
-  array: function array(value) {
-    return Array.isArray(value);
-  },
-  regexp: function regexp(value) {
-    if (value instanceof RegExp) {
-      return true;
-    }
-
-    try {
-      return !!new RegExp(value);
-    } catch (e) {
-      return false;
-    }
-  },
-  date: function date(value) {
-    return typeof value.getTime === 'function' && typeof value.getMonth === 'function' && typeof value.getYear ===
-    'function';
-  },
-  number: function number(value) {
-    if (isNaN(value)) {
-      return false;
-    }
-
-    // 修改源码，将字符串数值先转为数值
-    return typeof +value === 'number';
-  },
-  object: function object(value) {
-    return typeof value === 'object' && !types.array(value);
-  },
-  method: function method(value) {
-    return typeof value === 'function';
-  },
-  email: function email(value) {
-    return typeof value === 'string' && !!value.match(pattern.email) && value.length < 255;
-  },
-  url: function url(value) {
-    return typeof value === 'string' && !!value.match(pattern.url);
-  },
-  hex: function hex(value) {
-    return typeof value === 'string' && !!value.match(pattern.hex);
-  } };
-
-/**
-        *  Rule for validating the type of a value.
-        *
-        *  @param rule The validation rule.
-        *  @param value The value of the field on the source object.
-        *  @param source The source object being validated.
-        *  @param errors An array of errors that this rule may add
-        *  validation errors to.
-        *  @param options The validation options.
-        *  @param options.messages The validation messages.
-        */
-
-function type(rule, value, source, errors, options) {
-  if (rule.required && value === undefined) {
-    required(rule, value, source, errors, options);
-    return;
-  }
-
-  var custom = ['integer', 'float', 'array', 'regexp', 'object', 'method', 'email', 'number', 'date', 'url', 'hex'];
-  var ruleType = rule.type;
-
-  if (custom.indexOf(ruleType) > -1) {
-    if (!types[ruleType](value)) {
-      errors.push(format(options.messages.types[ruleType], rule.fullField, rule.type));
-    } // straight typeof check
-
-  } else if (ruleType && typeof value !== rule.type) {
-    errors.push(format(options.messages.types[ruleType], rule.fullField, rule.type));
-  }
-}
-
-/**
-   *  Rule for validating minimum and maximum allowed values.
-   *
-   *  @param rule The validation rule.
-   *  @param value The value of the field on the source object.
-   *  @param source The source object being validated.
-   *  @param errors An array of errors that this rule may add
-   *  validation errors to.
-   *  @param options The validation options.
-   *  @param options.messages The validation messages.
-   */
-
-function range(rule, value, source, errors, options) {
-  var len = typeof rule.len === 'number';
-  var min = typeof rule.min === 'number';
-  var max = typeof rule.max === 'number'; // 正则匹配码点范围从U+010000一直到U+10FFFF的文字（补充平面Supplementary Plane）
-
-  var spRegexp = /[\uD800-\uDBFF][\uDC00-\uDFFF]/g;
-  var val = value;
-  var key = null;
-  var num = typeof value === 'number';
-  var str = typeof value === 'string';
-  var arr = Array.isArray(value);
-
-  if (num) {
-    key = 'number';
-  } else if (str) {
-    key = 'string';
-  } else if (arr) {
-    key = 'array';
-  } // if the value is not of a supported type for range validation
-  // the validation rule rule should use the
-  // type property to also test for a particular type
-
-
-  if (!key) {
-    return false;
-  }
-
-  if (arr) {
-    val = value.length;
-  }
-
-  if (str) {
-    // 处理码点大于U+010000的文字length属性不准确的bug，如"𠮷𠮷𠮷".lenght !== 3
-    val = value.replace(spRegexp, '_').length;
-  }
-
-  if (len) {
-    if (val !== rule.len) {
-      errors.push(format(options.messages[key].len, rule.fullField, rule.len));
-    }
-  } else if (min && !max && val < rule.min) {
-    errors.push(format(options.messages[key].min, rule.fullField, rule.min));
-  } else if (max && !min && val > rule.max) {
-    errors.push(format(options.messages[key].max, rule.fullField, rule.max));
-  } else if (min && max && (val < rule.min || val > rule.max)) {
-    errors.push(format(options.messages[key].range, rule.fullField, rule.min, rule.max));
-  }
-}
-
-var ENUM = 'enum';
-/**
-                    *  Rule for validating a value exists in an enumerable list.
-                    *
-                    *  @param rule The validation rule.
-                    *  @param value The value of the field on the source object.
-                    *  @param source The source object being validated.
-                    *  @param errors An array of errors that this rule may add
-                    *  validation errors to.
-                    *  @param options The validation options.
-                    *  @param options.messages The validation messages.
-                    */
-
-function enumerable(rule, value, source, errors, options) {
-  rule[ENUM] = Array.isArray(rule[ENUM]) ? rule[ENUM] : [];
-
-  if (rule[ENUM].indexOf(value) === -1) {
-    errors.push(format(options.messages[ENUM], rule.fullField, rule[ENUM].join(', ')));
-  }
-}
-
-/**
-   *  Rule for validating a regular expression pattern.
-   *
-   *  @param rule The validation rule.
-   *  @param value The value of the field on the source object.
-   *  @param source The source object being validated.
-   *  @param errors An array of errors that this rule may add
-   *  validation errors to.
-   *  @param options The validation options.
-   *  @param options.messages The validation messages.
-   */
-
-function pattern$1(rule, value, source, errors, options) {
-  if (rule.pattern) {
-    if (rule.pattern instanceof RegExp) {
-      // if a RegExp instance is passed, reset `lastIndex` in case its `global`
-      // flag is accidentally set to `true`, which in a validation scenario
-      // is not necessary and the result might be misleading
-      rule.pattern.lastIndex = 0;
-
-      if (!rule.pattern.test(value)) {
-        errors.push(format(options.messages.pattern.mismatch, rule.fullField, value, rule.pattern));
-      }
-    } else if (typeof rule.pattern === 'string') {
-      var _pattern = new RegExp(rule.pattern);
-
-      if (!_pattern.test(value)) {
-        errors.push(format(options.messages.pattern.mismatch, rule.fullField, value, rule.pattern));
-      }
-    }
-  }
-}
-
-var rules = {
-  required: required,
-  whitespace: whitespace,
-  type: type,
-  range: range,
-  "enum": enumerable,
-  pattern: pattern$1 };
-
-
-/**
-                         *  Performs validation for string types.
-                         *
-                         *  @param rule The validation rule.
-                         *  @param value The value of the field on the source object.
-                         *  @param callback The callback function.
-                         *  @param source The source object being validated.
-                         *  @param options The validation options.
-                         *  @param options.messages The validation messages.
-                         */
-
-function string(rule, value, callback, source, options) {
-  var errors = [];
-  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
-
-  if (validate) {
-    if (isEmptyValue(value, 'string') && !rule.required) {
-      return callback();
-    }
-
-    rules.required(rule, value, source, errors, options, 'string');
-
-    if (!isEmptyValue(value, 'string')) {
-      rules.type(rule, value, source, errors, options);
-      rules.range(rule, value, source, errors, options);
-      rules.pattern(rule, value, source, errors, options);
-
-      if (rule.whitespace === true) {
-        rules.whitespace(rule, value, source, errors, options);
-      }
-    }
-  }
-
-  callback(errors);
-}
-
-/**
-   *  Validates a function.
-   *
-   *  @param rule The validation rule.
-   *  @param value The value of the field on the source object.
-   *  @param callback The callback function.
-   *  @param source The source object being validated.
-   *  @param options The validation options.
-   *  @param options.messages The validation messages.
-   */
-
-function method(rule, value, callback, source, options) {
-  var errors = [];
-  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
-
-  if (validate) {
-    if (isEmptyValue(value) && !rule.required) {
-      return callback();
-    }
-
-    rules.required(rule, value, source, errors, options);
-
-    if (value !== undefined) {
-      rules.type(rule, value, source, errors, options);
-    }
-  }
-
-  callback(errors);
-}
-
-/**
-   *  Validates a number.
-   *
-   *  @param rule The validation rule.
-   *  @param value The value of the field on the source object.
-   *  @param callback The callback function.
-   *  @param source The source object being validated.
-   *  @param options The validation options.
-   *  @param options.messages The validation messages.
-   */
-
-function number(rule, value, callback, source, options) {
-  var errors = [];
-  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
-
-  if (validate) {
-    if (value === '') {
-      value = undefined;
-    }
-
-    if (isEmptyValue(value) && !rule.required) {
-      return callback();
-    }
-
-    rules.required(rule, value, source, errors, options);
-
-    if (value !== undefined) {
-      rules.type(rule, value, source, errors, options);
-      rules.range(rule, value, source, errors, options);
-    }
-  }
-
-  callback(errors);
-}
-
-/**
-   *  Validates a boolean.
-   *
-   *  @param rule The validation rule.
-   *  @param value The value of the field on the source object.
-   *  @param callback The callback function.
-   *  @param source The source object being validated.
-   *  @param options The validation options.
-   *  @param options.messages The validation messages.
-   */
-
-function _boolean(rule, value, callback, source, options) {
-  var errors = [];
-  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
-
-  if (validate) {
-    if (isEmptyValue(value) && !rule.required) {
-      return callback();
-    }
-
-    rules.required(rule, value, source, errors, options);
-
-    if (value !== undefined) {
-      rules.type(rule, value, source, errors, options);
-    }
-  }
-
-  callback(errors);
-}
-
-/**
-   *  Validates the regular expression type.
-   *
-   *  @param rule The validation rule.
-   *  @param value The value of the field on the source object.
-   *  @param callback The callback function.
-   *  @param source The source object being validated.
-   *  @param options The validation options.
-   *  @param options.messages The validation messages.
-   */
-
-function regexp(rule, value, callback, source, options) {
-  var errors = [];
-  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
-
-  if (validate) {
-    if (isEmptyValue(value) && !rule.required) {
-      return callback();
-    }
-
-    rules.required(rule, value, source, errors, options);
-
-    if (!isEmptyValue(value)) {
-      rules.type(rule, value, source, errors, options);
-    }
-  }
-
-  callback(errors);
-}
-
-/**
-   *  Validates a number is an integer.
-   *
-   *  @param rule The validation rule.
-   *  @param value The value of the field on the source object.
-   *  @param callback The callback function.
-   *  @param source The source object being validated.
-   *  @param options The validation options.
-   *  @param options.messages The validation messages.
-   */
-
-function integer(rule, value, callback, source, options) {
-  var errors = [];
-  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
-
-  if (validate) {
-    if (isEmptyValue(value) && !rule.required) {
-      return callback();
-    }
-
-    rules.required(rule, value, source, errors, options);
-
-    if (value !== undefined) {
-      rules.type(rule, value, source, errors, options);
-      rules.range(rule, value, source, errors, options);
-    }
-  }
-
-  callback(errors);
-}
-
-/**
-   *  Validates a number is a floating point number.
-   *
-   *  @param rule The validation rule.
-   *  @param value The value of the field on the source object.
-   *  @param callback The callback function.
-   *  @param source The source object being validated.
-   *  @param options The validation options.
-   *  @param options.messages The validation messages.
-   */
-
-function floatFn(rule, value, callback, source, options) {
-  var errors = [];
-  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
-
-  if (validate) {
-    if (isEmptyValue(value) && !rule.required) {
-      return callback();
-    }
-
-    rules.required(rule, value, source, errors, options);
-
-    if (value !== undefined) {
-      rules.type(rule, value, source, errors, options);
-      rules.range(rule, value, source, errors, options);
-    }
-  }
-
-  callback(errors);
-}
-
-/**
-   *  Validates an array.
-   *
-   *  @param rule The validation rule.
-   *  @param value The value of the field on the source object.
-   *  @param callback The callback function.
-   *  @param source The source object being validated.
-   *  @param options The validation options.
-   *  @param options.messages The validation messages.
-   */
-
-function array(rule, value, callback, source, options) {
-  var errors = [];
-  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
-
-  if (validate) {
-    if (isEmptyValue(value, 'array') && !rule.required) {
-      return callback();
-    }
-
-    rules.required(rule, value, source, errors, options, 'array');
-
-    if (!isEmptyValue(value, 'array')) {
-      rules.type(rule, value, source, errors, options);
-      rules.range(rule, value, source, errors, options);
-    }
-  }
-
-  callback(errors);
-}
-
-/**
-   *  Validates an object.
-   *
-   *  @param rule The validation rule.
-   *  @param value The value of the field on the source object.
-   *  @param callback The callback function.
-   *  @param source The source object being validated.
-   *  @param options The validation options.
-   *  @param options.messages The validation messages.
-   */
-
-function object(rule, value, callback, source, options) {
-  var errors = [];
-  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
-
-  if (validate) {
-    if (isEmptyValue(value) && !rule.required) {
-      return callback();
-    }
-
-    rules.required(rule, value, source, errors, options);
-
-    if (value !== undefined) {
-      rules.type(rule, value, source, errors, options);
-    }
-  }
-
-  callback(errors);
-}
-
-var ENUM$1 = 'enum';
-/**
-                      *  Validates an enumerable list.
-                      *
-                      *  @param rule The validation rule.
-                      *  @param value The value of the field on the source object.
-                      *  @param callback The callback function.
-                      *  @param source The source object being validated.
-                      *  @param options The validation options.
-                      *  @param options.messages The validation messages.
-                      */
-
-function enumerable$1(rule, value, callback, source, options) {
-  var errors = [];
-  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
-
-  if (validate) {
-    if (isEmptyValue(value) && !rule.required) {
-      return callback();
-    }
-
-    rules.required(rule, value, source, errors, options);
-
-    if (value !== undefined) {
-      rules[ENUM$1](rule, value, source, errors, options);
-    }
-  }
-
-  callback(errors);
-}
-
-/**
-   *  Validates a regular expression pattern.
-   *
-   *  Performs validation when a rule only contains
-   *  a pattern property but is not declared as a string type.
-   *
-   *  @param rule The validation rule.
-   *  @param value The value of the field on the source object.
-   *  @param callback The callback function.
-   *  @param source The source object being validated.
-   *  @param options The validation options.
-   *  @param options.messages The validation messages.
-   */
-
-function pattern$2(rule, value, callback, source, options) {
-  var errors = [];
-  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
-
-  if (validate) {
-    if (isEmptyValue(value, 'string') && !rule.required) {
-      return callback();
-    }
-
-    rules.required(rule, value, source, errors, options);
-
-    if (!isEmptyValue(value, 'string')) {
-      rules.pattern(rule, value, source, errors, options);
-    }
-  }
-
-  callback(errors);
-}
-
-function date(rule, value, callback, source, options) {
-  var errors = [];
-  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
-
-  if (validate) {
-    if (isEmptyValue(value) && !rule.required) {
-      return callback();
-    }
-
-    rules.required(rule, value, source, errors, options);
-
-    if (!isEmptyValue(value)) {
-      var dateObject;
-
-      if (typeof value === 'number') {
-        dateObject = new Date(value);
-      } else {
-        dateObject = value;
+  var handle = {
+    //  图片手势初始监测
+    touchStart: function touchStart(e) {
+      var self = this;
+      var ref = e.touches;
+      var touch0 = ref[0];
+      var touch1 = ref[1];
+
+      if (!self.src) {
+        return;
       }
 
-      rules.type(rule, dateObject, source, errors, options);
+      setTouchState(self, true, null, null);
 
-      if (dateObject) {
-        rules.range(rule, dateObject.getTime(), source, errors, options);
+      // 计算第一个触摸点的位置，并参照改点进行缩放
+      self.__oneTouchStart(touch0);
+
+      // 两指手势触发
+      if (e.touches.length >= 2) {
+        self.__twoTouchStart(touch0, touch1);
       }
-    }
-  }
+    },
 
-  callback(errors);
-}
+    //  图片手势动态缩放
+    touchMove: function touchMove(e) {
+      var self = this;
+      var ref = e.touches;
+      var touch0 = ref[0];
+      var touch1 = ref[1];
 
-function required$1(rule, value, callback, source, options) {
-  var errors = [];
-  var type = Array.isArray(value) ? 'array' : typeof value;
-  rules.required(rule, value, source, errors, options, type);
-  callback(errors);
-}
+      if (!self.src) {
+        return;
+      }
 
-function type$1(rule, value, callback, source, options) {
-  var ruleType = rule.type;
-  var errors = [];
-  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+      setTouchState(self, null, true);
 
-  if (validate) {
-    if (isEmptyValue(value, ruleType) && !rule.required) {
-      return callback();
-    }
+      // 单指手势时触发
+      if (e.touches.length === 1) {
+        self.__oneTouchMove(touch0);
+      }
+      // 两指手势触发
+      if (e.touches.length >= 2) {
+        self.__twoTouchMove(touch0, touch1);
+      }
+    },
 
-    rules.required(rule, value, source, errors, options, ruleType);
+    touchEnd: function touchEnd(e) {
+      var self = this;
 
-    if (!isEmptyValue(value, ruleType)) {
-      rules.type(rule, value, source, errors, options);
-    }
-  }
+      if (!self.src) {
+        return;
+      }
 
-  callback(errors);
-}
-
-/**
-   *  Performs validation for any type.
-   *
-   *  @param rule The validation rule.
-   *  @param value The value of the field on the source object.
-   *  @param callback The callback function.
-   *  @param source The source object being validated.
-   *  @param options The validation options.
-   *  @param options.messages The validation messages.
-   */
-
-function any(rule, value, callback, source, options) {
-  var errors = [];
-  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
-
-  if (validate) {
-    if (isEmptyValue(value) && !rule.required) {
-      return callback();
-    }
-
-    rules.required(rule, value, source, errors, options);
-  }
-
-  callback(errors);
-}
-
-var validators = {
-  string: string,
-  method: method,
-  number: number,
-  "boolean": _boolean,
-  regexp: regexp,
-  integer: integer,
-  "float": floatFn,
-  array: array,
-  object: object,
-  "enum": enumerable$1,
-  pattern: pattern$2,
-  date: date,
-  url: type$1,
-  hex: type$1,
-  email: type$1,
-  required: required$1,
-  any: any };
-
-
-function newMessages() {
-  return {
-    "default": 'Validation error on field %s',
-    required: '%s is required',
-    "enum": '%s must be one of %s',
-    whitespace: '%s cannot be empty',
-    date: {
-      format: '%s date %s is invalid for format %s',
-      parse: '%s date could not be parsed, %s is invalid ',
-      invalid: '%s date %s is invalid' },
-
-    types: {
-      string: '%s is not a %s',
-      method: '%s is not a %s (function)',
-      array: '%s is not an %s',
-      object: '%s is not an %s',
-      number: '%s is not a %s',
-      date: '%s is not a %s',
-      "boolean": '%s is not a %s',
-      integer: '%s is not an %s',
-      "float": '%s is not a %s',
-      regexp: '%s is not a valid %s',
-      email: '%s is not a valid %s',
-      url: '%s is not a valid %s',
-      hex: '%s is not a valid %s' },
-
-    string: {
-      len: '%s must be exactly %s characters',
-      min: '%s must be at least %s characters',
-      max: '%s cannot be longer than %s characters',
-      range: '%s must be between %s and %s characters' },
-
-    number: {
-      len: '%s must equal %s',
-      min: '%s cannot be less than %s',
-      max: '%s cannot be greater than %s',
-      range: '%s must be between %s and %s' },
-
-    array: {
-      len: '%s must be exactly %s in length',
-      min: '%s cannot be less than %s in length',
-      max: '%s cannot be greater than %s in length',
-      range: '%s must be between %s and %s in length' },
-
-    pattern: {
-      mismatch: '%s value %s does not match pattern %s' },
-
-    clone: function clone() {
-      var cloned = JSON.parse(JSON.stringify(this));
-      cloned.clone = this.clone;
-      return cloned;
+      setTouchState(self, false, false, true);
+      self.__xtouchEnd();
     } };
 
-}
-var messages = newMessages();
 
-/**
-                               *  Encapsulates a validation schema.
-                               *
-                               *  @param descriptor An object declaring validation rules
-                               *  for this schema.
-                               */
-
-function Schema(descriptor) {
-  this.rules = null;
-  this._messages = messages;
-  this.define(descriptor);
-}
-
-Schema.prototype = {
-  messages: function messages(_messages) {
-    if (_messages) {
-      this._messages = deepMerge(newMessages(), _messages);
-    }
-
-    return this._messages;
-  },
-  define: function define(rules) {
-    if (!rules) {
-      throw new Error('Cannot configure a schema with no rules');
-    }
-
-    if (typeof rules !== 'object' || Array.isArray(rules)) {
-      throw new Error('Rules must be an object');
-    }
-
-    this.rules = {};
-    var z;
-    var item;
-
-    for (z in rules) {
-      if (rules.hasOwnProperty(z)) {
-        item = rules[z];
-        this.rules[z] = Array.isArray(item) ? item : [item];
-      }
-    }
-  },
-  validate: function validate(source_, o, oc) {
-    var _this = this;
-
-    if (o === void 0) {
-      o = {};
-    }
-
-    if (oc === void 0) {
-      oc = function oc() {};
-    }
-
-    var source = source_;
-    var options = o;
-    var callback = oc;
-
-    if (typeof options === 'function') {
-      callback = options;
-      options = {};
-    }
-
-    if (!this.rules || Object.keys(this.rules).length === 0) {
-      if (callback) {
-        callback();
-      }
-
-      return Promise.resolve();
-    }
-
-    function complete(results) {
-      var i;
-      var errors = [];
-      var fields = {};
-
-      function add(e) {
-        if (Array.isArray(e)) {
-          var _errors;
-
-          errors = (_errors = errors).concat.apply(_errors, e);
-        } else {
-          errors.push(e);
-        }
-      }
-
-      for (i = 0; i < results.length; i++) {
-        add(results[i]);
-      }
-
-      if (!errors.length) {
-        errors = null;
-        fields = null;
-      } else {
-        fields = convertFieldsError(errors);
-      }
-
-      callback(errors, fields);
-    }
-
-    if (options.messages) {
-      var messages$1 = this.messages();
-
-      if (messages$1 === messages) {
-        messages$1 = newMessages();
-      }
-
-      deepMerge(messages$1, options.messages);
-      options.messages = messages$1;
-    } else {
-      options.messages = this.messages();
-    }
-
-    var arr;
-    var value;
-    var series = {};
-    var keys = options.keys || Object.keys(this.rules);
-    keys.forEach(function (z) {
-      arr = _this.rules[z];
-      value = source[z];
-      arr.forEach(function (r) {
-        var rule = r;
-
-        if (typeof rule.transform === 'function') {
-          if (source === source_) {
-            source = _extends({}, source);
-          }
-
-          value = source[z] = rule.transform(value);
-        }
-
-        if (typeof rule === 'function') {
-          rule = {
-            validator: rule };
-
-        } else {
-          rule = _extends({}, rule);
-        }
-
-        rule.validator = _this.getValidationMethod(rule);
-        rule.field = z;
-        rule.fullField = rule.fullField || z;
-        rule.type = _this.getType(rule);
-
-        if (!rule.validator) {
-          return;
-        }
-
-        series[z] = series[z] || [];
-        series[z].push({
-          rule: rule,
-          value: value,
-          source: source,
-          field: z });
-
-      });
-    });
-    var errorFields = {};
-    return asyncMap(series, options, function (data, doIt) {
-      var rule = data.rule;
-      var deep = (rule.type === 'object' || rule.type === 'array') && (typeof rule.fields === 'object' || typeof rule.defaultField ===
-      'object');
-      deep = deep && (rule.required || !rule.required && data.value);
-      rule.field = data.field;
-
-      function addFullfield(key, schema) {
-        return _extends({}, schema, {
-          fullField: rule.fullField + "." + key });
-
-      }
-
-      function cb(e) {
-        if (e === void 0) {
-          e = [];
-        }
-
-        var errors = e;
-
-        if (!Array.isArray(errors)) {
-          errors = [errors];
-        }
-
-        if (!options.suppressWarning && errors.length) {
-          Schema.warning('async-validator:', errors);
-        }
-
-        if (errors.length && rule.message) {
-          errors = [].concat(rule.message);
-        }
-
-        errors = errors.map(complementError(rule));
-
-        if (options.first && errors.length) {
-          errorFields[rule.field] = 1;
-          return doIt(errors);
-        }
-
-        if (!deep) {
-          doIt(errors);
-        } else {
-          // if rule is required but the target object
-          // does not exist fail at the rule level and don't
-          // go deeper
-          if (rule.required && !data.value) {
-            if (rule.message) {
-              errors = [].concat(rule.message).map(complementError(rule));
-            } else if (options.error) {
-              errors = [options.error(rule, format(options.messages.required, rule.field))];
-            } else {
-              errors = [];
-            }
-
-            return doIt(errors);
-          }
-
-          var fieldsSchema = {};
-
-          if (rule.defaultField) {
-            for (var k in data.value) {
-              if (data.value.hasOwnProperty(k)) {
-                fieldsSchema[k] = rule.defaultField;
-              }
-            }
-          }
-
-          fieldsSchema = _extends({}, fieldsSchema, {}, data.rule.fields);
-
-          for (var f in fieldsSchema) {
-            if (fieldsSchema.hasOwnProperty(f)) {
-              var fieldSchema = Array.isArray(fieldsSchema[f]) ? fieldsSchema[f] : [fieldsSchema[f]];
-              fieldsSchema[f] = fieldSchema.map(addFullfield.bind(null, f));
-            }
-          }
-
-          var schema = new Schema(fieldsSchema);
-          schema.messages(options.messages);
-
-          if (data.rule.options) {
-            data.rule.options.messages = options.messages;
-            data.rule.options.error = options.error;
-          }
-
-          schema.validate(data.value, data.rule.options || options, function (errs) {
-            var finalErrors = [];
-
-            if (errors && errors.length) {
-              finalErrors.push.apply(finalErrors, errors);
-            }
-
-            if (errs && errs.length) {
-              finalErrors.push.apply(finalErrors, errs);
-            }
-
-            doIt(finalErrors.length ? finalErrors : null);
-          });
-        }
-      }
-
-      var res;
-
-      if (rule.asyncValidator) {
-        res = rule.asyncValidator(rule, data.value, cb, data.source, options);
-      } else if (rule.validator) {
-        res = rule.validator(rule, data.value, cb, data.source, options);
-
-        if (res === true) {
-          cb();
-        } else if (res === false) {
-          cb(rule.message || rule.field + " fails");
-        } else if (res instanceof Array) {
-          cb(res);
-        } else if (res instanceof Error) {
-          cb(res.message);
-        }
-      }
-
-      if (res && res.then) {
-        res.then(function () {
-          return cb();
-        }, function (e) {
-          return cb(e);
-        });
-      }
-    }, function (results) {
-      complete(results);
-    });
-  },
-  getType: function getType(rule) {
-    if (rule.type === undefined && rule.pattern instanceof RegExp) {
-      rule.type = 'pattern';
-    }
-
-    if (typeof rule.validator !== 'function' && rule.type && !validators.hasOwnProperty(rule.type)) {
-      throw new Error(format('Unknown rule type %s', rule.type));
-    }
-
-    return rule.type || 'string';
-  },
-  getValidationMethod: function getValidationMethod(rule) {
-    if (typeof rule.validator === 'function') {
-      return rule.validator;
-    }
-
-    var keys = Object.keys(rule);
-    var messageIndex = keys.indexOf('message');
-
-    if (messageIndex !== -1) {
-      keys.splice(messageIndex, 1);
-    }
-
-    if (keys.length === 1 && keys[0] === 'required') {
-      return validators.required;
-    }
-
-    return validators[this.getType(rule)] || false;
-  } };
-
-
-Schema.register = function register(type, validator) {
-  if (typeof validator !== 'function') {
-    throw new Error('Cannot register a validator by type, validator is not a function');
-  }
-
-  validators[type] = validator;
-};
-
-Schema.warning = warning;
-Schema.messages = messages;var _default =
-
-Schema;exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../../../Applications/HBuilderX.app/Contents/HBuilderX/plugins/uniapp-cli/node_modules/node-libs-browser/mock/process.js */ 1336)))
-
-/***/ }),
-
-/***/ 1336:
-/*!********************************************************!*\
-  !*** ./node_modules/node-libs-browser/mock/process.js ***!
-  \********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports.nextTick = function nextTick(fn) {
-    var args = Array.prototype.slice.call(arguments);
-    args.shift();
-    setTimeout(function () {
-        fn.apply(null, args);
-    }, 0);
-};
-
-exports.platform = exports.arch = 
-exports.execPath = exports.title = 'browser';
-exports.pid = 1;
-exports.browser = true;
-exports.env = {};
-exports.argv = [];
-
-exports.binding = function (name) {
-	throw new Error('No such module. (Possibly not yet loaded)')
-};
-
-(function () {
-    var cwd = '/';
-    var path;
-    exports.cwd = function () { return cwd };
-    exports.chdir = function (dir) {
-        if (!path) path = __webpack_require__(/*! path */ 1337);
-        cwd = path.resolve(dir, cwd);
+  function cut() {
+    var self = this;
+    var boundWidth = self.width; // 裁剪框默认宽度，即整个画布宽度
+    var boundHeight = self.height;
+    // 裁剪框默认高度，即整个画布高度
+    var ref = self.cut;
+    var x = ref.x;
+    if (x === void 0) x = 0;
+    var y = ref.y;
+    if (y === void 0) y = 0;
+    var width = ref.width;
+    if (width === void 0) width = boundWidth;
+    var height = ref.height;
+    if (height === void 0) height = boundHeight;
+
+    /**
+                                                  * 设置边界
+                                                  * @param imgLeft 图片左上角横坐标值
+                                                  * @param imgTop 图片左上角纵坐标值
+                                                  */
+    self.outsideBound = function (imgLeft, imgTop) {
+      self.imgLeft = imgLeft >= x ?
+      x :
+      self.scaleWidth + imgLeft - x <= width ?
+      x + width - self.scaleWidth :
+      imgLeft;
+
+      self.imgTop = imgTop >= y ?
+      y :
+      self.scaleHeight + imgTop - y <= height ?
+      y + height - self.scaleHeight :
+      imgTop;
     };
-})();
 
-exports.exit = exports.kill = 
-exports.umask = exports.dlopen = 
-exports.uptime = exports.memoryUsage = 
-exports.uvCounters = function() {};
-exports.features = {};
+    /**
+        * 设置边界样式
+        * @param color	边界颜色
+        */
+    self.setBoundStyle = function (ref) {
+      if (ref === void 0) ref = {};
+      var color = ref.color;
+      if (color === void 0) color = '#04b00f';
+      var mask = ref.mask;
+      if (mask === void 0) mask = 'rgba(0, 0, 0, 0.3)';
+      var lineWidth = ref.lineWidth;
+      if (lineWidth === void 0) lineWidth = 1;
 
+      var half = lineWidth / 2;
+      var boundOption = [{
+        start: {
+          x: x - half,
+          y: y + 10 - half },
+
+        step1: {
+          x: x - half,
+          y: y - half },
+
+        step2: {
+          x: x + 10 - half,
+          y: y - half } },
+
+
+      {
+        start: {
+          x: x - half,
+          y: y + height - 10 + half },
+
+        step1: {
+          x: x - half,
+          y: y + height + half },
+
+        step2: {
+          x: x + 10 - half,
+          y: y + height + half } },
+
+
+      {
+        start: {
+          x: x + width - 10 + half,
+          y: y - half },
+
+        step1: {
+          x: x + width + half,
+          y: y - half },
+
+        step2: {
+          x: x + width + half,
+          y: y + 10 - half } },
+
+
+      {
+        start: {
+          x: x + width + half,
+          y: y + height - 10 + half },
+
+        step1: {
+          x: x + width + half,
+          y: y + height + half },
+
+        step2: {
+          x: x + width - 10 + half,
+          y: y + height + half } }];
+
+
+
+
+      // 绘制半透明层
+      self.ctx.beginPath();
+      self.ctx.setFillStyle(mask);
+      self.ctx.fillRect(0, 0, x, boundHeight);
+      self.ctx.fillRect(x, 0, width, y);
+      self.ctx.fillRect(x, y + height, width, boundHeight - y - height);
+      self.ctx.fillRect(x + width, 0, boundWidth - x - width, boundHeight);
+      self.ctx.fill();
+
+      boundOption.forEach(function (op) {
+        self.ctx.beginPath();
+        self.ctx.setStrokeStyle(color);
+        self.ctx.setLineWidth(lineWidth);
+        self.ctx.moveTo(op.start.x, op.start.y);
+        self.ctx.lineTo(op.step1.x, op.step1.y);
+        self.ctx.lineTo(op.step2.x, op.step2.y);
+        self.ctx.stroke();
+      });
+    };
+  }
+
+  var version = "1.3.9";
+
+  var WeCropper = function WeCropper(params) {
+    var self = this;
+    var _default = {};
+
+    validator(self, DEFAULT);
+
+    Object.keys(DEFAULT).forEach(function (key) {
+      _default[key] = DEFAULT[key].default;
+    });
+    Object.assign(self, _default, params);
+
+    self.prepare();
+    self.attachPage();
+    self.createCtx();
+    self.observer();
+    self.cutt();
+    self.methods();
+    self.init();
+    self.update();
+
+    return self;
+  };
+
+  WeCropper.prototype.init = function init() {
+    var self = this;
+    var src = self.src;
+
+    self.version = version;
+
+    typeof self.onReady === 'function' && self.onReady(self.ctx, self);
+
+    if (src) {
+      self.pushOrign(src);
+    } else {
+      self.updateCanvas();
+    }
+    setTouchState(self, false, false, false);
+
+    self.oldScale = 1;
+    self.newScale = 1;
+
+    return self;
+  };
+
+  Object.assign(WeCropper.prototype, handle);
+
+  WeCropper.prototype.prepare = prepare;
+  WeCropper.prototype.observer = observer;
+  WeCropper.prototype.methods = methods;
+  WeCropper.prototype.cutt = cut;
+  WeCropper.prototype.update = update;
+
+  return WeCropper;
+
+});
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"], __webpack_require__(/*! ./../../../../../../../Applications/HBuilderX.app/Contents/HBuilderX/plugins/uniapp-cli/node_modules/webpack/buildin/global.js */ 3)))
 
 /***/ }),
 
-/***/ 1337:
-/*!***********************************************!*\
-  !*** ./node_modules/path-browserify/index.js ***!
-  \***********************************************/
+/***/ 139:
+/*!*************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/pages/example/template.config.js ***!
+  \*************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(process) {// .dirname, .basename, and .extname methods are extracted from Node.js v8.11.1,
-// backported and transplited with Babel, with backwards-compat fixes
-
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-// resolves . and .. elements in a path array with directory names there
-// must be no slashes, empty elements, or device names (c:\) in the array
-// (so also no leading and trailing slashes - it does not distinguish
-// relative and absolute paths)
-function normalizeArray(parts, allowAboveRoot) {
-  // if the path tries to go above the root, `up` ends up > 0
-  var up = 0;
-  for (var i = parts.length - 1; i >= 0; i--) {
-    var last = parts[i];
-    if (last === '.') {
-      parts.splice(i, 1);
-    } else if (last === '..') {
-      parts.splice(i, 1);
-      up++;
-    } else if (up) {
-      parts.splice(i, 1);
-      up--;
-    }
-  }
-
-  // if the path is allowed to go above the root, restore leading ..s
-  if (allowAboveRoot) {
-    for (; up--; up) {
-      parts.unshift('..');
-    }
-  }
-
-  return parts;
-}
-
-// path.resolve([from ...], to)
-// posix version
-exports.resolve = function() {
-  var resolvedPath = '',
-      resolvedAbsolute = false;
-
-  for (var i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
-    var path = (i >= 0) ? arguments[i] : process.cwd();
-
-    // Skip empty and invalid entries
-    if (typeof path !== 'string') {
-      throw new TypeError('Arguments to path.resolve must be strings');
-    } else if (!path) {
-      continue;
-    }
-
-    resolvedPath = path + '/' + resolvedPath;
-    resolvedAbsolute = path.charAt(0) === '/';
-  }
-
-  // At this point the path should be resolved to a full absolute path, but
-  // handle relative paths to be safe (might happen when process.cwd() fails)
-
-  // Normalize the path
-  resolvedPath = normalizeArray(filter(resolvedPath.split('/'), function(p) {
-    return !!p;
-  }), !resolvedAbsolute).join('/');
-
-  return ((resolvedAbsolute ? '/' : '') + resolvedPath) || '.';
-};
-
-// path.normalize(path)
-// posix version
-exports.normalize = function(path) {
-  var isAbsolute = exports.isAbsolute(path),
-      trailingSlash = substr(path, -1) === '/';
-
-  // Normalize the path
-  path = normalizeArray(filter(path.split('/'), function(p) {
-    return !!p;
-  }), !isAbsolute).join('/');
-
-  if (!path && !isAbsolute) {
-    path = '.';
-  }
-  if (path && trailingSlash) {
-    path += '/';
-  }
-
-  return (isAbsolute ? '/' : '') + path;
-};
-
-// posix version
-exports.isAbsolute = function(path) {
-  return path.charAt(0) === '/';
-};
-
-// posix version
-exports.join = function() {
-  var paths = Array.prototype.slice.call(arguments, 0);
-  return exports.normalize(filter(paths, function(p, index) {
-    if (typeof p !== 'string') {
-      throw new TypeError('Arguments to path.join must be strings');
-    }
-    return p;
-  }).join('/'));
-};
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = [
+{
+  groupName: '部件',
+  groupName_en: 'Parts',
+  list: [
+  {
+    path: 'coupon',
+    icon: 'coupon',
+    title: 'Coupon 优惠券',
+    title_en: 'Coupon' }] },
 
 
-// path.relative(from, to)
-// posix version
-exports.relative = function(from, to) {
-  from = exports.resolve(from).substr(1);
-  to = exports.resolve(to).substr(1);
 
-  function trim(arr) {
-    var start = 0;
-    for (; start < arr.length; start++) {
-      if (arr[start] !== '') break;
-    }
+{
+  groupName: '页面',
+  groupName_en: 'Page',
+  list: [
+  {
+    path: '/pages/template/wxCenter/index',
+    icon: 'wxCenter',
+    title: 'WxCenter 仿微信个人中心',
+    title_en: 'WxCenter' },
 
-    var end = arr.length - 1;
-    for (; end >= 0; end--) {
-      if (arr[end] !== '') break;
-    }
+  // {
+  // 	path: '/pages/template/douyin/index',
+  // 	icon: 'douyin',
+  // 	title: 'Douyin 仿抖音',
+  // },
+  {
+    path: '/pages/template/keyboardPay/index',
+    icon: 'keyboardPay',
+    title: 'KeyboardPay 自定义键盘支付模板',
+    title_en: 'KeyboardPay' },
 
-    if (start > end) return [];
-    return arr.slice(start, end - start + 1);
-  }
-
-  var fromParts = trim(from.split('/'));
-  var toParts = trim(to.split('/'));
-
-  var length = Math.min(fromParts.length, toParts.length);
-  var samePartsLength = length;
-  for (var i = 0; i < length; i++) {
-    if (fromParts[i] !== toParts[i]) {
-      samePartsLength = i;
-      break;
-    }
-  }
-
-  var outputParts = [];
-  for (var i = samePartsLength; i < fromParts.length; i++) {
-    outputParts.push('..');
-  }
-
-  outputParts = outputParts.concat(toParts.slice(samePartsLength));
-
-  return outputParts.join('/');
-};
-
-exports.sep = '/';
-exports.delimiter = ':';
-
-exports.dirname = function (path) {
-  if (typeof path !== 'string') path = path + '';
-  if (path.length === 0) return '.';
-  var code = path.charCodeAt(0);
-  var hasRoot = code === 47 /*/*/;
-  var end = -1;
-  var matchedSlash = true;
-  for (var i = path.length - 1; i >= 1; --i) {
-    code = path.charCodeAt(i);
-    if (code === 47 /*/*/) {
-        if (!matchedSlash) {
-          end = i;
-          break;
-        }
-      } else {
-      // We saw the first non-path separator
-      matchedSlash = false;
-    }
-  }
-
-  if (end === -1) return hasRoot ? '/' : '.';
-  if (hasRoot && end === 1) {
-    // return '//';
-    // Backwards-compat fix:
-    return '/';
-  }
-  return path.slice(0, end);
-};
-
-function basename(path) {
-  if (typeof path !== 'string') path = path + '';
-
-  var start = 0;
-  var end = -1;
-  var matchedSlash = true;
-  var i;
-
-  for (i = path.length - 1; i >= 0; --i) {
-    if (path.charCodeAt(i) === 47 /*/*/) {
-        // If we reached a path separator that was not part of a set of path
-        // separators at the end of the string, stop now
-        if (!matchedSlash) {
-          start = i + 1;
-          break;
-        }
-      } else if (end === -1) {
-      // We saw the first non-path separator, mark this as the end of our
-      // path component
-      matchedSlash = false;
-      end = i + 1;
-    }
-  }
-
-  if (end === -1) return '';
-  return path.slice(start, end);
-}
-
-// Uses a mixed approach for backwards-compatibility, as ext behavior changed
-// in new Node.js versions, so only basename() above is backported here
-exports.basename = function (path, ext) {
-  var f = basename(path);
-  if (ext && f.substr(-1 * ext.length) === ext) {
-    f = f.substr(0, f.length - ext.length);
-  }
-  return f;
-};
-
-exports.extname = function (path) {
-  if (typeof path !== 'string') path = path + '';
-  var startDot = -1;
-  var startPart = 0;
-  var end = -1;
-  var matchedSlash = true;
-  // Track the state of characters (if any) we see before our first dot and
-  // after any path separator we find
-  var preDotState = 0;
-  for (var i = path.length - 1; i >= 0; --i) {
-    var code = path.charCodeAt(i);
-    if (code === 47 /*/*/) {
-        // If we reached a path separator that was not part of a set of path
-        // separators at the end of the string, stop now
-        if (!matchedSlash) {
-          startPart = i + 1;
-          break;
-        }
-        continue;
-      }
-    if (end === -1) {
-      // We saw the first non-path separator, mark this as the end of our
-      // extension
-      matchedSlash = false;
-      end = i + 1;
-    }
-    if (code === 46 /*.*/) {
-        // If this is our first dot, mark it as the start of our extension
-        if (startDot === -1)
-          startDot = i;
-        else if (preDotState !== 1)
-          preDotState = 1;
-    } else if (startDot !== -1) {
-      // We saw a non-dot and non-path separator before our dot, so we should
-      // have a good chance at having a non-empty extension
-      preDotState = -1;
-    }
-  }
-
-  if (startDot === -1 || end === -1 ||
-      // We saw a non-dot character immediately before the dot
-      preDotState === 0 ||
-      // The (right-most) trimmed path component is exactly '..'
-      preDotState === 1 && startDot === end - 1 && startDot === startPart + 1) {
-    return '';
-  }
-  return path.slice(startDot, end);
-};
-
-function filter (xs, f) {
-    if (xs.filter) return xs.filter(f);
-    var res = [];
-    for (var i = 0; i < xs.length; i++) {
-        if (f(xs[i], i, xs)) res.push(xs[i]);
-    }
-    return res;
-}
-
-// String.prototype.substr - negative index don't work in IE8
-var substr = 'ab'.substr(-1) === 'b'
-    ? function (str, start, len) { return str.substr(start, len) }
-    : function (str, start, len) {
-        if (start < 0) start = str.length + start;
-        return str.substr(start, len);
-    }
-;
-
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../node-libs-browser/mock/process.js */ 1336)))
+  {
+    path: '/pages/template/mallMenu/index1',
+    icon: 'mall_menu_1',
+    title: 'MallMenu 垂直分类(左右独立)',
+    title_en: 'MallMenu 1' },
+  {
+    path: '/pages/template/mallMenu/index2',
+    icon: 'mall_menu_2',
+    title: 'MallMenu 垂直分类(左右联动)',
+    title_en: 'MallMenu 2' },
+  {
+    path: 'submitBar',
+    icon: 'submitBar',
+    title: 'SubmitBar 提交订单栏',
+    title_en: 'SubmitBar' },
+  {
+    path: 'comment',
+    icon: 'comment',
+    title: 'Comment 评论列表',
+    title_en: 'Comment' },
+  {
+    path: 'order',
+    icon: 'order',
+    title: 'Order 订单列表',
+    title_en: 'Order' },
+  {
+    path: 'login',
+    icon: 'login',
+    title: 'Login 登录界面',
+    title_en: 'Login' },
+  {
+    path: 'address',
+    icon: 'address',
+    title: 'Address 收货地址',
+    title_en: 'Address' },
+  {
+    path: 'citySelect',
+    icon: 'citySelect',
+    title: 'CitySelect 城市选择',
+    title_en: 'CitySelect' }] }];exports.default = _default;
 
 /***/ }),
 
 /***/ 14:
-/*!****************************************************************************************!*\
-  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/function/deepMerge.js ***!
-  \****************************************************************************************/
+/*!**********************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/common/api/api.js ***!
+  \**********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _deepClone = _interopRequireDefault(__webpack_require__(/*! ./deepClone */ 15));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+Object.defineProperty(exports, "__esModule", { value: true });exports.get_qr_code = void 0;var _axios = _interopRequireDefault(__webpack_require__(/*! ./axios.js */ 15));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
-// JS对象深度合并
-function deepMerge() {var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};var source = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-  target = (0, _deepClone.default)(target);
-  if (typeof target !== 'object' || typeof source !== 'object') return false;
-  for (var prop in source) {
-    if (!source.hasOwnProperty(prop)) continue;
-    if (prop in target) {
-      if (typeof target[prop] !== 'object') {
-        target[prop] = source[prop];
-      } else {
-        if (typeof source[prop] !== 'object') {
-          target[prop] = source[prop];
-        } else {
-          if (target[prop].concat && source[prop].concat) {
-            target[prop] = target[prop].concat(source[prop]);
-          } else {
-            target[prop] = deepMerge(target[prop], source[prop]);
-          }
-        }
-      }
-    } else {
-      target[prop] = source[prop];
-    }
-  }
-  return target;
-}var _default =
-
-deepMerge;exports.default = _default;
+var get_qr_code = function get_qr_code() {return _axios.default.get("https://chengym.com.cn/library/system/user/qr-code", { showLoading: true });};exports.get_qr_code = get_qr_code;
 
 /***/ }),
 
 /***/ 15:
-/*!****************************************************************************************!*\
-  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/function/deepClone.js ***!
-  \****************************************************************************************/
+/*!************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/common/api/axios.js ***!
+  \************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; // 判断arr是否为一个数组，返回一个bool值
-function isArray(arr) {
-  return Object.prototype.toString.call(arr) === '[object Array]';
-}
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _regenerator = _interopRequireDefault(__webpack_require__(/*! ./node_modules/@babel/runtime/regenerator */ 4));var _uniAxios = _interopRequireDefault(__webpack_require__(/*! uni-axios */ 16));
+var _httpApi = _interopRequireDefault(__webpack_require__(/*! ../http.api.js */ 45));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};}function
+doRequest(_x) {return _doRequest.apply(this, arguments);}
 
-// 深度克隆
-function deepClone(obj) {
-  // 对常见的“非”值，直接返回原来值
-  if ([null, undefined, NaN, false].includes(obj)) return obj;
-  if (typeof obj !== "object" && typeof obj !== 'function') {
-    //原始类型直接返回
-    return obj;
-  }
-  var o = isArray(obj) ? [] : {};
-  for (var i in obj) {
-    if (obj.hasOwnProperty(i)) {
-      o[i] = typeof obj[i] === "object" ? deepClone(obj[i]) : obj[i];
-    }
-  }
-  return o;
-}var _default =
 
-deepClone;exports.default = _default;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// 最先执行的拦截器， 可以多个
+// 注意这里的config是你传输过来的config
+function _doRequest() {_doRequest = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee5(res) {return _regenerator.default.wrap(function _callee5$(_context5) {while (1) {switch (_context5.prev = _context5.next) {case 0:console.log(res);_context5.next = 3;return uni.login({ provider: 'weixin', success: function () {var _success = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee4(loginRes) {return _regenerator.default.wrap(function _callee4$(_context4) {while (1) {switch (_context4.prev = _context4.next) {case 0:_context4.next = 2;return uni.getUserInfo({ provider: 'weixin', success: function () {var _success2 = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee3(infoRes) {var data;return _regenerator.default.wrap(function _callee3$(_context3) {while (1) {switch (_context3.prev = _context3.next) {case 0:data = { code: loginRes.code, encryptedData: infoRes.encryptedData, iv: infoRes.iv, userInfo: infoRes.userInfo, rawData: infoRes.rawData, signature: infoRes.signature, channel: "wechat", inviter: uni.getStorageSync("inviter_user_id") };_context3.next = 3;return uni.request({ url: _httpApi.default.tokenUrl, method: 'POST', header: { "content-type": "application/json" }, data: data, success: function () {var _success3 = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee2(ress) {return _regenerator.default.wrap(function _callee2$(_context2) {while (1) {switch (_context2.prev = _context2.next) {case 0:if (!(ress && ress.statusCode === 200)) {_context2.next = 8;break;}uni.setStorageSync("mini_car_token", ress.data.token);uni.setStorageSync("mini_car_userid", ress.data.userid);res.config.headers['Authorization'] = 'Bearer ' + ress.data.token;console.log("ressss" + res);return _context2.abrupt("return", res);case 8:case "end":return _context2.stop();}}}, _callee2);}));function success(_x5) {return _success3.apply(this, arguments);}return success;}(), fail: function fail(err) {console.log(err);} });case 3:case "end":return _context3.stop();}}}, _callee3);}));function success(_x4) {return _success2.apply(this, arguments);}return success;}() });case 2:case "end":return _context4.stop();}}}, _callee4);}));function success(_x3) {return _success.apply(this, arguments);}return success;}() });case 3:case "end":return _context5.stop();}}}, _callee5);}));return _doRequest.apply(this, arguments);}_uniAxios.default.interceptors.first.use(function (config) {
+  var showLoading = config.showLoading;
+  if (showLoading) {
+    uni.showLoading({
+      title: config.showLoading === true ? '加载中...' : showLoading,
+      mask: true });
+
+  }
+  return config;
+});
+// 注意这里的config是你传输过来的config
+_uniAxios.default.interceptors.last.use(function (config) {
+  if (config.showLoading) {
+    uni.hideLoading();
+  }
+
+});
+
+// 这里的config是axios合并过的config，可能会丢失自定义的配置
+_uniAxios.default.interceptors.request.use(function (config) {
+  var token = uni.getStorageSync('mini_car_token');
+  config.headers = {
+    'Authorization': 'Bearer ' + token };
+
+  return config;
+});
+var isRefreshing = false;
+//
+_uniAxios.default.interceptors.response.use( /*#__PURE__*/function () {var _ref = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee(response) {return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:if (!(
+            response.data.code === 200)) {_context.next = 4;break;}return _context.abrupt("return",
+            response.data);case 4:if (!(
+            response.data.code === 401)) {_context.next = 15;break;}if (
+            isRefreshing) {_context.next = 12;break;}
+            isRefreshing = true;_context.next = 9;return (
+              doRequest(response).then(function (res) {
+
+              }).catch(function (res) {
+              }).finally(function () {
+                isRefreshing = false;
+              }));case 9:return _context.abrupt("return", _context.sent);case 12:return _context.abrupt("return",
+
+
+
+
+            new Promise(function (resolve) {
+              // 将resolve放进队列，用一个函数形式来保存，等token刷新后直接执行
+              retryRequest.push(function (token) {
+                res.config.headers['Authorization'] = token;
+                resolve((0, _uniAxios.default)(res.config));
+              });
+            }));case 13:_context.next = 17;break;case 15:
+
+
+            uni.showToast({
+              title: response.data.errMsg,
+              icon: 'none' });return _context.abrupt("return",
+
+            Promise.reject(response.data));case 17:case "end":return _context.stop();}}}, _callee);}));return function (_x2) {return _ref.apply(this, arguments);};}(),
+
+function (err) {
+  return Promise.reject(err);
+});var _default =
+_uniAxios.default;exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
 
 /***/ 16:
-/*!***********************************************************************************!*\
-  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/function/test.js ***!
-  \***********************************************************************************/
+/*!************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/node_modules/uni-axios/index.js ***!
+  \************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(/*! ./lib/uniAxios */ 17);
+
+/***/ }),
+
+/***/ 164:
+/*!*******************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/pages/example/js.config.js ***!
+  \*******************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; /**
-                                                                                                      * 验证电子邮箱格式
-                                                                                                      */
-function email(value) {
-  return /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/.test(value);
-}
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = [
+{
+  groupName: '网络',
+  groupName_en: 'Network',
+  list: [
+  {
+    path: 'http',
+    icon: 'http',
+    title: 'Http 请求',
+    title_en: 'Http' }] },
 
-/**
-   * 验证手机格式
-   */
-function mobile(value) {
-  return /^1[23456789]\d{9}$/.test(value);
-}
-
-/**
-   * 验证URL格式
-   */
-function url(value) {
-  return /http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w-.\/?%&=]*)?/.test(value);
-}
-
-/**
-   * 验证日期格式
-   */
-function date(value) {
-  return !/Invalid|NaN/.test(new Date(value).toString());
-}
-
-/**
-   * 验证ISO类型的日期格式
-   */
-function dateISO(value) {
-  return /^\d{4}[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])$/.test(value);
-}
-
-/**
-   * 验证十进制数字
-   */
-function number(value) {
-  return /^(?:-?\d+|-?\d{1,3}(?:,\d{3})+)?(?:\.\d+)?$/.test(value);
-}
-
-/**
-   * 验证整数
-   */
-function digits(value) {
-  return /^\d+$/.test(value);
-}
-
-/**
-   * 验证身份证号码
-   */
-function idCard(value) {
-  return /^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.test(
-  value);
-}
-
-/**
-   * 是否车牌号
-   */
-function carNo(value) {
-  // 新能源车牌
-  var xreg = /^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}(([0-9]{5}[DF]$)|([DF][A-HJ-NP-Z0-9][0-9]{4}$))/;
-  // 旧车牌
-  var creg = /^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-HJ-NP-Z0-9]{4}[A-HJ-NP-Z0-9挂学警港澳]{1}$/;
-  if (value.length === 7) {
-    return creg.test(value);
-  } else if (value.length === 8) {
-    return xreg.test(value);
-  } else {
-    return false;
-  }
-}
-
-/**
-   * 金额,只允许2位小数
-   */
-function amount(value) {
-  //金额，只允许保留两位小数
-  return /^[1-9]\d*(,\d{3})*(\.\d{1,2})?$|^0\.\d{1,2}$/.test(value);
-}
-
-/**
-   * 中文
-   */
-function chinese(value) {
-  var reg = /^[\u4e00-\u9fa5]+$/gi;
-  return reg.test(value);
-}
-
-/**
-   * 只能输入字母
-   */
-function letter(value) {
-  return /^[a-zA-Z]*$/.test(value);
-}
-
-/**
-   * 只能是字母或者数字
-   */
-function enOrNum(value) {
-  //英文或者数字
-  var reg = /^[0-9a-zA-Z]*$/g;
-  return reg.test(value);
-}
-
-/**
-   * 验证是否包含某个值
-   */
-function contains(value, param) {
-  return value.indexOf(param) >= 0;
-}
-
-/**
-   * 验证一个值范围[min, max]
-   */
-function range(value, param) {
-  return value >= param[0] && value <= param[1];
-}
-
-/**
-   * 验证一个长度范围[min, max]
-   */
-function rangeLength(value, param) {
-  return value.length >= param[0] && value.length <= param[1];
-}
-
-/**
-   * 是否固定电话
-   */
-function landline(value) {
-  var reg = /^\d{3,4}-\d{7,8}(-\d{3,4})?$/;
-  return reg.test(value);
-}
-
-/**
-   * 判断是否为空
-   */
-function empty(value) {
-  switch (typeof value) {
-    case 'undefined':
-      return true;
-    case 'string':
-      if (value.replace(/(^[ \t\n\r]*)|([ \t\n\r]*$)/g, '').length == 0) return true;
-      break;
-    case 'boolean':
-      if (!value) return true;
-      break;
-    case 'number':
-      if (0 === value || isNaN(value)) return true;
-      break;
-    case 'object':
-      if (null === value || value.length === 0) return true;
-      for (var i in value) {
-        return false;
-      }
-      return true;}
-
-  return false;
-}
-
-/**
-   * 是否json字符串
-   */
-function jsonString(value) {
-  if (typeof value == 'string') {
-    try {
-      var obj = JSON.parse(value);
-      if (typeof obj == 'object' && obj) {
-        return true;
-      } else {
-        return false;
-      }
-    } catch (e) {
-      return false;
-    }
-  }
-  return false;
-}
-
-
-/**
-   * 是否数组
-   */
-function array(value) {
-  if (typeof Array.isArray === "function") {
-    return Array.isArray(value);
-  } else {
-    return Object.prototype.toString.call(value) === "[object Array]";
-  }
-}
-
-/**
-   * 是否对象
-   */
-function object(value) {
-  return Object.prototype.toString.call(value) === '[object Object]';
-}
-
-/**
-   * 是否短信验证码
-   */
-function code(value) {var len = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 6;
-  return new RegExp("^\\d{".concat(len, "}$")).test(value);
-}var _default =
 
 
 {
-  email: email,
-  mobile: mobile,
-  url: url,
-  date: date,
-  dateISO: dateISO,
-  number: number,
-  digits: digits,
-  idCard: idCard,
-  carNo: carNo,
-  amount: amount,
-  chinese: chinese,
-  letter: letter,
-  enOrNum: enOrNum,
-  contains: contains,
-  range: range,
-  rangeLength: rangeLength,
-  empty: empty,
-  isEmpty: empty,
-  jsonString: jsonString,
-  landline: landline,
-  object: object,
-  array: array,
-  code: code };exports.default = _default;
+  groupName: '全局变量',
+  groupName_en: 'Global variable',
+  list: [
+  {
+    path: 'globalVariable',
+    icon: 'globalVariable',
+    title: 'GlobalVariable 全局变量',
+    title_en: 'GlobalVariable' }] },
+
+
+
+{
+  groupName: '工具库',
+  groupName_en: 'Tool library',
+  list: [
+  {
+    path: 'debounce',
+    icon: 'debounce',
+    title: 'Throttle | Debounce 节流防抖',
+    title_en: 'Throttle | Debounce' },
+
+  {
+    path: 'deepMerge',
+    icon: 'deepMerge',
+    title: 'DeepMerge 对象深度合并',
+    title_en: 'DeepMerge' },
+  {
+    path: 'deepClone',
+    icon: 'deepClone',
+    title: 'DeepClone 对象深度克隆',
+    title_en: 'DeepClone' },
+
+  {
+    path: 'timeFormat',
+    icon: 'timeFormat',
+    title: 'TimeFormat 时间格式化',
+    title_en: 'TimeFormat' },
+  {
+    path: 'timeFrom',
+    icon: 'timeFrom',
+    title: 'TimeFrom 多久之前',
+    title_en: 'TimeFrom' },
+  {
+    path: 'guid',
+    icon: 'guid',
+    title: 'Guid 全局唯一id',
+    title_en: 'Guid' },
+  {
+    path: 'route',
+    icon: 'route',
+    title: 'Route 路由跳转',
+    title_en: 'Route' },
+  {
+    path: 'randomArray',
+    icon: 'randomArray',
+    title: 'RandomArray 数组乱序',
+    title_en: 'RandomArray' },
+  {
+    path: 'colorSwitch',
+    icon: 'colorSwitch',
+    title: 'ColorSwitch 颜色转换',
+    title_en: 'ColorSwitch' },
+  {
+    path: 'color',
+    icon: 'color',
+    title: 'Color 颜色值',
+    title_en: 'Color' },
+  {
+    path: 'queryParams',
+    icon: 'queryParams',
+    title: 'QueryParams 对象转URL参数',
+    title_en: 'QueryParams' },
+  {
+    path: 'test',
+    icon: 'test',
+    title: 'Test 规则校验',
+    title_en: 'Test' },
+  {
+    path: 'md5',
+    icon: 'md5',
+    title: 'Md5 md5加密',
+    title_en: 'Md5' },
+  {
+    path: 'random',
+    icon: 'random',
+    title: 'Random 随机数值',
+    title_en: 'Random' },
+  {
+    path: 'trim',
+    icon: 'trim',
+    title: 'Trim 去除空格',
+    title_en: 'Trim' },
+  {
+    path: 'getRect',
+    icon: 'getRect',
+    title: 'GetRect 节点信息',
+    title_en: 'GetRect' },
+  {
+    path: 'mpShare',
+    icon: 'mpShare',
+    title: 'MpShare 小程序分享',
+    title_en: 'MpShare' }] }];exports.default = _default;
 
 /***/ }),
 
 /***/ 17:
-/*!******************************************************************************************!*\
-  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/function/queryParams.js ***!
-  \******************************************************************************************/
+/*!*******************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/node_modules/uni-axios/lib/uniAxios.js ***!
+  \*******************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; /**
-                                                                                                      * 对象转url参数
-                                                                                                      * @param {*} data,对象
-                                                                                                      * @param {*} isPrefix,是否自动加上"?"
-                                                                                                      */
-function queryParams() {var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};var isPrefix = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;var arrayFormat = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'brackets';
-  var prefix = isPrefix ? '?' : '';
-  var _result = [];
-  if (['indices', 'brackets', 'repeat', 'comma'].indexOf(arrayFormat) == -1) arrayFormat = 'brackets';var _loop = function _loop(
-  key) {
-    var value = data[key];
-    // 去掉为空的参数
-    if (['', undefined, null].indexOf(value) >= 0) {
-      return "continue";
-    }
-    // 如果值为数组，另行处理
-    if (value.constructor === Array) {
-      // e.g. {ids: [1, 2, 3]}
-      switch (arrayFormat) {
-        case 'indices':
-          // 结果: ids[0]=1&ids[1]=2&ids[2]=3
-          for (var i = 0; i < value.length; i++) {
-            _result.push(key + '[' + i + ']=' + value[i]);
-          }
-          break;
-        case 'brackets':
-          // 结果: ids[]=1&ids[]=2&ids[]=3
-          value.forEach(function (_value) {
-            _result.push(key + '[]=' + _value);
-          });
-          break;
-        case 'repeat':
-          // 结果: ids=1&ids=2&ids=3
-          value.forEach(function (_value) {
-            _result.push(key + '=' + _value);
-          });
-          break;
-        case 'comma':
-          // 结果: ids=1,2,3
-          var commaStr = "";
-          value.forEach(function (_value) {
-            commaStr += (commaStr ? "," : "") + _value;
-          });
-          _result.push(key + '=' + commaStr);
-          break;
-        default:
-          value.forEach(function (_value) {
-            _result.push(key + '[]=' + _value);
-          });}
+var axiosUtils = __webpack_require__(/*! ./utils */ 18);
+var utils = axiosUtils.utils;
+var bind = axiosUtils.bind;
+var mergeConfig = axiosUtils.mergeConfig;
+var defaults = __webpack_require__(/*! ./defaults */ 42);
+var UniAxios = __webpack_require__(/*! ./core/UniAxios */ 44);
+// var defaults = require('axios/lib/defaults');
 
-    } else {
-      _result.push(key + '=' + value);
-    }};for (var key in data) {var _ret = _loop(key);if (_ret === "continue") continue;
-  }
-  return _result.length ? prefix + _result.join('&') : '';
-}var _default =
+/**
+ * Create an instance of Axios
+ *
+ * @param {Object} defaultConfig The default config for the instance
+ * @return {Axios} A new instance of Axios
+ */
+function createInstance(defaultConfig) {
+  var context = new UniAxios(defaultConfig);
+  var instance = bind(UniAxios.prototype.request, context);
 
-queryParams;exports.default = _default;
+  // Copy axios.prototype to instance
+  utils.extend(instance, UniAxios.prototype, context);
+
+  // Copy context to instance
+  utils.extend(instance, context);
+
+  return instance;
+}
+
+// Create the default instance to be exported
+var axios = createInstance(defaults);
+
+// Expose Axios class to allow class inheritance
+axios.Axios = UniAxios;
+
+// Factory for creating new instances
+axios.create = function create(instanceConfig) {
+  return createInstance(mergeConfig(axios.defaults, instanceConfig));
+};
+
+// Expose Cancel & CancelToken
+// axios.Cancel = require('axios/lib/cancel/Cancel');
+// axios.CancelToken = require('axios/lib/cancel/CancelToken');
+// axios.isCancel = require('axios/lib/cancel/isCancel');
+
+// Expose all/spread
+// axios.all = function all(promises) {
+//   return Promise.all(promises);
+// };
+// axios.spread = require('axios/lib/helpers/spread');
+
+module.exports = axios;
+
+// Allow use of default import syntax in TypeScript
+module.exports.default = axios;
 
 /***/ }),
 
 /***/ 18:
+/*!****************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/node_modules/uni-axios/lib/utils.js ***!
+  \****************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = {
+  utils: __webpack_require__(/*! axios/lib/utils */ 19),
+  bind: __webpack_require__(/*! axios/lib/helpers/bind */ 20),
+  Axios: __webpack_require__(/*! axios/lib/core/Axios */ 21),
+  mergeConfig: __webpack_require__(/*! axios/lib/core/mergeConfig */ 41),
+  dispatchRequest: __webpack_require__(/*! axios/lib/core/dispatchRequest */ 24),
+  buildURL: __webpack_require__(/*! axios/lib/helpers/buildURL */ 22),
+  settle: __webpack_require__(/*! axios/lib/core/settle */ 32),
+  InterceptorManager: __webpack_require__(/*! axios/lib/core/InterceptorManager */ 23) };
+
+/***/ }),
+
+/***/ 19:
 /*!************************************************************************************!*\
-  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/function/route.js ***!
+  !*** /Users/chengyongming/WeChatProjects/mini-car/node_modules/axios/lib/utils.js ***!
   \************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _queryParams = _interopRequireDefault(__webpack_require__(/*! ../../libs/function/queryParams.js */ 17));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+
+
+var bind = __webpack_require__(/*! ./helpers/bind */ 20);
+
+/*global toString:true*/
+
+// utils is a library of generic helper functions non-specific to axios
+
+var toString = Object.prototype.toString;
+
 /**
-                                                                                                                                                                                                                                                                                            * 路由跳转
-                                                                                                                                                                                                                                                                                            * 注意:本方法没有对跳转的回调函数进行封装
-                                                                                                                                                                                                                                                                                            */
-function route() {var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-  var config = {
-    type: 'navigateTo',
-    url: '',
-    delta: 1, // navigateBack页面后退时,回退的层数
-    params: {}, // 传递的参数
-    animationType: 'pop-in', // 窗口动画,只在APP有效
-    animationDuration: 300 // 窗口动画持续时间,单位毫秒,只在APP有效
-  };
-  config = Object.assign(config, options);
-  // 如果url没有"/"开头，添加上，因为uni的路由跳转需要"/"开头
-  if (config.url[0] != '/') config.url = '/' + config.url;
-  // 判断是否有传递显式的参数,Object.keys转为数组并判断长度,switchTab类型时不能携带参数
-  if (Object.keys(config.params).length && config.type != 'switchTab') {
-    // 判断用户传递的url中，是否带有参数
-    // 使用正则匹配，主要依据是判断是否有"/","?","="等，如“/page/index/index?name=mary"
-    // 如果有url中有get参数，转换后无需带上"?"
-    var query = '';
-    if (/.*\/.*\?.*=.*/.test(config.url)) {
-      // object对象转为get类型的参数
-      query = (0, _queryParams.default)(config.params, false);
-      // 因为已有get参数,所以后面拼接的参数需要带上"&"隔开
-      config.url += "&" + query;
-    } else {
-      query = (0, _queryParams.default)(config.params);
-      config.url += query;
-    }
-  }
-  // 简写形式，把url和参数拼接起来
-  if (typeof options === 'string' && typeof params == 'object') {
-    var _query = '';
-    if (/.*\/.*\?.*=.*/.test(options)) {
-      // object对象转为get类型的参数
-      _query = (0, _queryParams.default)(params, false);
-      // 因为已有get参数,所以后面拼接的参数需要带上"&"隔开
-      options += "&" + _query;
-    } else {
-      _query = (0, _queryParams.default)(params);
-      options += _query;
-    }
-  }
-  // 判断是否一个字符串，如果是，直接跳转(简写法)
-  // 如果是中情形，默认第二个参数为对象形式的参数
-  if (typeof options === 'string') {
-    if (options[0] != '/') options = '/' + options;
-    return uni.navigateTo({
-      url: options });
-
-  }
-  // navigateTo类型的跳转
-  if (config.type == 'navigateTo' || config.type == 'to') {
-    return uni.navigateTo({
-      url: config.url,
-      animationType: config.animationType,
-      animationDuration: config.animationDuration });
-
-  }
-  if (config.type == 'redirectTo' || config.type == 'redirect') {
-    return uni.redirectTo({
-      url: config.url });
-
-  }
-  if (config.type == 'switchTab' || config.type == 'tab') {
-    return uni.switchTab({
-      url: config.url });
-
-  }
-  if (config.type == 'reLaunch') {
-    return uni.reLaunch({
-      url: config.url });
-
-  }
-  if (config.type == 'navigateBack' || config.type == 'back') {
-    return uni.navigateBack({
-      delta: parseInt(config.delta ? config.delta : this.delta) });
-
-  }
-}var _default =
-
-route;exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
-
-/***/ }),
-
-/***/ 19:
-/*!*****************************************************************************************!*\
-  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/function/timeFormat.js ***!
-  \*****************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; // padStart 的 polyfill，因为某些机型或情况，还无法支持es7的padStart，比如电脑版的微信小程序
-// 所以这里做一个兼容polyfill的兼容处理
-if (!String.prototype.padStart) {
-  // 为了方便表示这里 fillString 用了ES6 的默认参数，不影响理解
-  String.prototype.padStart = function (maxLength) {var fillString = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : ' ';
-    if (Object.prototype.toString.call(fillString) !== "[object String]") throw new TypeError(
-    'fillString must be String');
-    var str = this;
-    // 返回 String(str) 这里是为了使返回的值是字符串字面量，在控制台中更符合直觉
-    if (str.length >= maxLength) return String(str);
-
-    var fillLength = maxLength - str.length,
-    times = Math.ceil(fillLength / fillString.length);
-    while (times >>= 1) {
-      fillString += fillString;
-      if (times === 1) {
-        fillString += fillString;
-      }
-    }
-    return fillString.slice(0, fillLength) + str;
-  };
+                                           * Determine if a value is an Array
+                                           *
+                                           * @param {Object} val The value to test
+                                           * @returns {boolean} True if value is an Array, otherwise false
+                                           */
+function isArray(val) {
+  return toString.call(val) === '[object Array]';
 }
 
-function timeFormat() {var timestamp = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;var fmt = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'yyyy-mm-dd';
-  // 其他更多是格式化有如下:
-  // yyyy:mm:dd|yyyy:mm|yyyy年mm月dd日|yyyy年mm月dd日 hh时MM分等,可自定义组合
-  timestamp = parseInt(timestamp);
-  // 如果为null,则格式化当前时间
-  if (!timestamp) timestamp = Number(new Date());
-  // 判断用户输入的时间戳是秒还是毫秒,一般前端js获取的时间戳是毫秒(13位),后端传过来的为秒(10位)
-  if (timestamp.toString().length == 10) timestamp *= 1000;
-  var date = new Date(timestamp);
-  var ret;
-  var opt = {
-    "y+": date.getFullYear().toString(), // 年
-    "m+": (date.getMonth() + 1).toString(), // 月
-    "d+": date.getDate().toString(), // 日
-    "h+": date.getHours().toString(), // 时
-    "M+": date.getMinutes().toString(), // 分
-    "s+": date.getSeconds().toString() // 秒
-    // 有其他格式化字符需求可以继续添加，必须转化成字符串
-  };
-  for (var k in opt) {
-    ret = new RegExp("(" + k + ")").exec(fmt);
-    if (ret) {
-      fmt = fmt.replace(ret[1], ret[1].length == 1 ? opt[k] : opt[k].padStart(ret[1].length, "0"));
-    };
-  };
-  return fmt;
-}var _default =
+/**
+   * Determine if a value is undefined
+   *
+   * @param {Object} val The value to test
+   * @returns {boolean} True if the value is undefined, otherwise false
+   */
+function isUndefined(val) {
+  return typeof val === 'undefined';
+}
 
-timeFormat;exports.default = _default;
+/**
+   * Determine if a value is a Buffer
+   *
+   * @param {Object} val The value to test
+   * @returns {boolean} True if value is a Buffer, otherwise false
+   */
+function isBuffer(val) {
+  return val !== null && !isUndefined(val) && val.constructor !== null && !isUndefined(val.constructor) &&
+  typeof val.constructor.isBuffer === 'function' && val.constructor.isBuffer(val);
+}
+
+/**
+   * Determine if a value is an ArrayBuffer
+   *
+   * @param {Object} val The value to test
+   * @returns {boolean} True if value is an ArrayBuffer, otherwise false
+   */
+function isArrayBuffer(val) {
+  return toString.call(val) === '[object ArrayBuffer]';
+}
+
+/**
+   * Determine if a value is a FormData
+   *
+   * @param {Object} val The value to test
+   * @returns {boolean} True if value is an FormData, otherwise false
+   */
+function isFormData(val) {
+  return typeof FormData !== 'undefined' && val instanceof FormData;
+}
+
+/**
+   * Determine if a value is a view on an ArrayBuffer
+   *
+   * @param {Object} val The value to test
+   * @returns {boolean} True if value is a view on an ArrayBuffer, otherwise false
+   */
+function isArrayBufferView(val) {
+  var result;
+  if (typeof ArrayBuffer !== 'undefined' && ArrayBuffer.isView) {
+    result = ArrayBuffer.isView(val);
+  } else {
+    result = val && val.buffer && val.buffer instanceof ArrayBuffer;
+  }
+  return result;
+}
+
+/**
+   * Determine if a value is a String
+   *
+   * @param {Object} val The value to test
+   * @returns {boolean} True if value is a String, otherwise false
+   */
+function isString(val) {
+  return typeof val === 'string';
+}
+
+/**
+   * Determine if a value is a Number
+   *
+   * @param {Object} val The value to test
+   * @returns {boolean} True if value is a Number, otherwise false
+   */
+function isNumber(val) {
+  return typeof val === 'number';
+}
+
+/**
+   * Determine if a value is an Object
+   *
+   * @param {Object} val The value to test
+   * @returns {boolean} True if value is an Object, otherwise false
+   */
+function isObject(val) {
+  return val !== null && typeof val === 'object';
+}
+
+/**
+   * Determine if a value is a Date
+   *
+   * @param {Object} val The value to test
+   * @returns {boolean} True if value is a Date, otherwise false
+   */
+function isDate(val) {
+  return toString.call(val) === '[object Date]';
+}
+
+/**
+   * Determine if a value is a File
+   *
+   * @param {Object} val The value to test
+   * @returns {boolean} True if value is a File, otherwise false
+   */
+function isFile(val) {
+  return toString.call(val) === '[object File]';
+}
+
+/**
+   * Determine if a value is a Blob
+   *
+   * @param {Object} val The value to test
+   * @returns {boolean} True if value is a Blob, otherwise false
+   */
+function isBlob(val) {
+  return toString.call(val) === '[object Blob]';
+}
+
+/**
+   * Determine if a value is a Function
+   *
+   * @param {Object} val The value to test
+   * @returns {boolean} True if value is a Function, otherwise false
+   */
+function isFunction(val) {
+  return toString.call(val) === '[object Function]';
+}
+
+/**
+   * Determine if a value is a Stream
+   *
+   * @param {Object} val The value to test
+   * @returns {boolean} True if value is a Stream, otherwise false
+   */
+function isStream(val) {
+  return isObject(val) && isFunction(val.pipe);
+}
+
+/**
+   * Determine if a value is a URLSearchParams object
+   *
+   * @param {Object} val The value to test
+   * @returns {boolean} True if value is a URLSearchParams object, otherwise false
+   */
+function isURLSearchParams(val) {
+  return typeof URLSearchParams !== 'undefined' && val instanceof URLSearchParams;
+}
+
+/**
+   * Trim excess whitespace off the beginning and end of a string
+   *
+   * @param {String} str The String to trim
+   * @returns {String} The String freed of excess whitespace
+   */
+function trim(str) {
+  return str.replace(/^\s*/, '').replace(/\s*$/, '');
+}
+
+/**
+   * Determine if we're running in a standard browser environment
+   *
+   * This allows axios to run in a web worker, and react-native.
+   * Both environments support XMLHttpRequest, but not fully standard globals.
+   *
+   * web workers:
+   *  typeof window -> undefined
+   *  typeof document -> undefined
+   *
+   * react-native:
+   *  navigator.product -> 'ReactNative'
+   * nativescript
+   *  navigator.product -> 'NativeScript' or 'NS'
+   */
+function isStandardBrowserEnv() {
+  if (typeof navigator !== 'undefined' && (navigator.product === 'ReactNative' ||
+  navigator.product === 'NativeScript' ||
+  navigator.product === 'NS')) {
+    return false;
+  }
+  return (
+    typeof window !== 'undefined' &&
+    typeof document !== 'undefined');
+
+}
+
+/**
+   * Iterate over an Array or an Object invoking a function for each item.
+   *
+   * If `obj` is an Array callback will be called passing
+   * the value, index, and complete array for each item.
+   *
+   * If 'obj' is an Object callback will be called passing
+   * the value, key, and complete object for each property.
+   *
+   * @param {Object|Array} obj The object to iterate
+   * @param {Function} fn The callback to invoke for each item
+   */
+function forEach(obj, fn) {
+  // Don't bother if no value provided
+  if (obj === null || typeof obj === 'undefined') {
+    return;
+  }
+
+  // Force an array if not already something iterable
+  if (typeof obj !== 'object') {
+    /*eslint no-param-reassign:0*/
+    obj = [obj];
+  }
+
+  if (isArray(obj)) {
+    // Iterate over array values
+    for (var i = 0, l = obj.length; i < l; i++) {
+      fn.call(null, obj[i], i, obj);
+    }
+  } else {
+    // Iterate over object keys
+    for (var key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        fn.call(null, obj[key], key, obj);
+      }
+    }
+  }
+}
+
+/**
+   * Accepts varargs expecting each argument to be an object, then
+   * immutably merges the properties of each object and returns result.
+   *
+   * When multiple objects contain the same key the later object in
+   * the arguments list will take precedence.
+   *
+   * Example:
+   *
+   * ```js
+   * var result = merge({foo: 123}, {foo: 456});
+   * console.log(result.foo); // outputs 456
+   * ```
+   *
+   * @param {Object} obj1 Object to merge
+   * @returns {Object} Result of all merge properties
+   */
+function merge() /* obj1, obj2, obj3, ... */{
+  var result = {};
+  function assignValue(val, key) {
+    if (typeof result[key] === 'object' && typeof val === 'object') {
+      result[key] = merge(result[key], val);
+    } else {
+      result[key] = val;
+    }
+  }
+
+  for (var i = 0, l = arguments.length; i < l; i++) {
+    forEach(arguments[i], assignValue);
+  }
+  return result;
+}
+
+/**
+   * Function equal to merge with the difference being that no reference
+   * to original objects is kept.
+   *
+   * @see merge
+   * @param {Object} obj1 Object to merge
+   * @returns {Object} Result of all merge properties
+   */
+function deepMerge() /* obj1, obj2, obj3, ... */{
+  var result = {};
+  function assignValue(val, key) {
+    if (typeof result[key] === 'object' && typeof val === 'object') {
+      result[key] = deepMerge(result[key], val);
+    } else if (typeof val === 'object') {
+      result[key] = deepMerge({}, val);
+    } else {
+      result[key] = val;
+    }
+  }
+
+  for (var i = 0, l = arguments.length; i < l; i++) {
+    forEach(arguments[i], assignValue);
+  }
+  return result;
+}
+
+/**
+   * Extends object a by mutably adding to it the properties of object b.
+   *
+   * @param {Object} a The object to be extended
+   * @param {Object} b The object to copy properties from
+   * @param {Object} thisArg The object to bind function to
+   * @return {Object} The resulting value of object a
+   */
+function extend(a, b, thisArg) {
+  forEach(b, function assignValue(val, key) {
+    if (thisArg && typeof val === 'function') {
+      a[key] = bind(val, thisArg);
+    } else {
+      a[key] = val;
+    }
+  });
+  return a;
+}
+
+module.exports = {
+  isArray: isArray,
+  isArrayBuffer: isArrayBuffer,
+  isBuffer: isBuffer,
+  isFormData: isFormData,
+  isArrayBufferView: isArrayBufferView,
+  isString: isString,
+  isNumber: isNumber,
+  isObject: isObject,
+  isUndefined: isUndefined,
+  isDate: isDate,
+  isFile: isFile,
+  isBlob: isBlob,
+  isFunction: isFunction,
+  isStream: isStream,
+  isURLSearchParams: isURLSearchParams,
+  isStandardBrowserEnv: isStandardBrowserEnv,
+  forEach: forEach,
+  merge: merge,
+  deepMerge: deepMerge,
+  extend: extend,
+  trim: trim };
 
 /***/ }),
 
@@ -11607,420 +11274,879 @@ internalMixin(Vue);
 /***/ }),
 
 /***/ 20:
+/*!*******************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/node_modules/axios/lib/helpers/bind.js ***!
+  \*******************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = function bind(fn, thisArg) {
+  return function wrap() {
+    var args = new Array(arguments.length);
+    for (var i = 0; i < args.length; i++) {
+      args[i] = arguments[i];
+    }
+    return fn.apply(thisArg, args);
+  };
+};
+
+/***/ }),
+
+/***/ 21:
+/*!*****************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/node_modules/axios/lib/core/Axios.js ***!
+  \*****************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(/*! ./../utils */ 19);
+var buildURL = __webpack_require__(/*! ../helpers/buildURL */ 22);
+var InterceptorManager = __webpack_require__(/*! ./InterceptorManager */ 23);
+var dispatchRequest = __webpack_require__(/*! ./dispatchRequest */ 24);
+var mergeConfig = __webpack_require__(/*! ./mergeConfig */ 41);
+
+/**
+                                             * Create a new instance of Axios
+                                             *
+                                             * @param {Object} instanceConfig The default config for the instance
+                                             */
+function Axios(instanceConfig) {
+  this.defaults = instanceConfig;
+  this.interceptors = {
+    request: new InterceptorManager(),
+    response: new InterceptorManager() };
+
+}
+
+/**
+   * Dispatch a request
+   *
+   * @param {Object} config The config specific for this request (merged with this.defaults)
+   */
+Axios.prototype.request = function request(config) {
+  /*eslint no-param-reassign:0*/
+  // Allow for axios('example/url'[, config]) a la fetch API
+  if (typeof config === 'string') {
+    config = arguments[1] || {};
+    config.url = arguments[0];
+  } else {
+    config = config || {};
+  }
+
+  config = mergeConfig(this.defaults, config);
+
+  // Set config.method
+  if (config.method) {
+    config.method = config.method.toLowerCase();
+  } else if (this.defaults.method) {
+    config.method = this.defaults.method.toLowerCase();
+  } else {
+    config.method = 'get';
+  }
+
+  // Hook up interceptors middleware
+  var chain = [dispatchRequest, undefined];
+  var promise = Promise.resolve(config);
+
+  this.interceptors.request.forEach(function unshiftRequestInterceptors(interceptor) {
+    chain.unshift(interceptor.fulfilled, interceptor.rejected);
+  });
+
+  this.interceptors.response.forEach(function pushResponseInterceptors(interceptor) {
+    chain.push(interceptor.fulfilled, interceptor.rejected);
+  });
+
+  while (chain.length) {
+    promise = promise.then(chain.shift(), chain.shift());
+  }
+
+  return promise;
+};
+
+Axios.prototype.getUri = function getUri(config) {
+  config = mergeConfig(this.defaults, config);
+  return buildURL(config.url, config.params, config.paramsSerializer).replace(/^\?/, '');
+};
+
+// Provide aliases for supported request methods
+utils.forEach(['delete', 'get', 'head', 'options'], function forEachMethodNoData(method) {
+  /*eslint func-names:0*/
+  Axios.prototype[method] = function (url, config) {
+    return this.request(utils.merge(config || {}, {
+      method: method,
+      url: url }));
+
+  };
+});
+
+utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
+  /*eslint func-names:0*/
+  Axios.prototype[method] = function (url, data, config) {
+    return this.request(utils.merge(config || {}, {
+      method: method,
+      url: url,
+      data: data }));
+
+  };
+});
+
+module.exports = Axios;
+
+/***/ }),
+
+/***/ 22:
+/*!***********************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/node_modules/axios/lib/helpers/buildURL.js ***!
+  \***********************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(/*! ./../utils */ 19);
+
+function encode(val) {
+  return encodeURIComponent(val).
+  replace(/%40/gi, '@').
+  replace(/%3A/gi, ':').
+  replace(/%24/g, '$').
+  replace(/%2C/gi, ',').
+  replace(/%20/g, '+').
+  replace(/%5B/gi, '[').
+  replace(/%5D/gi, ']');
+}
+
+/**
+   * Build a URL by appending params to the end
+   *
+   * @param {string} url The base of the url (e.g., http://www.google.com)
+   * @param {object} [params] The params to be appended
+   * @returns {string} The formatted url
+   */
+module.exports = function buildURL(url, params, paramsSerializer) {
+  /*eslint no-param-reassign:0*/
+  if (!params) {
+    return url;
+  }
+
+  var serializedParams;
+  if (paramsSerializer) {
+    serializedParams = paramsSerializer(params);
+  } else if (utils.isURLSearchParams(params)) {
+    serializedParams = params.toString();
+  } else {
+    var parts = [];
+
+    utils.forEach(params, function serialize(val, key) {
+      if (val === null || typeof val === 'undefined') {
+        return;
+      }
+
+      if (utils.isArray(val)) {
+        key = key + '[]';
+      } else {
+        val = [val];
+      }
+
+      utils.forEach(val, function parseValue(v) {
+        if (utils.isDate(v)) {
+          v = v.toISOString();
+        } else if (utils.isObject(v)) {
+          v = JSON.stringify(v);
+        }
+        parts.push(encode(key) + '=' + encode(v));
+      });
+    });
+
+    serializedParams = parts.join('&');
+  }
+
+  if (serializedParams) {
+    var hashmarkIndex = url.indexOf('#');
+    if (hashmarkIndex !== -1) {
+      url = url.slice(0, hashmarkIndex);
+    }
+
+    url += (url.indexOf('?') === -1 ? '?' : '&') + serializedParams;
+  }
+
+  return url;
+};
+
+/***/ }),
+
+/***/ 23:
+/*!******************************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/node_modules/axios/lib/core/InterceptorManager.js ***!
+  \******************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(/*! ./../utils */ 19);
+
+function InterceptorManager() {
+  this.handlers = [];
+}
+
+/**
+   * Add a new interceptor to the stack
+   *
+   * @param {Function} fulfilled The function to handle `then` for a `Promise`
+   * @param {Function} rejected The function to handle `reject` for a `Promise`
+   *
+   * @return {Number} An ID used to remove interceptor later
+   */
+InterceptorManager.prototype.use = function use(fulfilled, rejected) {
+  this.handlers.push({
+    fulfilled: fulfilled,
+    rejected: rejected });
+
+  return this.handlers.length - 1;
+};
+
+/**
+    * Remove an interceptor from the stack
+    *
+    * @param {Number} id The ID that was returned by `use`
+    */
+InterceptorManager.prototype.eject = function eject(id) {
+  if (this.handlers[id]) {
+    this.handlers[id] = null;
+  }
+};
+
+/**
+    * Iterate over all the registered interceptors
+    *
+    * This method is particularly useful for skipping over any
+    * interceptors that may have become `null` calling `eject`.
+    *
+    * @param {Function} fn The function to call for each interceptor
+    */
+InterceptorManager.prototype.forEach = function forEach(fn) {
+  utils.forEach(this.handlers, function forEachHandler(h) {
+    if (h !== null) {
+      fn(h);
+    }
+  });
+};
+
+module.exports = InterceptorManager;
+
+/***/ }),
+
+/***/ 24:
+/*!***************************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/node_modules/axios/lib/core/dispatchRequest.js ***!
+  \***************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(/*! ./../utils */ 19);
+var transformData = __webpack_require__(/*! ./transformData */ 25);
+var isCancel = __webpack_require__(/*! ../cancel/isCancel */ 26);
+var defaults = __webpack_require__(/*! ../defaults */ 27);
+
+/**
+                                        * Throws a `Cancel` if cancellation has been requested.
+                                        */
+function throwIfCancellationRequested(config) {
+  if (config.cancelToken) {
+    config.cancelToken.throwIfRequested();
+  }
+}
+
+/**
+   * Dispatch a request to the server using the configured adapter.
+   *
+   * @param {object} config The config that is to be used for the request
+   * @returns {Promise} The Promise to be fulfilled
+   */
+module.exports = function dispatchRequest(config) {
+  throwIfCancellationRequested(config);
+
+  // Ensure headers exist
+  config.headers = config.headers || {};
+
+  // Transform request data
+  config.data = transformData(
+  config.data,
+  config.headers,
+  config.transformRequest);
+
+
+  // Flatten headers
+  config.headers = utils.merge(
+  config.headers.common || {},
+  config.headers[config.method] || {},
+  config.headers);
+
+
+  utils.forEach(
+  ['delete', 'get', 'head', 'post', 'put', 'patch', 'common'],
+  function cleanHeaderConfig(method) {
+    delete config.headers[method];
+  });
+
+
+  var adapter = config.adapter || defaults.adapter;
+
+  return adapter(config).then(function onAdapterResolution(response) {
+    throwIfCancellationRequested(config);
+
+    // Transform response data
+    response.data = transformData(
+    response.data,
+    response.headers,
+    config.transformResponse);
+
+
+    return response;
+  }, function onAdapterRejection(reason) {
+    if (!isCancel(reason)) {
+      throwIfCancellationRequested(config);
+
+      // Transform response data
+      if (reason && reason.response) {
+        reason.response.data = transformData(
+        reason.response.data,
+        reason.response.headers,
+        config.transformResponse);
+
+      }
+    }
+
+    return Promise.reject(reason);
+  });
+};
+
+/***/ }),
+
+/***/ 25:
+/*!*************************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/node_modules/axios/lib/core/transformData.js ***!
+  \*************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(/*! ./../utils */ 19);
+
+/**
+                                    * Transform the data for a request or a response
+                                    *
+                                    * @param {Object|String} data The data to be transformed
+                                    * @param {Array} headers The headers for the request or response
+                                    * @param {Array|Function} fns A single function or Array of functions
+                                    * @returns {*} The resulting transformed data
+                                    */
+module.exports = function transformData(data, headers, fns) {
+  /*eslint no-param-reassign:0*/
+  utils.forEach(fns, function transform(fn) {
+    data = fn(data, headers);
+  });
+
+  return data;
+};
+
+/***/ }),
+
+/***/ 26:
+/*!**********************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/node_modules/axios/lib/cancel/isCancel.js ***!
+  \**********************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = function isCancel(value) {
+  return !!(value && value.__CANCEL__);
+};
+
+/***/ }),
+
+/***/ 27:
 /*!***************************************************************************************!*\
-  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/function/timeFrom.js ***!
+  !*** /Users/chengyongming/WeChatProjects/mini-car/node_modules/axios/lib/defaults.js ***!
   \***************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _timeFormat = _interopRequireDefault(__webpack_require__(/*! ../../libs/function/timeFormat.js */ 19));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+/* WEBPACK VAR INJECTION */(function(process) {
 
-/**
-                                                                                                                                                                                                                                                                                          * 时间戳转为多久之前
-                                                                                                                                                                                                                                                                                          * @param String timestamp 时间戳
-                                                                                                                                                                                                                                                                                          * @param String | Boolean format 如果为时间格式字符串，超出一定时间范围，返回固定的时间格式；
-                                                                                                                                                                                                                                                                                          * 如果为布尔值false，无论什么时间，都返回多久以前的格式
-                                                                                                                                                                                                                                                                                          */
-function timeFrom() {var timestamp = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;var format = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'yyyy-mm-dd';
-  if (timestamp == null) timestamp = Number(new Date());
-  timestamp = parseInt(timestamp);
-  // 判断用户输入的时间戳是秒还是毫秒,一般前端js获取的时间戳是毫秒(13位),后端传过来的为秒(10位)
-  if (timestamp.toString().length == 10) timestamp *= 1000;
-  var timer = new Date().getTime() - timestamp;
-  timer = parseInt(timer / 1000);
-  // 如果小于5分钟,则返回"刚刚",其他以此类推
-  var tips = '';
-  switch (true) {
-    case timer < 300:
-      tips = '刚刚';
-      break;
-    case timer >= 300 && timer < 3600:
-      tips = parseInt(timer / 60) + '分钟前';
-      break;
-    case timer >= 3600 && timer < 86400:
-      tips = parseInt(timer / 3600) + '小时前';
-      break;
-    case timer >= 86400 && timer < 2592000:
-      tips = parseInt(timer / 86400) + '天前';
-      break;
-    default:
-      // 如果format为false，则无论什么时间戳，都显示xx之前
-      if (format === false) {
-        if (timer >= 2592000 && timer < 365 * 86400) {
-          tips = parseInt(timer / (86400 * 30)) + '个月前';
-        } else {
-          tips = parseInt(timer / (86400 * 365)) + '年前';
-        }
-      } else {
-        tips = (0, _timeFormat.default)(timestamp, format);
-      }}
+var utils = __webpack_require__(/*! ./utils */ 19);
+var normalizeHeaderName = __webpack_require__(/*! ./helpers/normalizeHeaderName */ 30);
 
-  return tips;
-}var _default =
+var DEFAULT_CONTENT_TYPE = {
+  'Content-Type': 'application/x-www-form-urlencoded' };
 
-timeFrom;exports.default = _default;
 
-/***/ }),
-
-/***/ 21:
-/*!********************************************************************************************!*\
-  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/function/colorGradient.js ***!
-  \********************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; /**
-                                                                                                      * 求两个颜色之间的渐变值
-                                                                                                      * @param {string} startColor 开始的颜色
-                                                                                                      * @param {string} endColor 结束的颜色
-                                                                                                      * @param {number} step 颜色等分的份额
-                                                                                                      * */
-function colorGradient() {var startColor = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'rgb(0, 0, 0)';var endColor = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'rgb(255, 255, 255)';var step = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 10;
-  var startRGB = hexToRgb(startColor, false); //转换为rgb数组模式
-  var startR = startRGB[0];
-  var startG = startRGB[1];
-  var startB = startRGB[2];
-
-  var endRGB = hexToRgb(endColor, false);
-  var endR = endRGB[0];
-  var endG = endRGB[1];
-  var endB = endRGB[2];
-
-  var sR = (endR - startR) / step; //总差值
-  var sG = (endG - startG) / step;
-  var sB = (endB - startB) / step;
-  var colorArr = [];
-  for (var i = 0; i < step; i++) {
-    //计算每一步的hex值 
-    var hex = rgbToHex('rgb(' + Math.round(sR * i + startR) + ',' + Math.round(sG * i + startG) + ',' + Math.round(sB *
-    i + startB) + ')');
-    colorArr.push(hex);
+function setContentTypeIfUnset(headers, value) {
+  if (!utils.isUndefined(headers) && utils.isUndefined(headers['Content-Type'])) {
+    headers['Content-Type'] = value;
   }
-  return colorArr;
 }
 
-// 将hex表示方式转换为rgb表示方式(这里返回rgb数组模式)
-function hexToRgb(sColor) {var str = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-  var reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/;
-  sColor = sColor.toLowerCase();
-  if (sColor && reg.test(sColor)) {
-    if (sColor.length === 4) {
-      var sColorNew = "#";
-      for (var i = 1; i < 4; i += 1) {
-        sColorNew += sColor.slice(i, i + 1).concat(sColor.slice(i, i + 1));
-      }
-      sColor = sColorNew;
-    }
-    //处理六位的颜色值
-    var sColorChange = [];
-    for (var _i = 1; _i < 7; _i += 2) {
-      sColorChange.push(parseInt("0x" + sColor.slice(_i, _i + 2)));
-    }
-    if (!str) {
-      return sColorChange;
-    } else {
-      return "rgb(".concat(sColorChange[0], ",").concat(sColorChange[1], ",").concat(sColorChange[2], ")");
-    }
-  } else if (/^(rgb|RGB)/.test(sColor)) {
-    var arr = sColor.replace(/(?:\(|\)|rgb|RGB)*/g, "").split(",");
-    return arr.map(function (val) {return Number(val);});
-  } else {
-    return sColor;
+function getDefaultAdapter() {
+  var adapter;
+  if (typeof XMLHttpRequest !== 'undefined') {
+    // For browsers use XHR adapter
+    adapter = __webpack_require__(/*! ./adapters/xhr */ 31);
+  } else if (typeof process !== 'undefined' && Object.prototype.toString.call(process) === '[object process]') {
+    // For node use HTTP adapter
+    adapter = __webpack_require__(/*! ./adapters/http */ 31);
   }
-};
-
-// 将rgb表示方式转换为hex表示方式
-function rgbToHex(rgb) {
-  var _this = rgb;
-  var reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/;
-  if (/^(rgb|RGB)/.test(_this)) {
-    var aColor = _this.replace(/(?:\(|\)|rgb|RGB)*/g, "").split(",");
-    var strHex = "#";
-    for (var i = 0; i < aColor.length; i++) {
-      var hex = Number(aColor[i]).toString(16);
-      hex = String(hex).length == 1 ? 0 + '' + hex : hex; // 保证每个rgb的值为2位
-      if (hex === "0") {
-        hex += hex;
-      }
-      strHex += hex;
-    }
-    if (strHex.length !== 7) {
-      strHex = _this;
-    }
-    return strHex;
-  } else if (reg.test(_this)) {
-    var aNum = _this.replace(/#/, "").split("");
-    if (aNum.length === 6) {
-      return _this;
-    } else if (aNum.length === 3) {
-      var numHex = "#";
-      for (var _i2 = 0; _i2 < aNum.length; _i2 += 1) {
-        numHex += aNum[_i2] + aNum[_i2];
-      }
-      return numHex;
-    }
-  } else {
-    return _this;
-  }
-}var _default =
-
-{
-  colorGradient: colorGradient,
-  hexToRgb: hexToRgb,
-  rgbToHex: rgbToHex };exports.default = _default;
-
-/***/ }),
-
-/***/ 22:
-/*!***********************************************************************************!*\
-  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/function/guid.js ***!
-  \***********************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; /**
-                                                                                                      * 本算法来源于简书开源代码，详见：https://www.jianshu.com/p/fdbf293d0a85
-                                                                                                      * 全局唯一标识符（uuid，Globally Unique Identifier）,也称作 uuid(Universally Unique IDentifier) 
-                                                                                                      * 一般用于多个组件之间,给它一个唯一的标识符,或者v-for循环的时候,如果使用数组的index可能会导致更新列表出现问题
-                                                                                                      * 最可能的情况是左滑删除item或者对某条信息流"不喜欢"并去掉它的时候,会导致组件内的数据可能出现错乱
-                                                                                                      * v-for的时候,推荐使用后端返回的id而不是循环的index
-                                                                                                      * @param {Number} len uuid的长度
-                                                                                                      * @param {Boolean} firstU 将返回的首字母置为"u"
-                                                                                                      * @param {Nubmer} radix 生成uuid的基数(意味着返回的字符串都是这个基数),2-二进制,8-八进制,10-十进制,16-十六进制
-                                                                                                      */
-function guid() {var len = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 32;var firstU = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;var radix = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
-  var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
-  var uuid = [];
-  radix = radix || chars.length;
-
-  if (len) {
-    // 如果指定uuid长度,只是取随机的字符,0|x为位运算,能去掉x的小数位,返回整数位
-    for (var i = 0; i < len; i++) {uuid[i] = chars[0 | Math.random() * radix];}
-  } else {
-    var r;
-    // rfc4122标准要求返回的uuid中,某些位为固定的字符
-    uuid[8] = uuid[13] = uuid[18] = uuid[23] = '-';
-    uuid[14] = '4';
-
-    for (var _i = 0; _i < 36; _i++) {
-      if (!uuid[_i]) {
-        r = 0 | Math.random() * 16;
-        uuid[_i] = chars[_i == 19 ? r & 0x3 | 0x8 : r];
-      }
-    }
-  }
-  // 移除第一个字符,并用u替代,因为第一个字符为数值时,该guuid不能用作id或者class
-  if (firstU) {
-    uuid.shift();
-    return 'u' + uuid.join('');
-  } else {
-    return uuid.join('');
-  }
-}var _default =
-
-guid;exports.default = _default;
-
-/***/ }),
-
-/***/ 23:
-/*!************************************************************************************!*\
-  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/function/color.js ***!
-  \************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; // 为了让用户能够自定义主题，会逐步弃用此文件，各颜色通过css提供
-// 为了给某些特殊场景使用和向后兼容，无需删除此文件(2020-06-20)
-var color = {
-  primary: "#2979ff",
-  primaryDark: "#2b85e4",
-  primaryDisabled: "#a0cfff",
-  primaryLight: "#ecf5ff",
-  bgColor: "#f3f4f6",
-
-  info: "#909399",
-  infoDark: "#82848a",
-  infoDisabled: "#c8c9cc",
-  infoLight: "#f4f4f5",
-
-  warning: "#ff9900",
-  warningDark: "#f29100",
-  warningDisabled: "#fcbd71",
-  warningLight: "#fdf6ec",
-
-  error: "#fa3534",
-  errorDark: "#dd6161",
-  errorDisabled: "#fab6b6",
-  errorLight: "#fef0f0",
-
-  success: "#19be6b",
-  successDark: "#18b566",
-  successDisabled: "#71d5a1",
-  successLight: "#dbf1e1",
-
-  mainColor: "#303133",
-  contentColor: "#606266",
-  tipsColor: "#909399",
-  lightColor: "#c0c4cc",
-  borderColor: "#e4e7ed" };var _default =
-
-
-color;exports.default = _default;
-
-/***/ }),
-
-/***/ 24:
-/*!****************************************************************************************!*\
-  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/function/type2icon.js ***!
-  \****************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; /**
-                                                                                                      * 根据主题type值,获取对应的图标
-                                                                                                      * @param String type 主题名称,primary|info|error|warning|success
-                                                                                                      * @param String fill 是否使用fill填充实体的图标  
-                                                                                                      */
-function type2icon() {var type = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'success';var fill = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-  // 如果非预置值,默认为success
-  if (['primary', 'info', 'error', 'warning', 'success'].indexOf(type) == -1) type = 'success';
-  var iconName = '';
-  // 目前(2019-12-12),info和primary使用同一个图标
-  switch (type) {
-    case 'primary':
-      iconName = 'info-circle';
-      break;
-    case 'info':
-      iconName = 'info-circle';
-      break;
-    case 'error':
-      iconName = 'close-circle';
-      break;
-    case 'warning':
-      iconName = 'error-circle';
-      break;
-    case 'success':
-      iconName = 'checkmark-circle';
-      break;
-    default:
-      iconName = 'checkmark-circle';}
-
-  // 是否是实体类型,加上-fill,在icon组件库中,实体的类名是后面加-fill的
-  if (fill) iconName += '-fill';
-  return iconName;
-}var _default =
-
-type2icon;exports.default = _default;
-
-/***/ }),
-
-/***/ 25:
-/*!******************************************************************************************!*\
-  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/function/randomArray.js ***!
-  \******************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; // 打乱数组
-function randomArray() {var array = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-  // 原理是sort排序,Math.random()产生0<= x < 1之间的数,会导致x-0.05大于或者小于0
-  return array.sort(function () {return Math.random() - 0.5;});
-}var _default =
-
-randomArray;exports.default = _default;
-
-/***/ }),
-
-/***/ 26:
-/*!**************************************************************************************!*\
-  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/function/addUnit.js ***!
-  \**************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = addUnit;var _test = _interopRequireDefault(__webpack_require__(/*! ./test.js */ 16));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
-
-// 添加单位，如果有rpx，%，px等单位结尾或者值为auto，直接返回，否则加上rpx单位结尾
-function addUnit() {var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'auto';var unit = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'rpx';
-  value = String(value);
-  // 用uView内置验证规则中的number判断是否为数值
-  return _test.default.number(value) ? "".concat(value).concat(unit) : value;
+  return adapter;
 }
 
-/***/ }),
+var defaults = {
+  adapter: getDefaultAdapter(),
 
-/***/ 27:
-/*!*************************************************************************************!*\
-  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/function/random.js ***!
-  \*************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+  transformRequest: [function transformRequest(data, headers) {
+    normalizeHeaderName(headers, 'Accept');
+    normalizeHeaderName(headers, 'Content-Type');
+    if (utils.isFormData(data) ||
+    utils.isArrayBuffer(data) ||
+    utils.isBuffer(data) ||
+    utils.isStream(data) ||
+    utils.isFile(data) ||
+    utils.isBlob(data))
+    {
+      return data;
+    }
+    if (utils.isArrayBufferView(data)) {
+      return data.buffer;
+    }
+    if (utils.isURLSearchParams(data)) {
+      setContentTypeIfUnset(headers, 'application/x-www-form-urlencoded;charset=utf-8');
+      return data.toString();
+    }
+    if (utils.isObject(data)) {
+      setContentTypeIfUnset(headers, 'application/json;charset=utf-8');
+      return JSON.stringify(data);
+    }
+    return data;
+  }],
 
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;function random(min, max) {
-  if (min >= 0 && max > 0 && max >= min) {
-    var gab = max - min + 1;
-    return Math.floor(Math.random() * gab + min);
-  } else {
-    return 0;
-  }
-}var _default =
+  transformResponse: [function transformResponse(data) {
+    /*eslint no-param-reassign:0*/
+    if (typeof data === 'string') {
+      try {
+        data = JSON.parse(data);
+      } catch (e) {/* Ignore */}
+    }
+    return data;
+  }],
 
-random;exports.default = _default;
+  /**
+       * A timeout in milliseconds to abort a request. If set to 0 (default) a
+       * timeout is not created.
+       */
+  timeout: 0,
+
+  xsrfCookieName: 'XSRF-TOKEN',
+  xsrfHeaderName: 'X-XSRF-TOKEN',
+
+  maxContentLength: -1,
+
+  validateStatus: function validateStatus(status) {
+    return status >= 200 && status < 300;
+  } };
+
+
+defaults.headers = {
+  common: {
+    'Accept': 'application/json, text/plain, */*' } };
+
+
+
+utils.forEach(['delete', 'get', 'head'], function forEachMethodNoData(method) {
+  defaults.headers[method] = {};
+});
+
+utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
+  defaults.headers[method] = utils.merge(DEFAULT_CONTENT_TYPE);
+});
+
+module.exports = defaults;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../../../Applications/HBuilderX.app/Contents/HBuilderX/plugins/uniapp-cli/node_modules/node-libs-browser/mock/process.js */ 28)))
 
 /***/ }),
 
 /***/ 28:
-/*!***********************************************************************************!*\
-  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/function/trim.js ***!
-  \***********************************************************************************/
+/*!********************************************************!*\
+  !*** ./node_modules/node-libs-browser/mock/process.js ***!
+  \********************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;function trim(str) {var pos = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'both';
-  if (pos == 'both') {
-    return str.replace(/^\s+|\s+$/g, "");
-  } else if (pos == "left") {
-    return str.replace(/^\s*/, '');
-  } else if (pos == 'right') {
-    return str.replace(/(\s*$)/g, "");
-  } else if (pos == 'all') {
-    return str.replace(/\s+/g, "");
-  } else {
-    return str;
-  }
-}var _default =
+exports.nextTick = function nextTick(fn) {
+    var args = Array.prototype.slice.call(arguments);
+    args.shift();
+    setTimeout(function () {
+        fn.apply(null, args);
+    }, 0);
+};
 
-trim;exports.default = _default;
+exports.platform = exports.arch = 
+exports.execPath = exports.title = 'browser';
+exports.pid = 1;
+exports.browser = true;
+exports.env = {};
+exports.argv = [];
+
+exports.binding = function (name) {
+	throw new Error('No such module. (Possibly not yet loaded)')
+};
+
+(function () {
+    var cwd = '/';
+    var path;
+    exports.cwd = function () { return cwd };
+    exports.chdir = function (dir) {
+        if (!path) path = __webpack_require__(/*! path */ 29);
+        cwd = path.resolve(dir, cwd);
+    };
+})();
+
+exports.exit = exports.kill = 
+exports.umask = exports.dlopen = 
+exports.uptime = exports.memoryUsage = 
+exports.uvCounters = function() {};
+exports.features = {};
+
 
 /***/ }),
 
 /***/ 29:
-/*!************************************************************************************!*\
-  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/function/toast.js ***!
-  \************************************************************************************/
+/*!***********************************************!*\
+  !*** ./node_modules/path-browserify/index.js ***!
+  \***********************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;function toast(title) {var duration = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1500;
-  uni.showToast({
-    title: title,
-    icon: 'none',
-    duration: duration });
+/* WEBPACK VAR INJECTION */(function(process) {// .dirname, .basename, and .extname methods are extracted from Node.js v8.11.1,
+// backported and transplited with Babel, with backwards-compat fixes
 
-}var _default =
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-toast;exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+// resolves . and .. elements in a path array with directory names there
+// must be no slashes, empty elements, or device names (c:\) in the array
+// (so also no leading and trailing slashes - it does not distinguish
+// relative and absolute paths)
+function normalizeArray(parts, allowAboveRoot) {
+  // if the path tries to go above the root, `up` ends up > 0
+  var up = 0;
+  for (var i = parts.length - 1; i >= 0; i--) {
+    var last = parts[i];
+    if (last === '.') {
+      parts.splice(i, 1);
+    } else if (last === '..') {
+      parts.splice(i, 1);
+      up++;
+    } else if (up) {
+      parts.splice(i, 1);
+      up--;
+    }
+  }
+
+  // if the path is allowed to go above the root, restore leading ..s
+  if (allowAboveRoot) {
+    for (; up--; up) {
+      parts.unshift('..');
+    }
+  }
+
+  return parts;
+}
+
+// path.resolve([from ...], to)
+// posix version
+exports.resolve = function() {
+  var resolvedPath = '',
+      resolvedAbsolute = false;
+
+  for (var i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
+    var path = (i >= 0) ? arguments[i] : process.cwd();
+
+    // Skip empty and invalid entries
+    if (typeof path !== 'string') {
+      throw new TypeError('Arguments to path.resolve must be strings');
+    } else if (!path) {
+      continue;
+    }
+
+    resolvedPath = path + '/' + resolvedPath;
+    resolvedAbsolute = path.charAt(0) === '/';
+  }
+
+  // At this point the path should be resolved to a full absolute path, but
+  // handle relative paths to be safe (might happen when process.cwd() fails)
+
+  // Normalize the path
+  resolvedPath = normalizeArray(filter(resolvedPath.split('/'), function(p) {
+    return !!p;
+  }), !resolvedAbsolute).join('/');
+
+  return ((resolvedAbsolute ? '/' : '') + resolvedPath) || '.';
+};
+
+// path.normalize(path)
+// posix version
+exports.normalize = function(path) {
+  var isAbsolute = exports.isAbsolute(path),
+      trailingSlash = substr(path, -1) === '/';
+
+  // Normalize the path
+  path = normalizeArray(filter(path.split('/'), function(p) {
+    return !!p;
+  }), !isAbsolute).join('/');
+
+  if (!path && !isAbsolute) {
+    path = '.';
+  }
+  if (path && trailingSlash) {
+    path += '/';
+  }
+
+  return (isAbsolute ? '/' : '') + path;
+};
+
+// posix version
+exports.isAbsolute = function(path) {
+  return path.charAt(0) === '/';
+};
+
+// posix version
+exports.join = function() {
+  var paths = Array.prototype.slice.call(arguments, 0);
+  return exports.normalize(filter(paths, function(p, index) {
+    if (typeof p !== 'string') {
+      throw new TypeError('Arguments to path.join must be strings');
+    }
+    return p;
+  }).join('/'));
+};
+
+
+// path.relative(from, to)
+// posix version
+exports.relative = function(from, to) {
+  from = exports.resolve(from).substr(1);
+  to = exports.resolve(to).substr(1);
+
+  function trim(arr) {
+    var start = 0;
+    for (; start < arr.length; start++) {
+      if (arr[start] !== '') break;
+    }
+
+    var end = arr.length - 1;
+    for (; end >= 0; end--) {
+      if (arr[end] !== '') break;
+    }
+
+    if (start > end) return [];
+    return arr.slice(start, end - start + 1);
+  }
+
+  var fromParts = trim(from.split('/'));
+  var toParts = trim(to.split('/'));
+
+  var length = Math.min(fromParts.length, toParts.length);
+  var samePartsLength = length;
+  for (var i = 0; i < length; i++) {
+    if (fromParts[i] !== toParts[i]) {
+      samePartsLength = i;
+      break;
+    }
+  }
+
+  var outputParts = [];
+  for (var i = samePartsLength; i < fromParts.length; i++) {
+    outputParts.push('..');
+  }
+
+  outputParts = outputParts.concat(toParts.slice(samePartsLength));
+
+  return outputParts.join('/');
+};
+
+exports.sep = '/';
+exports.delimiter = ':';
+
+exports.dirname = function (path) {
+  if (typeof path !== 'string') path = path + '';
+  if (path.length === 0) return '.';
+  var code = path.charCodeAt(0);
+  var hasRoot = code === 47 /*/*/;
+  var end = -1;
+  var matchedSlash = true;
+  for (var i = path.length - 1; i >= 1; --i) {
+    code = path.charCodeAt(i);
+    if (code === 47 /*/*/) {
+        if (!matchedSlash) {
+          end = i;
+          break;
+        }
+      } else {
+      // We saw the first non-path separator
+      matchedSlash = false;
+    }
+  }
+
+  if (end === -1) return hasRoot ? '/' : '.';
+  if (hasRoot && end === 1) {
+    // return '//';
+    // Backwards-compat fix:
+    return '/';
+  }
+  return path.slice(0, end);
+};
+
+function basename(path) {
+  if (typeof path !== 'string') path = path + '';
+
+  var start = 0;
+  var end = -1;
+  var matchedSlash = true;
+  var i;
+
+  for (i = path.length - 1; i >= 0; --i) {
+    if (path.charCodeAt(i) === 47 /*/*/) {
+        // If we reached a path separator that was not part of a set of path
+        // separators at the end of the string, stop now
+        if (!matchedSlash) {
+          start = i + 1;
+          break;
+        }
+      } else if (end === -1) {
+      // We saw the first non-path separator, mark this as the end of our
+      // path component
+      matchedSlash = false;
+      end = i + 1;
+    }
+  }
+
+  if (end === -1) return '';
+  return path.slice(start, end);
+}
+
+// Uses a mixed approach for backwards-compatibility, as ext behavior changed
+// in new Node.js versions, so only basename() above is backported here
+exports.basename = function (path, ext) {
+  var f = basename(path);
+  if (ext && f.substr(-1 * ext.length) === ext) {
+    f = f.substr(0, f.length - ext.length);
+  }
+  return f;
+};
+
+exports.extname = function (path) {
+  if (typeof path !== 'string') path = path + '';
+  var startDot = -1;
+  var startPart = 0;
+  var end = -1;
+  var matchedSlash = true;
+  // Track the state of characters (if any) we see before our first dot and
+  // after any path separator we find
+  var preDotState = 0;
+  for (var i = path.length - 1; i >= 0; --i) {
+    var code = path.charCodeAt(i);
+    if (code === 47 /*/*/) {
+        // If we reached a path separator that was not part of a set of path
+        // separators at the end of the string, stop now
+        if (!matchedSlash) {
+          startPart = i + 1;
+          break;
+        }
+        continue;
+      }
+    if (end === -1) {
+      // We saw the first non-path separator, mark this as the end of our
+      // extension
+      matchedSlash = false;
+      end = i + 1;
+    }
+    if (code === 46 /*.*/) {
+        // If this is our first dot, mark it as the start of our extension
+        if (startDot === -1)
+          startDot = i;
+        else if (preDotState !== 1)
+          preDotState = 1;
+    } else if (startDot !== -1) {
+      // We saw a non-dot and non-path separator before our dot, so we should
+      // have a good chance at having a non-empty extension
+      preDotState = -1;
+    }
+  }
+
+  if (startDot === -1 || end === -1 ||
+      // We saw a non-dot character immediately before the dot
+      preDotState === 0 ||
+      // The (right-most) trimmed path component is exactly '..'
+      preDotState === 1 && startDot === end - 1 && startDot === startPart + 1) {
+    return '';
+  }
+  return path.slice(startDot, end);
+};
+
+function filter (xs, f) {
+    if (xs.filter) return xs.filter(f);
+    var res = [];
+    for (var i = 0; i < xs.length; i++) {
+        if (f(xs[i], i, xs)) res.push(xs[i]);
+    }
+    return res;
+}
+
+// String.prototype.substr - negative index don't work in IE8
+var substr = 'ab'.substr(-1) === 'b'
+    ? function (str, start, len) { return str.substr(start, len) }
+    : function (str, start, len) {
+        if (start < 0) start = str.length + start;
+        return str.substr(start, len);
+    }
+;
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../node-libs-browser/mock/process.js */ 28)))
 
 /***/ }),
 
@@ -12056,903 +12182,483 @@ module.exports = g;
 /***/ }),
 
 /***/ 30:
-/*!****************************************************************************************!*\
-  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/function/getParent.js ***!
-  \****************************************************************************************/
+/*!**********************************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/node_modules/axios/lib/helpers/normalizeHeaderName.js ***!
+  \**********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = getParent; // 获取父组件的参数，因为支付宝小程序不支持provide/inject的写法
-// this.$parent在非H5中，可以准确获取到父组件，但是在H5中，需要多次this.$parent.$parent.xxx
-function getParent(name, keys) {
-  var parent = this.$parent;
-  // 通过while历遍，这里主要是为了H5需要多层解析的问题
-  while (parent) {
-    // 父组件
-    if (parent.$options.name !== name) {
-      // 如果组件的name不相等，继续上一级寻找
-      parent = parent.$parent;
-    } else {var _ret = function () {
-        var data = {};
-        // 判断keys是否数组，如果传过来的是一个数组，那么直接使用数组元素值当做键值去父组件寻找
-        if (Array.isArray(keys)) {
-          keys.map(function (val) {
-            data[val] = parent[val] ? parent[val] : '';
-          });
-        } else {
-          // 历遍传过来的对象参数
-          for (var i in keys) {
-            // 如果子组件有此值则用，无此值则用父组件的值
-            // 判断是否空数组，如果是，则用父组件的值，否则用子组件的值
-            if (Array.isArray(keys[i])) {
-              if (keys[i].length) {
-                data[i] = keys[i];
-              } else {
-                data[i] = parent[i];
-              }
-            } else if (keys[i].constructor === Object) {
-              // 判断是否对象，如果是对象，且有属性，那么使用子组件的值，否则使用父组件的值
-              if (Object.keys(keys[i]).length) {
-                data[i] = keys[i];
-              } else {
-                data[i] = parent[i];
-              }
-            } else {
-              // 只要子组件有传值，即使是false值，也是“传值”了，也需要覆盖父组件的同名参数
-              data[i] = keys[i] || keys[i] === false ? keys[i] : parent[i];
-            }
-          }
-        }
-        return { v: data };}();if (typeof _ret === "object") return _ret.v;
-    }
-  }
 
-  return {};
-}
+
+var utils = __webpack_require__(/*! ../utils */ 19);
+
+module.exports = function normalizeHeaderName(headers, normalizedName) {
+  utils.forEach(headers, function processHeader(value, name) {
+    if (name !== normalizedName && name.toUpperCase() === normalizedName.toUpperCase()) {
+      headers[normalizedName] = value;
+      delete headers[name];
+    }
+  });
+};
 
 /***/ }),
 
 /***/ 31:
-/*!**************************************************************************************!*\
-  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/function/$parent.js ***!
-  \**************************************************************************************/
+/*!*******************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/node_modules/axios/lib/adapters/xhr.js ***!
+  \*******************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = $parent; // 获取父组件的参数，因为支付宝小程序不支持provide/inject的写法
-// this.$parent在非H5中，可以准确获取到父组件，但是在H5中，需要多次this.$parent.$parent.xxx
-// 这里默认值等于undefined有它的含义，因为最顶层元素(组件)的$parent就是undefined，意味着不传name
-// 值(默认为undefined)，就是查找最顶层的$parent
-function $parent() {var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : undefined;
-  var parent = this.$parent;
-  // 通过while历遍，这里主要是为了H5需要多层解析的问题
-  while (parent) {
-    // 父组件
-    if (parent.$options && parent.$options.name !== name) {
-      // 如果组件的name不相等，继续上一级寻找
-      parent = parent.$parent;
-    } else {
-      return parent;
+
+
+var utils = __webpack_require__(/*! ./../utils */ 19);
+var settle = __webpack_require__(/*! ./../core/settle */ 32);
+var buildURL = __webpack_require__(/*! ./../helpers/buildURL */ 22);
+var buildFullPath = __webpack_require__(/*! ../core/buildFullPath */ 35);
+var parseHeaders = __webpack_require__(/*! ./../helpers/parseHeaders */ 38);
+var isURLSameOrigin = __webpack_require__(/*! ./../helpers/isURLSameOrigin */ 39);
+var createError = __webpack_require__(/*! ../core/createError */ 33);
+
+module.exports = function xhrAdapter(config) {
+  return new Promise(function dispatchXhrRequest(resolve, reject) {
+    var requestData = config.data;
+    var requestHeaders = config.headers;
+
+    if (utils.isFormData(requestData)) {
+      delete requestHeaders['Content-Type']; // Let the browser set it
     }
-  }
-  return false;
-}
+
+    var request = new XMLHttpRequest();
+
+    // HTTP basic authentication
+    if (config.auth) {
+      var username = config.auth.username || '';
+      var password = config.auth.password || '';
+      requestHeaders.Authorization = 'Basic ' + btoa(username + ':' + password);
+    }
+
+    var fullPath = buildFullPath(config.baseURL, config.url);
+    request.open(config.method.toUpperCase(), buildURL(fullPath, config.params, config.paramsSerializer), true);
+
+    // Set the request timeout in MS
+    request.timeout = config.timeout;
+
+    // Listen for ready state
+    request.onreadystatechange = function handleLoad() {
+      if (!request || request.readyState !== 4) {
+        return;
+      }
+
+      // The request errored out and we didn't get a response, this will be
+      // handled by onerror instead
+      // With one exception: request that using file: protocol, most browsers
+      // will return status as 0 even though it's a successful request
+      if (request.status === 0 && !(request.responseURL && request.responseURL.indexOf('file:') === 0)) {
+        return;
+      }
+
+      // Prepare the response
+      var responseHeaders = 'getAllResponseHeaders' in request ? parseHeaders(request.getAllResponseHeaders()) : null;
+      var responseData = !config.responseType || config.responseType === 'text' ? request.responseText : request.response;
+      var response = {
+        data: responseData,
+        status: request.status,
+        statusText: request.statusText,
+        headers: responseHeaders,
+        config: config,
+        request: request };
+
+
+      settle(resolve, reject, response);
+
+      // Clean up request
+      request = null;
+    };
+
+    // Handle browser request cancellation (as opposed to a manual cancellation)
+    request.onabort = function handleAbort() {
+      if (!request) {
+        return;
+      }
+
+      reject(createError('Request aborted', config, 'ECONNABORTED', request));
+
+      // Clean up request
+      request = null;
+    };
+
+    // Handle low level network errors
+    request.onerror = function handleError() {
+      // Real errors are hidden from us by the browser
+      // onerror should only fire if it's a network error
+      reject(createError('Network Error', config, null, request));
+
+      // Clean up request
+      request = null;
+    };
+
+    // Handle timeout
+    request.ontimeout = function handleTimeout() {
+      var timeoutErrorMessage = 'timeout of ' + config.timeout + 'ms exceeded';
+      if (config.timeoutErrorMessage) {
+        timeoutErrorMessage = config.timeoutErrorMessage;
+      }
+      reject(createError(timeoutErrorMessage, config, 'ECONNABORTED',
+      request));
+
+      // Clean up request
+      request = null;
+    };
+
+    // Add xsrf header
+    // This is only done if running in a standard browser environment.
+    // Specifically not if we're in a web worker, or react-native.
+    if (utils.isStandardBrowserEnv()) {
+      var cookies = __webpack_require__(/*! ./../helpers/cookies */ 40);
+
+      // Add xsrf header
+      var xsrfValue = (config.withCredentials || isURLSameOrigin(fullPath)) && config.xsrfCookieName ?
+      cookies.read(config.xsrfCookieName) :
+      undefined;
+
+      if (xsrfValue) {
+        requestHeaders[config.xsrfHeaderName] = xsrfValue;
+      }
+    }
+
+    // Add headers to the request
+    if ('setRequestHeader' in request) {
+      utils.forEach(requestHeaders, function setRequestHeader(val, key) {
+        if (typeof requestData === 'undefined' && key.toLowerCase() === 'content-type') {
+          // Remove Content-Type if data is undefined
+          delete requestHeaders[key];
+        } else {
+          // Otherwise add header to the request
+          request.setRequestHeader(key, val);
+        }
+      });
+    }
+
+    // Add withCredentials to request if needed
+    if (!utils.isUndefined(config.withCredentials)) {
+      request.withCredentials = !!config.withCredentials;
+    }
+
+    // Add responseType to request if needed
+    if (config.responseType) {
+      try {
+        request.responseType = config.responseType;
+      } catch (e) {
+        // Expected DOMException thrown by browsers not compatible XMLHttpRequest Level 2.
+        // But, this can be suppressed for 'json' type as it can be parsed by default 'transformResponse' function.
+        if (config.responseType !== 'json') {
+          throw e;
+        }
+      }
+    }
+
+    // Handle progress if needed
+    if (typeof config.onDownloadProgress === 'function') {
+      request.addEventListener('progress', config.onDownloadProgress);
+    }
+
+    // Not all browsers support upload events
+    if (typeof config.onUploadProgress === 'function' && request.upload) {
+      request.upload.addEventListener('progress', config.onUploadProgress);
+    }
+
+    if (config.cancelToken) {
+      // Handle cancellation
+      config.cancelToken.promise.then(function onCanceled(cancel) {
+        if (!request) {
+          return;
+        }
+
+        request.abort();
+        reject(cancel);
+        // Clean up request
+        request = null;
+      });
+    }
+
+    if (requestData === undefined) {
+      requestData = null;
+    }
+
+    // Send the request
+    request.send(requestData);
+  });
+};
 
 /***/ }),
 
 /***/ 32:
-/*!**********************************************************************************!*\
-  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/function/sys.js ***!
-  \**********************************************************************************/
+/*!******************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/node_modules/axios/lib/core/settle.js ***!
+  \******************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.os = os;exports.sys = sys;function os() {
-  return uni.getSystemInfoSync().platform;
+
+
+var createError = __webpack_require__(/*! ./createError */ 33);
+
+/**
+                                             * Resolve or reject a Promise based on response status.
+                                             *
+                                             * @param {Function} resolve A function that resolves the promise.
+                                             * @param {Function} reject A function that rejects the promise.
+                                             * @param {object} response The response.
+                                             */
+module.exports = function settle(resolve, reject, response) {
+  var validateStatus = response.config.validateStatus;
+  if (!validateStatus || validateStatus(response.status)) {
+    resolve(response);
+  } else {
+    reject(createError(
+    'Request failed with status code ' + response.status,
+    response.config,
+    null,
+    response.request,
+    response));
+
+  }
 };
 
-function sys() {
-  return uni.getSystemInfoSync();
-}
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
-
 /***/ }),
 
-/***/ 320:
-/*!**********************************************************!*\
-  !*** ./node_modules/@babel/runtime/regenerator/index.js ***!
-  \**********************************************************/
+/***/ 33:
+/*!***********************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/node_modules/axios/lib/core/createError.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! regenerator-runtime */ 321);
+"use strict";
+
+
+var enhanceError = __webpack_require__(/*! ./enhanceError */ 34);
+
+/**
+                                               * Create an Error with the specified message, config, error code, request and response.
+                                               *
+                                               * @param {string} message The error message.
+                                               * @param {Object} config The config.
+                                               * @param {string} [code] The error code (for example, 'ECONNABORTED').
+                                               * @param {Object} [request] The request.
+                                               * @param {Object} [response] The response.
+                                               * @returns {Error} The created error.
+                                               */
+module.exports = function createError(message, config, code, request, response) {
+  var error = new Error(message);
+  return enhanceError(error, config, code, request, response);
+};
 
 /***/ }),
 
-/***/ 321:
-/*!************************************************************!*\
-  !*** ./node_modules/regenerator-runtime/runtime-module.js ***!
-  \************************************************************/
+/***/ 34:
+/*!************************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/node_modules/axios/lib/core/enhanceError.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
+
+
 /**
- * Copyright (c) 2014-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-// This method of obtaining a reference to the global object needs to be
-// kept identical to the way it is obtained in runtime.js
-var g = (function() {
-  return this || (typeof self === "object" && self);
-})() || Function("return this")();
-
-// Use `getOwnPropertyNames` because not all browsers support calling
-// `hasOwnProperty` on the global `self` object in a worker. See #183.
-var hadRuntime = g.regeneratorRuntime &&
-  Object.getOwnPropertyNames(g).indexOf("regeneratorRuntime") >= 0;
-
-// Save the old regeneratorRuntime in case it needs to be restored later.
-var oldRuntime = hadRuntime && g.regeneratorRuntime;
-
-// Force reevalutation of runtime.js.
-g.regeneratorRuntime = undefined;
-
-module.exports = __webpack_require__(/*! ./runtime */ 322);
-
-if (hadRuntime) {
-  // Restore the original runtime.
-  g.regeneratorRuntime = oldRuntime;
-} else {
-  // Remove the global property added by runtime.js.
-  try {
-    delete g.regeneratorRuntime;
-  } catch(e) {
-    g.regeneratorRuntime = undefined;
+               * Update an Error with the specified config, error code, and response.
+               *
+               * @param {Error} error The error to update.
+               * @param {Object} config The config.
+               * @param {string} [code] The error code (for example, 'ECONNABORTED').
+               * @param {Object} [request] The request.
+               * @param {Object} [response] The response.
+               * @returns {Error} The error.
+               */
+module.exports = function enhanceError(error, config, code, request, response) {
+  error.config = config;
+  if (code) {
+    error.code = code;
   }
-}
 
+  error.request = request;
+  error.response = response;
+  error.isAxiosError = true;
+
+  error.toJSON = function () {
+    return {
+      // Standard
+      message: this.message,
+      name: this.name,
+      // Microsoft
+      description: this.description,
+      number: this.number,
+      // Mozilla
+      fileName: this.fileName,
+      lineNumber: this.lineNumber,
+      columnNumber: this.columnNumber,
+      stack: this.stack,
+      // Axios
+      config: this.config,
+      code: this.code };
+
+  };
+  return error;
+};
 
 /***/ }),
 
-/***/ 322:
-/*!*****************************************************!*\
-  !*** ./node_modules/regenerator-runtime/runtime.js ***!
-  \*****************************************************/
+/***/ 35:
+/*!*************************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/node_modules/axios/lib/core/buildFullPath.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var isAbsoluteURL = __webpack_require__(/*! ../helpers/isAbsoluteURL */ 36);
+var combineURLs = __webpack_require__(/*! ../helpers/combineURLs */ 37);
 
 /**
- * Copyright (c) 2014-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-!(function(global) {
-  "use strict";
-
-  var Op = Object.prototype;
-  var hasOwn = Op.hasOwnProperty;
-  var undefined; // More compressible than void 0.
-  var $Symbol = typeof Symbol === "function" ? Symbol : {};
-  var iteratorSymbol = $Symbol.iterator || "@@iterator";
-  var asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator";
-  var toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag";
-
-  var inModule = typeof module === "object";
-  var runtime = global.regeneratorRuntime;
-  if (runtime) {
-    if (inModule) {
-      // If regeneratorRuntime is defined globally and we're in a module,
-      // make the exports object identical to regeneratorRuntime.
-      module.exports = runtime;
-    }
-    // Don't bother evaluating the rest of this file if the runtime was
-    // already defined globally.
-    return;
+                                                      * Creates a new URL by combining the baseURL with the requestedURL,
+                                                      * only when the requestedURL is not already an absolute URL.
+                                                      * If the requestURL is absolute, this function returns the requestedURL untouched.
+                                                      *
+                                                      * @param {string} baseURL The base URL
+                                                      * @param {string} requestedURL Absolute or relative URL to combine
+                                                      * @returns {string} The combined full path
+                                                      */
+module.exports = function buildFullPath(baseURL, requestedURL) {
+  if (baseURL && !isAbsoluteURL(requestedURL)) {
+    return combineURLs(baseURL, requestedURL);
   }
+  return requestedURL;
+};
 
-  // Define the runtime globally (as expected by generated code) as either
-  // module.exports (if we're in a module) or a new, empty object.
-  runtime = global.regeneratorRuntime = inModule ? module.exports : {};
+/***/ }),
 
-  function wrap(innerFn, outerFn, self, tryLocsList) {
-    // If outerFn provided and outerFn.prototype is a Generator, then outerFn.prototype instanceof Generator.
-    var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator;
-    var generator = Object.create(protoGenerator.prototype);
-    var context = new Context(tryLocsList || []);
+/***/ 36:
+/*!****************************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/node_modules/axios/lib/helpers/isAbsoluteURL.js ***!
+  \****************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
-    // The ._invoke method unifies the implementations of the .next,
-    // .throw, and .return methods.
-    generator._invoke = makeInvokeMethod(innerFn, self, context);
+"use strict";
 
-    return generator;
-  }
-  runtime.wrap = wrap;
 
-  // Try/catch helper to minimize deoptimizations. Returns a completion
-  // record like context.tryEntries[i].completion. This interface could
-  // have been (and was previously) designed to take a closure to be
-  // invoked without arguments, but in all the cases we care about we
-  // already have an existing method we want to call, so there's no need
-  // to create a new function object. We can even get away with assuming
-  // the method takes exactly one argument, since that happens to be true
-  // in every case, so we don't have to touch the arguments object. The
-  // only additional allocation required is the completion record, which
-  // has a stable shape and so hopefully should be cheap to allocate.
-  function tryCatch(fn, obj, arg) {
-    try {
-      return { type: "normal", arg: fn.call(obj, arg) };
-    } catch (err) {
-      return { type: "throw", arg: err };
-    }
-  }
+/**
+               * Determines whether the specified URL is absolute
+               *
+               * @param {string} url The URL to test
+               * @returns {boolean} True if the specified URL is absolute, otherwise false
+               */
+module.exports = function isAbsoluteURL(url) {
+  // A URL is considered absolute if it begins with "<scheme>://" or "//" (protocol-relative URL).
+  // RFC 3986 defines scheme name as a sequence of characters beginning with a letter and followed
+  // by any combination of letters, digits, plus, period, or hyphen.
+  return /^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(url);
+};
 
-  var GenStateSuspendedStart = "suspendedStart";
-  var GenStateSuspendedYield = "suspendedYield";
-  var GenStateExecuting = "executing";
-  var GenStateCompleted = "completed";
+/***/ }),
 
-  // Returning this object from the innerFn has the same effect as
-  // breaking out of the dispatch switch statement.
-  var ContinueSentinel = {};
+/***/ 37:
+/*!**************************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/node_modules/axios/lib/helpers/combineURLs.js ***!
+  \**************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
-  // Dummy constructor functions that we use as the .constructor and
-  // .constructor.prototype properties for functions that return Generator
-  // objects. For full spec compliance, you may wish to configure your
-  // minifier not to mangle the names of these two functions.
-  function Generator() {}
-  function GeneratorFunction() {}
-  function GeneratorFunctionPrototype() {}
+"use strict";
 
-  // This is a polyfill for %IteratorPrototype% for environments that
-  // don't natively support it.
-  var IteratorPrototype = {};
-  IteratorPrototype[iteratorSymbol] = function () {
-    return this;
-  };
 
-  var getProto = Object.getPrototypeOf;
-  var NativeIteratorPrototype = getProto && getProto(getProto(values([])));
-  if (NativeIteratorPrototype &&
-      NativeIteratorPrototype !== Op &&
-      hasOwn.call(NativeIteratorPrototype, iteratorSymbol)) {
-    // This environment has a native %IteratorPrototype%; use it instead
-    // of the polyfill.
-    IteratorPrototype = NativeIteratorPrototype;
-  }
+/**
+               * Creates a new URL by combining the specified URLs
+               *
+               * @param {string} baseURL The base URL
+               * @param {string} relativeURL The relative URL
+               * @returns {string} The combined URL
+               */
+module.exports = function combineURLs(baseURL, relativeURL) {
+  return relativeURL ?
+  baseURL.replace(/\/+$/, '') + '/' + relativeURL.replace(/^\/+/, '') :
+  baseURL;
+};
 
-  var Gp = GeneratorFunctionPrototype.prototype =
-    Generator.prototype = Object.create(IteratorPrototype);
-  GeneratorFunction.prototype = Gp.constructor = GeneratorFunctionPrototype;
-  GeneratorFunctionPrototype.constructor = GeneratorFunction;
-  GeneratorFunctionPrototype[toStringTagSymbol] =
-    GeneratorFunction.displayName = "GeneratorFunction";
+/***/ }),
 
-  // Helper for defining the .next, .throw, and .return methods of the
-  // Iterator interface in terms of a single ._invoke method.
-  function defineIteratorMethods(prototype) {
-    ["next", "throw", "return"].forEach(function(method) {
-      prototype[method] = function(arg) {
-        return this._invoke(method, arg);
-      };
-    });
-  }
+/***/ 38:
+/*!***************************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/node_modules/axios/lib/helpers/parseHeaders.js ***!
+  \***************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
-  runtime.isGeneratorFunction = function(genFun) {
-    var ctor = typeof genFun === "function" && genFun.constructor;
-    return ctor
-      ? ctor === GeneratorFunction ||
-        // For the native GeneratorFunction constructor, the best we can
-        // do is to check its .name property.
-        (ctor.displayName || ctor.name) === "GeneratorFunction"
-      : false;
-  };
+"use strict";
 
-  runtime.mark = function(genFun) {
-    if (Object.setPrototypeOf) {
-      Object.setPrototypeOf(genFun, GeneratorFunctionPrototype);
-    } else {
-      genFun.__proto__ = GeneratorFunctionPrototype;
-      if (!(toStringTagSymbol in genFun)) {
-        genFun[toStringTagSymbol] = "GeneratorFunction";
+
+var utils = __webpack_require__(/*! ./../utils */ 19);
+
+// Headers whose duplicates are ignored by node
+// c.f. https://nodejs.org/api/http.html#http_message_headers
+var ignoreDuplicateOf = [
+'age', 'authorization', 'content-length', 'content-type', 'etag',
+'expires', 'from', 'host', 'if-modified-since', 'if-unmodified-since',
+'last-modified', 'location', 'max-forwards', 'proxy-authorization',
+'referer', 'retry-after', 'user-agent'];
+
+
+/**
+                                          * Parse headers into an object
+                                          *
+                                          * ```
+                                          * Date: Wed, 27 Aug 2014 08:58:49 GMT
+                                          * Content-Type: application/json
+                                          * Connection: keep-alive
+                                          * Transfer-Encoding: chunked
+                                          * ```
+                                          *
+                                          * @param {String} headers Headers needing to be parsed
+                                          * @returns {Object} Headers parsed into an object
+                                          */
+module.exports = function parseHeaders(headers) {
+  var parsed = {};
+  var key;
+  var val;
+  var i;
+
+  if (!headers) {return parsed;}
+
+  utils.forEach(headers.split('\n'), function parser(line) {
+    i = line.indexOf(':');
+    key = utils.trim(line.substr(0, i)).toLowerCase();
+    val = utils.trim(line.substr(i + 1));
+
+    if (key) {
+      if (parsed[key] && ignoreDuplicateOf.indexOf(key) >= 0) {
+        return;
       }
-    }
-    genFun.prototype = Object.create(Gp);
-    return genFun;
-  };
-
-  // Within the body of any async function, `await x` is transformed to
-  // `yield regeneratorRuntime.awrap(x)`, so that the runtime can test
-  // `hasOwn.call(value, "__await")` to determine if the yielded value is
-  // meant to be awaited.
-  runtime.awrap = function(arg) {
-    return { __await: arg };
-  };
-
-  function AsyncIterator(generator) {
-    function invoke(method, arg, resolve, reject) {
-      var record = tryCatch(generator[method], generator, arg);
-      if (record.type === "throw") {
-        reject(record.arg);
+      if (key === 'set-cookie') {
+        parsed[key] = (parsed[key] ? parsed[key] : []).concat([val]);
       } else {
-        var result = record.arg;
-        var value = result.value;
-        if (value &&
-            typeof value === "object" &&
-            hasOwn.call(value, "__await")) {
-          return Promise.resolve(value.__await).then(function(value) {
-            invoke("next", value, resolve, reject);
-          }, function(err) {
-            invoke("throw", err, resolve, reject);
-          });
-        }
-
-        return Promise.resolve(value).then(function(unwrapped) {
-          // When a yielded Promise is resolved, its final value becomes
-          // the .value of the Promise<{value,done}> result for the
-          // current iteration.
-          result.value = unwrapped;
-          resolve(result);
-        }, function(error) {
-          // If a rejected Promise was yielded, throw the rejection back
-          // into the async generator function so it can be handled there.
-          return invoke("throw", error, resolve, reject);
-        });
+        parsed[key] = parsed[key] ? parsed[key] + ', ' + val : val;
       }
     }
+  });
 
-    var previousPromise;
-
-    function enqueue(method, arg) {
-      function callInvokeWithMethodAndArg() {
-        return new Promise(function(resolve, reject) {
-          invoke(method, arg, resolve, reject);
-        });
-      }
-
-      return previousPromise =
-        // If enqueue has been called before, then we want to wait until
-        // all previous Promises have been resolved before calling invoke,
-        // so that results are always delivered in the correct order. If
-        // enqueue has not been called before, then it is important to
-        // call invoke immediately, without waiting on a callback to fire,
-        // so that the async generator function has the opportunity to do
-        // any necessary setup in a predictable way. This predictability
-        // is why the Promise constructor synchronously invokes its
-        // executor callback, and why async functions synchronously
-        // execute code before the first await. Since we implement simple
-        // async functions in terms of async generators, it is especially
-        // important to get this right, even though it requires care.
-        previousPromise ? previousPromise.then(
-          callInvokeWithMethodAndArg,
-          // Avoid propagating failures to Promises returned by later
-          // invocations of the iterator.
-          callInvokeWithMethodAndArg
-        ) : callInvokeWithMethodAndArg();
-    }
-
-    // Define the unified helper method that is used to implement .next,
-    // .throw, and .return (see defineIteratorMethods).
-    this._invoke = enqueue;
-  }
-
-  defineIteratorMethods(AsyncIterator.prototype);
-  AsyncIterator.prototype[asyncIteratorSymbol] = function () {
-    return this;
-  };
-  runtime.AsyncIterator = AsyncIterator;
-
-  // Note that simple async functions are implemented on top of
-  // AsyncIterator objects; they just return a Promise for the value of
-  // the final result produced by the iterator.
-  runtime.async = function(innerFn, outerFn, self, tryLocsList) {
-    var iter = new AsyncIterator(
-      wrap(innerFn, outerFn, self, tryLocsList)
-    );
-
-    return runtime.isGeneratorFunction(outerFn)
-      ? iter // If outerFn is a generator, return the full iterator.
-      : iter.next().then(function(result) {
-          return result.done ? result.value : iter.next();
-        });
-  };
-
-  function makeInvokeMethod(innerFn, self, context) {
-    var state = GenStateSuspendedStart;
-
-    return function invoke(method, arg) {
-      if (state === GenStateExecuting) {
-        throw new Error("Generator is already running");
-      }
-
-      if (state === GenStateCompleted) {
-        if (method === "throw") {
-          throw arg;
-        }
-
-        // Be forgiving, per 25.3.3.3.3 of the spec:
-        // https://people.mozilla.org/~jorendorff/es6-draft.html#sec-generatorresume
-        return doneResult();
-      }
-
-      context.method = method;
-      context.arg = arg;
-
-      while (true) {
-        var delegate = context.delegate;
-        if (delegate) {
-          var delegateResult = maybeInvokeDelegate(delegate, context);
-          if (delegateResult) {
-            if (delegateResult === ContinueSentinel) continue;
-            return delegateResult;
-          }
-        }
-
-        if (context.method === "next") {
-          // Setting context._sent for legacy support of Babel's
-          // function.sent implementation.
-          context.sent = context._sent = context.arg;
-
-        } else if (context.method === "throw") {
-          if (state === GenStateSuspendedStart) {
-            state = GenStateCompleted;
-            throw context.arg;
-          }
-
-          context.dispatchException(context.arg);
-
-        } else if (context.method === "return") {
-          context.abrupt("return", context.arg);
-        }
-
-        state = GenStateExecuting;
-
-        var record = tryCatch(innerFn, self, context);
-        if (record.type === "normal") {
-          // If an exception is thrown from innerFn, we leave state ===
-          // GenStateExecuting and loop back for another invocation.
-          state = context.done
-            ? GenStateCompleted
-            : GenStateSuspendedYield;
-
-          if (record.arg === ContinueSentinel) {
-            continue;
-          }
-
-          return {
-            value: record.arg,
-            done: context.done
-          };
-
-        } else if (record.type === "throw") {
-          state = GenStateCompleted;
-          // Dispatch the exception by looping back around to the
-          // context.dispatchException(context.arg) call above.
-          context.method = "throw";
-          context.arg = record.arg;
-        }
-      }
-    };
-  }
-
-  // Call delegate.iterator[context.method](context.arg) and handle the
-  // result, either by returning a { value, done } result from the
-  // delegate iterator, or by modifying context.method and context.arg,
-  // setting context.delegate to null, and returning the ContinueSentinel.
-  function maybeInvokeDelegate(delegate, context) {
-    var method = delegate.iterator[context.method];
-    if (method === undefined) {
-      // A .throw or .return when the delegate iterator has no .throw
-      // method always terminates the yield* loop.
-      context.delegate = null;
-
-      if (context.method === "throw") {
-        if (delegate.iterator.return) {
-          // If the delegate iterator has a return method, give it a
-          // chance to clean up.
-          context.method = "return";
-          context.arg = undefined;
-          maybeInvokeDelegate(delegate, context);
-
-          if (context.method === "throw") {
-            // If maybeInvokeDelegate(context) changed context.method from
-            // "return" to "throw", let that override the TypeError below.
-            return ContinueSentinel;
-          }
-        }
-
-        context.method = "throw";
-        context.arg = new TypeError(
-          "The iterator does not provide a 'throw' method");
-      }
-
-      return ContinueSentinel;
-    }
-
-    var record = tryCatch(method, delegate.iterator, context.arg);
-
-    if (record.type === "throw") {
-      context.method = "throw";
-      context.arg = record.arg;
-      context.delegate = null;
-      return ContinueSentinel;
-    }
-
-    var info = record.arg;
-
-    if (! info) {
-      context.method = "throw";
-      context.arg = new TypeError("iterator result is not an object");
-      context.delegate = null;
-      return ContinueSentinel;
-    }
-
-    if (info.done) {
-      // Assign the result of the finished delegate to the temporary
-      // variable specified by delegate.resultName (see delegateYield).
-      context[delegate.resultName] = info.value;
-
-      // Resume execution at the desired location (see delegateYield).
-      context.next = delegate.nextLoc;
-
-      // If context.method was "throw" but the delegate handled the
-      // exception, let the outer generator proceed normally. If
-      // context.method was "next", forget context.arg since it has been
-      // "consumed" by the delegate iterator. If context.method was
-      // "return", allow the original .return call to continue in the
-      // outer generator.
-      if (context.method !== "return") {
-        context.method = "next";
-        context.arg = undefined;
-      }
-
-    } else {
-      // Re-yield the result returned by the delegate method.
-      return info;
-    }
-
-    // The delegate iterator is finished, so forget it and continue with
-    // the outer generator.
-    context.delegate = null;
-    return ContinueSentinel;
-  }
-
-  // Define Generator.prototype.{next,throw,return} in terms of the
-  // unified ._invoke helper method.
-  defineIteratorMethods(Gp);
-
-  Gp[toStringTagSymbol] = "Generator";
-
-  // A Generator should always return itself as the iterator object when the
-  // @@iterator function is called on it. Some browsers' implementations of the
-  // iterator prototype chain incorrectly implement this, causing the Generator
-  // object to not be returned from this call. This ensures that doesn't happen.
-  // See https://github.com/facebook/regenerator/issues/274 for more details.
-  Gp[iteratorSymbol] = function() {
-    return this;
-  };
-
-  Gp.toString = function() {
-    return "[object Generator]";
-  };
-
-  function pushTryEntry(locs) {
-    var entry = { tryLoc: locs[0] };
-
-    if (1 in locs) {
-      entry.catchLoc = locs[1];
-    }
-
-    if (2 in locs) {
-      entry.finallyLoc = locs[2];
-      entry.afterLoc = locs[3];
-    }
-
-    this.tryEntries.push(entry);
-  }
-
-  function resetTryEntry(entry) {
-    var record = entry.completion || {};
-    record.type = "normal";
-    delete record.arg;
-    entry.completion = record;
-  }
-
-  function Context(tryLocsList) {
-    // The root entry object (effectively a try statement without a catch
-    // or a finally block) gives us a place to store values thrown from
-    // locations where there is no enclosing try statement.
-    this.tryEntries = [{ tryLoc: "root" }];
-    tryLocsList.forEach(pushTryEntry, this);
-    this.reset(true);
-  }
-
-  runtime.keys = function(object) {
-    var keys = [];
-    for (var key in object) {
-      keys.push(key);
-    }
-    keys.reverse();
-
-    // Rather than returning an object with a next method, we keep
-    // things simple and return the next function itself.
-    return function next() {
-      while (keys.length) {
-        var key = keys.pop();
-        if (key in object) {
-          next.value = key;
-          next.done = false;
-          return next;
-        }
-      }
-
-      // To avoid creating an additional object, we just hang the .value
-      // and .done properties off the next function object itself. This
-      // also ensures that the minifier will not anonymize the function.
-      next.done = true;
-      return next;
-    };
-  };
-
-  function values(iterable) {
-    if (iterable) {
-      var iteratorMethod = iterable[iteratorSymbol];
-      if (iteratorMethod) {
-        return iteratorMethod.call(iterable);
-      }
-
-      if (typeof iterable.next === "function") {
-        return iterable;
-      }
-
-      if (!isNaN(iterable.length)) {
-        var i = -1, next = function next() {
-          while (++i < iterable.length) {
-            if (hasOwn.call(iterable, i)) {
-              next.value = iterable[i];
-              next.done = false;
-              return next;
-            }
-          }
-
-          next.value = undefined;
-          next.done = true;
-
-          return next;
-        };
-
-        return next.next = next;
-      }
-    }
-
-    // Return an iterator with no values.
-    return { next: doneResult };
-  }
-  runtime.values = values;
-
-  function doneResult() {
-    return { value: undefined, done: true };
-  }
-
-  Context.prototype = {
-    constructor: Context,
-
-    reset: function(skipTempReset) {
-      this.prev = 0;
-      this.next = 0;
-      // Resetting context._sent for legacy support of Babel's
-      // function.sent implementation.
-      this.sent = this._sent = undefined;
-      this.done = false;
-      this.delegate = null;
-
-      this.method = "next";
-      this.arg = undefined;
-
-      this.tryEntries.forEach(resetTryEntry);
-
-      if (!skipTempReset) {
-        for (var name in this) {
-          // Not sure about the optimal order of these conditions:
-          if (name.charAt(0) === "t" &&
-              hasOwn.call(this, name) &&
-              !isNaN(+name.slice(1))) {
-            this[name] = undefined;
-          }
-        }
-      }
-    },
-
-    stop: function() {
-      this.done = true;
-
-      var rootEntry = this.tryEntries[0];
-      var rootRecord = rootEntry.completion;
-      if (rootRecord.type === "throw") {
-        throw rootRecord.arg;
-      }
-
-      return this.rval;
-    },
-
-    dispatchException: function(exception) {
-      if (this.done) {
-        throw exception;
-      }
-
-      var context = this;
-      function handle(loc, caught) {
-        record.type = "throw";
-        record.arg = exception;
-        context.next = loc;
-
-        if (caught) {
-          // If the dispatched exception was caught by a catch block,
-          // then let that catch block handle the exception normally.
-          context.method = "next";
-          context.arg = undefined;
-        }
-
-        return !! caught;
-      }
-
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        var record = entry.completion;
-
-        if (entry.tryLoc === "root") {
-          // Exception thrown outside of any try block that could handle
-          // it, so set the completion value of the entire function to
-          // throw the exception.
-          return handle("end");
-        }
-
-        if (entry.tryLoc <= this.prev) {
-          var hasCatch = hasOwn.call(entry, "catchLoc");
-          var hasFinally = hasOwn.call(entry, "finallyLoc");
-
-          if (hasCatch && hasFinally) {
-            if (this.prev < entry.catchLoc) {
-              return handle(entry.catchLoc, true);
-            } else if (this.prev < entry.finallyLoc) {
-              return handle(entry.finallyLoc);
-            }
-
-          } else if (hasCatch) {
-            if (this.prev < entry.catchLoc) {
-              return handle(entry.catchLoc, true);
-            }
-
-          } else if (hasFinally) {
-            if (this.prev < entry.finallyLoc) {
-              return handle(entry.finallyLoc);
-            }
-
-          } else {
-            throw new Error("try statement without catch or finally");
-          }
-        }
-      }
-    },
-
-    abrupt: function(type, arg) {
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        if (entry.tryLoc <= this.prev &&
-            hasOwn.call(entry, "finallyLoc") &&
-            this.prev < entry.finallyLoc) {
-          var finallyEntry = entry;
-          break;
-        }
-      }
-
-      if (finallyEntry &&
-          (type === "break" ||
-           type === "continue") &&
-          finallyEntry.tryLoc <= arg &&
-          arg <= finallyEntry.finallyLoc) {
-        // Ignore the finally entry if control is not jumping to a
-        // location outside the try/catch block.
-        finallyEntry = null;
-      }
-
-      var record = finallyEntry ? finallyEntry.completion : {};
-      record.type = type;
-      record.arg = arg;
-
-      if (finallyEntry) {
-        this.method = "next";
-        this.next = finallyEntry.finallyLoc;
-        return ContinueSentinel;
-      }
-
-      return this.complete(record);
-    },
-
-    complete: function(record, afterLoc) {
-      if (record.type === "throw") {
-        throw record.arg;
-      }
-
-      if (record.type === "break" ||
-          record.type === "continue") {
-        this.next = record.arg;
-      } else if (record.type === "return") {
-        this.rval = this.arg = record.arg;
-        this.method = "return";
-        this.next = "end";
-      } else if (record.type === "normal" && afterLoc) {
-        this.next = afterLoc;
-      }
-
-      return ContinueSentinel;
-    },
-
-    finish: function(finallyLoc) {
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        if (entry.finallyLoc === finallyLoc) {
-          this.complete(entry.completion, entry.afterLoc);
-          resetTryEntry(entry);
-          return ContinueSentinel;
-        }
-      }
-    },
-
-    "catch": function(tryLoc) {
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        if (entry.tryLoc === tryLoc) {
-          var record = entry.completion;
-          if (record.type === "throw") {
-            var thrown = record.arg;
-            resetTryEntry(entry);
-          }
-          return thrown;
-        }
-      }
-
-      // The context.catch method must only be called with a location
-      // argument that corresponds to a known catch block.
-      throw new Error("illegal catch attempt");
-    },
-
-    delegateYield: function(iterable, resultName, nextLoc) {
-      this.delegate = {
-        iterator: values(iterable),
-        resultName: resultName,
-        nextLoc: nextLoc
-      };
-
-      if (this.method === "next") {
-        // Deliberately forget the last sent value so that we don't
-        // accidentally pass it on to the delegate.
-        this.arg = undefined;
-      }
-
-      return ContinueSentinel;
-    }
-  };
-})(
-  // In sloppy mode, unbound `this` refers to the global object, fallback to
-  // Function constructor if we're in global strict mode. That is sadly a form
-  // of indirect eval which violates Content Security Policy.
-  (function() {
-    return this || (typeof self === "object" && self);
-  })() || Function("return this")()
-);
-
+  return parsed;
+};
 
 /***/ }),
 
-/***/ 323:
+/***/ 381:
 /*!****************************************************************************!*\
   !*** /Users/chengyongming/WeChatProjects/mini-car/common/classify.data.js ***!
   \****************************************************************************/
@@ -14046,7 +13752,3234 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 
-/***/ 33:
+/***/ 39:
+/*!******************************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/node_modules/axios/lib/helpers/isURLSameOrigin.js ***!
+  \******************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(/*! ./../utils */ 19);
+
+module.exports =
+utils.isStandardBrowserEnv() ?
+
+// Standard browser envs have full support of the APIs needed to test
+// whether the request URL is of the same origin as current location.
+function standardBrowserEnv() {
+  var msie = /(msie|trident)/i.test(navigator.userAgent);
+  var urlParsingNode = document.createElement('a');
+  var originURL;
+
+  /**
+                 * Parse a URL to discover it's components
+                 *
+                 * @param {String} url The URL to be parsed
+                 * @returns {Object}
+                 */
+  function resolveURL(url) {
+    var href = url;
+
+    if (msie) {
+      // IE needs attribute set twice to normalize properties
+      urlParsingNode.setAttribute('href', href);
+      href = urlParsingNode.href;
+    }
+
+    urlParsingNode.setAttribute('href', href);
+
+    // urlParsingNode provides the UrlUtils interface - http://url.spec.whatwg.org/#urlutils
+    return {
+      href: urlParsingNode.href,
+      protocol: urlParsingNode.protocol ? urlParsingNode.protocol.replace(/:$/, '') : '',
+      host: urlParsingNode.host,
+      search: urlParsingNode.search ? urlParsingNode.search.replace(/^\?/, '') : '',
+      hash: urlParsingNode.hash ? urlParsingNode.hash.replace(/^#/, '') : '',
+      hostname: urlParsingNode.hostname,
+      port: urlParsingNode.port,
+      pathname: urlParsingNode.pathname.charAt(0) === '/' ?
+      urlParsingNode.pathname :
+      '/' + urlParsingNode.pathname };
+
+  }
+
+  originURL = resolveURL(window.location.href);
+
+  /**
+                                                * Determine if a URL shares the same origin as the current location
+                                                *
+                                                * @param {String} requestURL The URL to test
+                                                * @returns {boolean} True if URL shares the same origin, otherwise false
+                                                */
+  return function isURLSameOrigin(requestURL) {
+    var parsed = utils.isString(requestURL) ? resolveURL(requestURL) : requestURL;
+    return parsed.protocol === originURL.protocol &&
+    parsed.host === originURL.host;
+  };
+}() :
+
+// Non standard browser envs (web workers, react-native) lack needed support.
+function nonStandardBrowserEnv() {
+  return function isURLSameOrigin() {
+    return true;
+  };
+}();
+
+/***/ }),
+
+/***/ 4:
+/*!**********************************************************!*\
+  !*** ./node_modules/@babel/runtime/regenerator/index.js ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(/*! regenerator-runtime */ 5);
+
+/***/ }),
+
+/***/ 40:
+/*!**********************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/node_modules/axios/lib/helpers/cookies.js ***!
+  \**********************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(/*! ./../utils */ 19);
+
+module.exports =
+utils.isStandardBrowserEnv() ?
+
+// Standard browser envs support document.cookie
+function standardBrowserEnv() {
+  return {
+    write: function write(name, value, expires, path, domain, secure) {
+      var cookie = [];
+      cookie.push(name + '=' + encodeURIComponent(value));
+
+      if (utils.isNumber(expires)) {
+        cookie.push('expires=' + new Date(expires).toGMTString());
+      }
+
+      if (utils.isString(path)) {
+        cookie.push('path=' + path);
+      }
+
+      if (utils.isString(domain)) {
+        cookie.push('domain=' + domain);
+      }
+
+      if (secure === true) {
+        cookie.push('secure');
+      }
+
+      document.cookie = cookie.join('; ');
+    },
+
+    read: function read(name) {
+      var match = document.cookie.match(new RegExp('(^|;\\s*)(' + name + ')=([^;]*)'));
+      return match ? decodeURIComponent(match[3]) : null;
+    },
+
+    remove: function remove(name) {
+      this.write(name, '', Date.now() - 86400000);
+    } };
+
+}() :
+
+// Non standard browser env (web workers, react-native) lack needed support.
+function nonStandardBrowserEnv() {
+  return {
+    write: function write() {},
+    read: function read() {return null;},
+    remove: function remove() {} };
+
+}();
+
+/***/ }),
+
+/***/ 41:
+/*!***********************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/node_modules/axios/lib/core/mergeConfig.js ***!
+  \***********************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(/*! ../utils */ 19);
+
+/**
+                                  * Config-specific merge-function which creates a new config-object
+                                  * by merging two configuration objects together.
+                                  *
+                                  * @param {Object} config1
+                                  * @param {Object} config2
+                                  * @returns {Object} New object resulting from merging config2 to config1
+                                  */
+module.exports = function mergeConfig(config1, config2) {
+  // eslint-disable-next-line no-param-reassign
+  config2 = config2 || {};
+  var config = {};
+
+  var valueFromConfig2Keys = ['url', 'method', 'params', 'data'];
+  var mergeDeepPropertiesKeys = ['headers', 'auth', 'proxy'];
+  var defaultToConfig2Keys = [
+  'baseURL', 'url', 'transformRequest', 'transformResponse', 'paramsSerializer',
+  'timeout', 'withCredentials', 'adapter', 'responseType', 'xsrfCookieName',
+  'xsrfHeaderName', 'onUploadProgress', 'onDownloadProgress',
+  'maxContentLength', 'validateStatus', 'maxRedirects', 'httpAgent',
+  'httpsAgent', 'cancelToken', 'socketPath'];
+
+
+  utils.forEach(valueFromConfig2Keys, function valueFromConfig2(prop) {
+    if (typeof config2[prop] !== 'undefined') {
+      config[prop] = config2[prop];
+    }
+  });
+
+  utils.forEach(mergeDeepPropertiesKeys, function mergeDeepProperties(prop) {
+    if (utils.isObject(config2[prop])) {
+      config[prop] = utils.deepMerge(config1[prop], config2[prop]);
+    } else if (typeof config2[prop] !== 'undefined') {
+      config[prop] = config2[prop];
+    } else if (utils.isObject(config1[prop])) {
+      config[prop] = utils.deepMerge(config1[prop]);
+    } else if (typeof config1[prop] !== 'undefined') {
+      config[prop] = config1[prop];
+    }
+  });
+
+  utils.forEach(defaultToConfig2Keys, function defaultToConfig2(prop) {
+    if (typeof config2[prop] !== 'undefined') {
+      config[prop] = config2[prop];
+    } else if (typeof config1[prop] !== 'undefined') {
+      config[prop] = config1[prop];
+    }
+  });
+
+  var axiosKeys = valueFromConfig2Keys.
+  concat(mergeDeepPropertiesKeys).
+  concat(defaultToConfig2Keys);
+
+  var otherKeys = Object.
+  keys(config2).
+  filter(function filterAxiosKeys(key) {
+    return axiosKeys.indexOf(key) === -1;
+  });
+
+  utils.forEach(otherKeys, function otherKeysDefaultToConfig2(prop) {
+    if (typeof config2[prop] !== 'undefined') {
+      config[prop] = config2[prop];
+    } else if (typeof config1[prop] !== 'undefined') {
+      config[prop] = config1[prop];
+    }
+  });
+
+  return config;
+};
+
+/***/ }),
+
+/***/ 42:
+/*!*******************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/node_modules/uni-axios/lib/defaults.js ***!
+  \*******************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var defaults = {
+  adapter: __webpack_require__(/*! ./adapters */ 43),
+  validateStatus: function validateStatus(status) {
+    return status >= 200 && status < 300;
+  },
+  dataType: 'json',
+  responseType: 'text',
+  sslVerify: true };
+
+
+module.exports = defaults;
+
+/***/ }),
+
+/***/ 43:
+/*!*******************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/node_modules/uni-axios/lib/adapters.js ***!
+  \*******************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(uni) {var axiosUtils = __webpack_require__(/*! ./utils */ 18);
+var buildURL = axiosUtils.buildURL;
+var settle = axiosUtils.settle;
+module.exports = function uniAdapter(config) {
+  return new Promise(function adapterUniRequest(resolve, reject) {
+    uni.request({
+      method: config.method.toUpperCase(),
+      url: buildURL(config.url, config.params, config.paramsSerializer),
+      header: config.headers,
+      data: config.data,
+      dataType: config.dataType,
+      responseType: config.responseType,
+      sslVerify: config.sslVerify,
+      complete: function complete(response) {
+        response = {
+          data: response.data,
+          status: response.statusCode,
+          errMsg: response.errMsg,
+          header: response.header,
+          config: config };
+
+        settle(resolve, reject, response);
+      } });
+
+  });
+};
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+
+/***/ 44:
+/*!************************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/node_modules/uni-axios/lib/core/UniAxios.js ***!
+  \************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var axiosUtils = __webpack_require__(/*! ./../utils */ 18);
+var Axios = axiosUtils.Axios;
+var utils = axiosUtils.utils;
+var InterceptorManager = axiosUtils.InterceptorManager;
+function UniAxios(defaultConfig) {
+  Axios.call(this, defaultConfig);
+  this.interceptors.first = new InterceptorManager();
+  this.interceptors.last = new InterceptorManager();
+}
+
+UniAxios.prototype.request = function request(config) {
+  if (typeof config === 'string') {
+    config = arguments[1] || {};
+    config.url = arguments[0];
+  } else {
+    config = config || {};
+  }
+  var promise = Promise.resolve(config);
+  this.interceptors.first.forEach(function firstInterceptors(interceptor) {
+    promise = promise.then(interceptor.fulfilled, interceptor.rejected);
+  });
+  var that = this;
+  var promise = promise.then(function axiosRequest(config) {
+    return Axios.prototype.request.call(that, config);
+  });
+  this.interceptors.last.forEach(function lastInterceptors(interceptor) {
+    promise = promise.then(function lastResolve(response) {
+      interceptor.fulfilled(config);
+      return response;
+    }, function lastReject(err) {
+      interceptor.fulfilled(config);
+      return Promise.reject(err);
+    });
+  });
+  return promise;
+};
+
+utils.forEach(['get', 'delete', 'connect', 'head', 'options', 'trace'], function forEachMethodNoData(method) {
+  UniAxios.prototype[method] = function (url, config) {
+    return this.request(utils.merge(config || {}, {
+      method: method,
+      url: url }));
+
+  };
+});
+
+utils.forEach(['post', 'put'], function forEachMethodWithData(method) {
+  UniAxios.prototype[method] = function (url, data, config) {
+    return this.request(utils.merge(config || {}, {
+      method: method,
+      url: url,
+      data: data }));
+
+  };
+});
+
+module.exports = UniAxios;
+
+/***/ }),
+
+/***/ 45:
+/*!***********************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/common/http.api.js ***!
+  \***********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; // 如果没有通过拦截器配置域名的话，可以在这里写上完整的URL(加上域名部分)
+var hotSearchUrl = '/ebapi/store_api/hot_search';
+var indexUrl = '/ebapi/public_api/index';
+
+
+// 此处第二个参数vm，就是我们在页面使用的this，你可以通过vm获取vuex等操作，更多内容详见uView对拦截器的介绍部分：
+// https://uviewui.com/js/http.html#%E4%BD%95%E8%B0%93%E8%AF%B7%E6%B1%82%E6%8B%A6%E6%88%AA%EF%BC%9F
+var install = function install(Vue, vm) {
+  // 此处没有使用传入的params参数
+  var getSearch = function getSearch() {var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};return vm.$u.get(hotSearchUrl, {
+      id: 2 });};
+
+
+  // 此处使用了传入的params参数，一切自定义即可
+  var getInfo = function getInfo() {var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};return vm.$u.post(indexUrl, params);};
+
+  // 将各个定义的接口名称，统一放进对象挂载到vm.$u.api(因为vm就是this，也即this.$u.api)下
+  vm.$u.api = { getSearch: getSearch, getInfo: getInfo };
+};var _default =
+
+
+{
+  install: install,
+  noNeedtokenUrl: ['/area/list', '/ordertime/list', '/iventendcar/cars', '/butt-auth'],
+  tokenUrl: 'https://chengym.com.cn/library/butt-auth',
+  baseUrl: 'https://chengym.com.cn/library' };exports.default = _default;
+
+/***/ }),
+
+/***/ 46:
+/*!**********************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/index.js ***!
+  \**********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;
+var _mixin = _interopRequireDefault(__webpack_require__(/*! ./libs/mixin/mixin.js */ 47));
+
+
+
+var _request = _interopRequireDefault(__webpack_require__(/*! ./libs/request */ 48));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var _queryParams = _interopRequireDefault(__webpack_require__(/*! ./libs/function/queryParams.js */ 52));
+
+var _route = _interopRequireDefault(__webpack_require__(/*! ./libs/function/route.js */ 53));
+
+var _timeFormat = _interopRequireDefault(__webpack_require__(/*! ./libs/function/timeFormat.js */ 54));
+
+var _timeFrom = _interopRequireDefault(__webpack_require__(/*! ./libs/function/timeFrom.js */ 55));
+
+var _colorGradient = _interopRequireDefault(__webpack_require__(/*! ./libs/function/colorGradient.js */ 56));
+
+var _guid = _interopRequireDefault(__webpack_require__(/*! ./libs/function/guid.js */ 57));
+
+var _color = _interopRequireDefault(__webpack_require__(/*! ./libs/function/color.js */ 58));
+
+var _type2icon = _interopRequireDefault(__webpack_require__(/*! ./libs/function/type2icon.js */ 59));
+
+var _randomArray = _interopRequireDefault(__webpack_require__(/*! ./libs/function/randomArray.js */ 60));
+
+var _deepClone = _interopRequireDefault(__webpack_require__(/*! ./libs/function/deepClone.js */ 50));
+
+var _deepMerge = _interopRequireDefault(__webpack_require__(/*! ./libs/function/deepMerge.js */ 49));
+
+var _addUnit = _interopRequireDefault(__webpack_require__(/*! ./libs/function/addUnit.js */ 61));
+
+
+var _test = _interopRequireDefault(__webpack_require__(/*! ./libs/function/test.js */ 51));
+
+var _random = _interopRequireDefault(__webpack_require__(/*! ./libs/function/random.js */ 62));
+
+var _trim = _interopRequireDefault(__webpack_require__(/*! ./libs/function/trim.js */ 63));
+
+var _toast = _interopRequireDefault(__webpack_require__(/*! ./libs/function/toast.js */ 64));
+
+var _getParent = _interopRequireDefault(__webpack_require__(/*! ./libs/function/getParent.js */ 65));
+
+var _$parent = _interopRequireDefault(__webpack_require__(/*! ./libs/function/$parent.js */ 66));
+
+
+
+var _sys = __webpack_require__(/*! ./libs/function/sys.js */ 67);
+
+var _debounce = _interopRequireDefault(__webpack_require__(/*! ./libs/function/debounce.js */ 68));
+
+var _throttle = _interopRequireDefault(__webpack_require__(/*! ./libs/function/throttle.js */ 69));
+
+
+
+var _config = _interopRequireDefault(__webpack_require__(/*! ./libs/config/config.js */ 70));
+
+var _zIndex = _interopRequireDefault(__webpack_require__(/*! ./libs/config/zIndex.js */ 71));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };} // 引入全局mixin
+// 引入关于是否mixin集成小程序分享的配置
+// import wxshare from './libs/mixin/mpShare.js'
+// 全局挂载引入http相关请求拦截插件
+function wranning(str) {// 开发环境进行信息输出,主要是一些报错信息
+  // 这个环境的来由是在程序编写时候,点击hx编辑器运行调试代码的时候,详见:
+  // 	https://uniapp.dcloud.io/frame?id=%e5%bc%80%e5%8f%91%e7%8e%af%e5%a2%83%e5%92%8c%e7%94%9f%e4%ba%a7%e7%8e%af%e5%a2%83
+  if (true) {console.warn(str);}} // 尝试判断在根目录的/store中是否有$u.mixin.js，此文件uView默认为需要挂在到全局的vuex的state变量
+// HX2.6.11版本,放到try中,控制台依然会警告,暂时不用此方式，
+// let vuexStore = {};
+// try {
+// 	vuexStore = require("@/store/$u.mixin.js");
+// } catch (e) {
+// 	//TODO handle the exception
+// }
+// post类型对象参数转为get类型url参数
+var $u = { queryParams: _queryParams.default, route: _route.default, timeFormat: _timeFormat.default, date: _timeFormat.default, // 另名date
+  timeFrom: _timeFrom.default, colorGradient: _colorGradient.default.colorGradient, guid: _guid.default, color: _color.default, sys: _sys.sys, os: _sys.os, type2icon: _type2icon.default, randomArray: _randomArray.default, wranning: wranning, get: _request.default.get, post: _request.default.post,
+  put: _request.default.put,
+  'delete': _request.default.delete,
+  hexToRgb: _colorGradient.default.hexToRgb,
+  rgbToHex: _colorGradient.default.rgbToHex,
+  test: _test.default,
+  random: _random.default,
+  deepClone: _deepClone.default,
+  deepMerge: _deepMerge.default,
+  getParent: _getParent.default,
+  $parent: _$parent.default,
+  addUnit: _addUnit.default,
+  trim: _trim.default,
+  type: ['primary', 'success', 'error', 'warning', 'info'],
+  http: _request.default,
+  toast: _toast.default,
+  config: _config.default, // uView配置信息相关，比如版本号
+  zIndex: _zIndex.default,
+  debounce: _debounce.default,
+  throttle: _throttle.default };
+
+
+var install = function install(Vue) {
+  Vue.mixin(_mixin.default);
+  if (Vue.prototype.openShare) {
+    Vue.mixin(mpShare);
+  }
+  // Vue.mixin(vuexStore);
+  // 时间格式化，同时两个名称，date和timeFormat
+  Vue.filter('timeFormat', function (timestamp, format) {
+    return (0, _timeFormat.default)(timestamp, format);
+  });
+  Vue.filter('date', function (timestamp, format) {
+    return (0, _timeFormat.default)(timestamp, format);
+  });
+  // 将多久以前的方法，注入到全局过滤器
+  Vue.filter('timeFrom', function (timestamp, format) {
+    return (0, _timeFrom.default)(timestamp, format);
+  });
+  Vue.prototype.$u = $u;
+};var _default =
+
+{
+  install: install };exports.default = _default;
+
+/***/ }),
+
+/***/ 47:
+/*!*********************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/mixin/mixin.js ***!
+  \*********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(uni) {module.exports = {
+  data: function data() {
+    return {};
+  },
+  onLoad: function onLoad() {
+    // getRect挂载到$u上，因为这方法需要使用in(this)，所以无法把它独立成一个单独的文件导出
+    this.$u.getRect = this.$uGetRect;
+  },
+  methods: {
+    // 查询节点信息
+    // 目前此方法在支付宝小程序中无法获取组件跟接点的尺寸，为支付宝的bug(2020-07-21)
+    // 解决办法为在组件根部再套一个没有任何作用的view元素
+    $uGetRect: function $uGetRect(selector, all) {var _this = this;
+      return new Promise(function (resolve) {
+        uni.createSelectorQuery().
+        in(_this)[all ? 'selectAll' : 'select'](selector).
+        boundingClientRect(function (rect) {
+          if (all && Array.isArray(rect) && rect.length) {
+            resolve(rect);
+          }
+          if (!all && rect) {
+            resolve(rect);
+          }
+        }).
+        exec();
+      });
+    },
+    getParentData: function getParentData() {var _this2 = this;var parentName = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+      // 避免在created中去定义parent变量
+      if (!this.parent) this.parent = false;
+      // 这里的本质原理是，通过获取父组件实例(也即u-radio-group的this)
+      // 将父组件this中对应的参数，赋值给本组件(u-radio的this)的parentData对象中对应的属性
+      // 之所以需要这么做，是因为所有端中，头条小程序不支持通过this.parent.xxx去监听父组件参数的变化
+      this.parent = this.$u.$parent.call(this, parentName);
+      if (this.parent) {
+        // 历遍parentData中的属性，将parent中的同名属性赋值给parentData
+        Object.keys(this.parentData).map(function (key) {
+          _this2.parentData[key] = _this2.parent[key];
+        });
+      }
+    },
+    // 阻止事件冒泡
+    preventEvent: function preventEvent(e) {
+      e && e.stopPropagation && e.stopPropagation();
+    } },
+
+  onReachBottom: function onReachBottom() {
+    uni.$emit('uOnReachBottom');
+  } };
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+
+/***/ 48:
+/*!***********************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/request/index.js ***!
+  \***********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _deepMerge = _interopRequireDefault(__webpack_require__(/*! ../function/deepMerge */ 49));
+var _test = _interopRequireDefault(__webpack_require__(/*! ../function/test */ 51));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}function _createClass(Constructor, protoProps, staticProps) {if (protoProps) _defineProperties(Constructor.prototype, protoProps);if (staticProps) _defineProperties(Constructor, staticProps);return Constructor;}var
+Request = /*#__PURE__*/function () {_createClass(Request, [{ key: "setConfig",
+    // 设置全局默认配置
+    value: function setConfig(customConfig) {
+      // 深度合并对象，否则会造成对象深层属性丢失
+      this.config = (0, _deepMerge.default)(this.config, customConfig);
+    }
+
+    // 主要请求部分
+  }, { key: "request", value: function request() {var _this = this;var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+      // 检查请求拦截
+      if (this.interceptor.request && typeof this.interceptor.request === 'function') {
+        var tmpConfig = {};
+        var interceptorRequest = this.interceptor.request(options);
+        if (interceptorRequest === false) {
+          // 返回一个处于pending状态中的Promise，来取消原promise，避免进入then()回调
+          return new Promise(function () {});
+        }
+        this.options = interceptorRequest;
+      }
+      options.dataType = options.dataType || this.config.dataType;
+      options.responseType = options.responseType || this.config.responseType;
+      options.url = options.url || '';
+      options.params = options.params || {};
+      options.header = Object.assign(this.config.header, options.header);
+      options.method = options.method || this.config.method;
+
+      return new Promise(function (resolve, reject) {
+        options.complete = function (response) {
+          // 请求返回后，隐藏loading(如果请求返回快的话，可能会没有loading)
+          uni.hideLoading();
+          // 清除定时器，如果请求回来了，就无需loading
+          clearTimeout(_this.config.timer);
+          _this.config.timer = null;
+          // 判断用户对拦截返回数据的要求，如果originalData为true，返回所有的数据(response)到拦截器，否则只返回response.data
+          if (_this.config.originalData) {
+            // 判断是否存在拦截器
+            if (_this.interceptor.response && typeof _this.interceptor.response === 'function') {
+              var resInterceptors = _this.interceptor.response(response);
+              // 如果拦截器不返回false，就将拦截器返回的内容给this.$u.post的then回调
+              if (resInterceptors !== false) {
+                resolve(resInterceptors);
+              } else {
+                // 如果拦截器返回false，意味着拦截器定义者认为返回有问题，直接接入catch回调
+                reject(response);
+              }
+            } else {
+              // 如果要求返回原始数据，就算没有拦截器，也返回最原始的数据
+              resolve(response);
+            }
+          } else {
+            if (response.statusCode == 200) {
+              if (_this.interceptor.response && typeof _this.interceptor.response === 'function') {
+                var _resInterceptors = _this.interceptor.response(response.data);
+                if (_resInterceptors !== false) {
+                  resolve(_resInterceptors);
+                } else {
+                  reject(response.data);
+                }
+              } else {
+                // 如果不是返回原始数据(originalData=false)，且没有拦截器的情况下，返回纯数据给then回调
+                resolve(response.data);
+              }
+            } else {
+              // 不返回原始数据的情况下，服务器状态码不为200，modal弹框提示
+              // if(response.errMsg) {
+              // 	uni.showModal({
+              // 		title: response.errMsg
+              // 	});
+              // }
+              reject(response);
+            }
+          }
+        };
+
+        // 判断用户传递的URL是否/开头,如果不是,加上/，这里使用了uView的test.js验证库的url()方法
+        options.url = _test.default.url(options.url) ? options.url : _this.config.baseUrl + (options.url.indexOf('/') == 0 ?
+        options.url : '/' + options.url);
+
+        // 是否显示loading
+        // 加一个是否已有timer定时器的判断，否则有两个同时请求的时候，后者会清除前者的定时器id
+        // 而没有清除前者的定时器，导致前者超时，一直显示loading
+        if (_this.config.showLoading && !_this.config.timer) {
+          _this.config.timer = setTimeout(function () {
+            uni.showLoading({
+              title: _this.config.loadingText,
+              mask: _this.config.loadingMask });
+
+            _this.config.timer = null;
+          }, _this.config.loadingTime);
+        }
+        uni.request(options);
+      });
+      // .catch(res => {
+      // 	// 如果返回reject()，不让其进入this.$u.post().then().catch()后面的catct()
+      // 	// 因为很多人都会忘了写后面的catch()，导致报错捕获不到catch
+      // 	return new Promise(()=>{});
+      // })
+    } }]);
+
+  function Request() {var _this2 = this;_classCallCheck(this, Request);
+    this.config = {
+      baseUrl: '', // 请求的根域名
+      // 默认的请求头
+      header: {},
+      method: 'POST',
+      // 设置为json，返回后uni.request会对数据进行一次JSON.parse
+      dataType: 'json',
+      // 此参数无需处理，因为5+和支付宝小程序不支持，默认为text即可
+      responseType: 'text',
+      showLoading: true, // 是否显示请求中的loading
+      loadingText: '请求中...',
+      loadingTime: 800, // 在此时间内，请求还没回来的话，就显示加载中动画，单位ms
+      timer: null, // 定时器
+      originalData: false, // 是否在拦截器中返回服务端的原始数据，见文档说明
+      loadingMask: true // 展示loading的时候，是否给一个透明的蒙层，防止触摸穿透
+    };
+
+    // 拦截器
+    this.interceptor = {
+      // 请求前的拦截
+      request: null,
+      // 请求后的拦截
+      response: null };
+
+
+    // get请求
+    this.get = function (url) {var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};var header = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+      return _this2.request({
+        method: 'GET',
+        url: url,
+        header: header,
+        data: data });
+
+    };
+
+    // post请求
+    this.post = function (url) {var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};var header = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+      return _this2.request({
+        url: url,
+        method: 'POST',
+        header: header,
+        data: data });
+
+    };
+
+    // put请求，不支持支付宝小程序(HX2.6.15)
+    this.put = function (url) {var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};var header = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+      return _this2.request({
+        url: url,
+        method: 'PUT',
+        header: header,
+        data: data });
+
+    };
+
+    // delete请求，不支持支付宝和头条小程序(HX2.6.15)
+    this.delete = function (url) {var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};var header = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+      return _this2.request({
+        url: url,
+        method: 'DELETE',
+        header: header,
+        data: data });
+
+    };
+  }return Request;}();var _default =
+
+new Request();exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+
+/***/ 49:
+/*!****************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/function/deepMerge.js ***!
+  \****************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _deepClone = _interopRequireDefault(__webpack_require__(/*! ./deepClone */ 50));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+
+// JS对象深度合并
+function deepMerge() {var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};var source = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  target = (0, _deepClone.default)(target);
+  if (typeof target !== 'object' || typeof source !== 'object') return false;
+  for (var prop in source) {
+    if (!source.hasOwnProperty(prop)) continue;
+    if (prop in target) {
+      if (typeof target[prop] !== 'object') {
+        target[prop] = source[prop];
+      } else {
+        if (typeof source[prop] !== 'object') {
+          target[prop] = source[prop];
+        } else {
+          if (target[prop].concat && source[prop].concat) {
+            target[prop] = target[prop].concat(source[prop]);
+          } else {
+            target[prop] = deepMerge(target[prop], source[prop]);
+          }
+        }
+      }
+    } else {
+      target[prop] = source[prop];
+    }
+  }
+  return target;
+}var _default =
+
+deepMerge;exports.default = _default;
+
+/***/ }),
+
+/***/ 5:
+/*!************************************************************!*\
+  !*** ./node_modules/regenerator-runtime/runtime-module.js ***!
+  \************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/**
+ * Copyright (c) 2014-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+// This method of obtaining a reference to the global object needs to be
+// kept identical to the way it is obtained in runtime.js
+var g = (function() {
+  return this || (typeof self === "object" && self);
+})() || Function("return this")();
+
+// Use `getOwnPropertyNames` because not all browsers support calling
+// `hasOwnProperty` on the global `self` object in a worker. See #183.
+var hadRuntime = g.regeneratorRuntime &&
+  Object.getOwnPropertyNames(g).indexOf("regeneratorRuntime") >= 0;
+
+// Save the old regeneratorRuntime in case it needs to be restored later.
+var oldRuntime = hadRuntime && g.regeneratorRuntime;
+
+// Force reevalutation of runtime.js.
+g.regeneratorRuntime = undefined;
+
+module.exports = __webpack_require__(/*! ./runtime */ 6);
+
+if (hadRuntime) {
+  // Restore the original runtime.
+  g.regeneratorRuntime = oldRuntime;
+} else {
+  // Remove the global property added by runtime.js.
+  try {
+    delete g.regeneratorRuntime;
+  } catch(e) {
+    g.regeneratorRuntime = undefined;
+  }
+}
+
+
+/***/ }),
+
+/***/ 50:
+/*!****************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/function/deepClone.js ***!
+  \****************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; // 判断arr是否为一个数组，返回一个bool值
+function isArray(arr) {
+  return Object.prototype.toString.call(arr) === '[object Array]';
+}
+
+// 深度克隆
+function deepClone(obj) {
+  // 对常见的“非”值，直接返回原来值
+  if ([null, undefined, NaN, false].includes(obj)) return obj;
+  if (typeof obj !== "object" && typeof obj !== 'function') {
+    //原始类型直接返回
+    return obj;
+  }
+  var o = isArray(obj) ? [] : {};
+  for (var i in obj) {
+    if (obj.hasOwnProperty(i)) {
+      o[i] = typeof obj[i] === "object" ? deepClone(obj[i]) : obj[i];
+    }
+  }
+  return o;
+}var _default =
+
+deepClone;exports.default = _default;
+
+/***/ }),
+
+/***/ 51:
+/*!***********************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/function/test.js ***!
+  \***********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; /**
+                                                                                                      * 验证电子邮箱格式
+                                                                                                      */
+function email(value) {
+  return /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/.test(value);
+}
+
+/**
+   * 验证手机格式
+   */
+function mobile(value) {
+  return /^1[23456789]\d{9}$/.test(value);
+}
+
+/**
+   * 验证URL格式
+   */
+function url(value) {
+  return /http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w-.\/?%&=]*)?/.test(value);
+}
+
+/**
+   * 验证日期格式
+   */
+function date(value) {
+  return !/Invalid|NaN/.test(new Date(value).toString());
+}
+
+/**
+   * 验证ISO类型的日期格式
+   */
+function dateISO(value) {
+  return /^\d{4}[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])$/.test(value);
+}
+
+/**
+   * 验证十进制数字
+   */
+function number(value) {
+  return /^(?:-?\d+|-?\d{1,3}(?:,\d{3})+)?(?:\.\d+)?$/.test(value);
+}
+
+/**
+   * 验证整数
+   */
+function digits(value) {
+  return /^\d+$/.test(value);
+}
+
+/**
+   * 验证身份证号码
+   */
+function idCard(value) {
+  return /^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.test(
+  value);
+}
+
+/**
+   * 是否车牌号
+   */
+function carNo(value) {
+  // 新能源车牌
+  var xreg = /^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}(([0-9]{5}[DF]$)|([DF][A-HJ-NP-Z0-9][0-9]{4}$))/;
+  // 旧车牌
+  var creg = /^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-HJ-NP-Z0-9]{4}[A-HJ-NP-Z0-9挂学警港澳]{1}$/;
+  if (value.length === 7) {
+    return creg.test(value);
+  } else if (value.length === 8) {
+    return xreg.test(value);
+  } else {
+    return false;
+  }
+}
+
+/**
+   * 金额,只允许2位小数
+   */
+function amount(value) {
+  //金额，只允许保留两位小数
+  return /^[1-9]\d*(,\d{3})*(\.\d{1,2})?$|^0\.\d{1,2}$/.test(value);
+}
+
+/**
+   * 中文
+   */
+function chinese(value) {
+  var reg = /^[\u4e00-\u9fa5]+$/gi;
+  return reg.test(value);
+}
+
+/**
+   * 只能输入字母
+   */
+function letter(value) {
+  return /^[a-zA-Z]*$/.test(value);
+}
+
+/**
+   * 只能是字母或者数字
+   */
+function enOrNum(value) {
+  //英文或者数字
+  var reg = /^[0-9a-zA-Z]*$/g;
+  return reg.test(value);
+}
+
+/**
+   * 验证是否包含某个值
+   */
+function contains(value, param) {
+  return value.indexOf(param) >= 0;
+}
+
+/**
+   * 验证一个值范围[min, max]
+   */
+function range(value, param) {
+  return value >= param[0] && value <= param[1];
+}
+
+/**
+   * 验证一个长度范围[min, max]
+   */
+function rangeLength(value, param) {
+  return value.length >= param[0] && value.length <= param[1];
+}
+
+/**
+   * 是否固定电话
+   */
+function landline(value) {
+  var reg = /^\d{3,4}-\d{7,8}(-\d{3,4})?$/;
+  return reg.test(value);
+}
+
+/**
+   * 判断是否为空
+   */
+function empty(value) {
+  switch (typeof value) {
+    case 'undefined':
+      return true;
+    case 'string':
+      if (value.replace(/(^[ \t\n\r]*)|([ \t\n\r]*$)/g, '').length == 0) return true;
+      break;
+    case 'boolean':
+      if (!value) return true;
+      break;
+    case 'number':
+      if (0 === value || isNaN(value)) return true;
+      break;
+    case 'object':
+      if (null === value || value.length === 0) return true;
+      for (var i in value) {
+        return false;
+      }
+      return true;}
+
+  return false;
+}
+
+/**
+   * 是否json字符串
+   */
+function jsonString(value) {
+  if (typeof value == 'string') {
+    try {
+      var obj = JSON.parse(value);
+      if (typeof obj == 'object' && obj) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
+  }
+  return false;
+}
+
+
+/**
+   * 是否数组
+   */
+function array(value) {
+  if (typeof Array.isArray === "function") {
+    return Array.isArray(value);
+  } else {
+    return Object.prototype.toString.call(value) === "[object Array]";
+  }
+}
+
+/**
+   * 是否对象
+   */
+function object(value) {
+  return Object.prototype.toString.call(value) === '[object Object]';
+}
+
+/**
+   * 是否短信验证码
+   */
+function code(value) {var len = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 6;
+  return new RegExp("^\\d{".concat(len, "}$")).test(value);
+}var _default =
+
+
+{
+  email: email,
+  mobile: mobile,
+  url: url,
+  date: date,
+  dateISO: dateISO,
+  number: number,
+  digits: digits,
+  idCard: idCard,
+  carNo: carNo,
+  amount: amount,
+  chinese: chinese,
+  letter: letter,
+  enOrNum: enOrNum,
+  contains: contains,
+  range: range,
+  rangeLength: rangeLength,
+  empty: empty,
+  isEmpty: empty,
+  jsonString: jsonString,
+  landline: landline,
+  object: object,
+  array: array,
+  code: code };exports.default = _default;
+
+/***/ }),
+
+/***/ 52:
+/*!******************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/function/queryParams.js ***!
+  \******************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; /**
+                                                                                                      * 对象转url参数
+                                                                                                      * @param {*} data,对象
+                                                                                                      * @param {*} isPrefix,是否自动加上"?"
+                                                                                                      */
+function queryParams() {var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};var isPrefix = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;var arrayFormat = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'brackets';
+  var prefix = isPrefix ? '?' : '';
+  var _result = [];
+  if (['indices', 'brackets', 'repeat', 'comma'].indexOf(arrayFormat) == -1) arrayFormat = 'brackets';var _loop = function _loop(
+  key) {
+    var value = data[key];
+    // 去掉为空的参数
+    if (['', undefined, null].indexOf(value) >= 0) {
+      return "continue";
+    }
+    // 如果值为数组，另行处理
+    if (value.constructor === Array) {
+      // e.g. {ids: [1, 2, 3]}
+      switch (arrayFormat) {
+        case 'indices':
+          // 结果: ids[0]=1&ids[1]=2&ids[2]=3
+          for (var i = 0; i < value.length; i++) {
+            _result.push(key + '[' + i + ']=' + value[i]);
+          }
+          break;
+        case 'brackets':
+          // 结果: ids[]=1&ids[]=2&ids[]=3
+          value.forEach(function (_value) {
+            _result.push(key + '[]=' + _value);
+          });
+          break;
+        case 'repeat':
+          // 结果: ids=1&ids=2&ids=3
+          value.forEach(function (_value) {
+            _result.push(key + '=' + _value);
+          });
+          break;
+        case 'comma':
+          // 结果: ids=1,2,3
+          var commaStr = "";
+          value.forEach(function (_value) {
+            commaStr += (commaStr ? "," : "") + _value;
+          });
+          _result.push(key + '=' + commaStr);
+          break;
+        default:
+          value.forEach(function (_value) {
+            _result.push(key + '[]=' + _value);
+          });}
+
+    } else {
+      _result.push(key + '=' + value);
+    }};for (var key in data) {var _ret = _loop(key);if (_ret === "continue") continue;
+  }
+  return _result.length ? prefix + _result.join('&') : '';
+}var _default =
+
+queryParams;exports.default = _default;
+
+/***/ }),
+
+/***/ 53:
+/*!************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/function/route.js ***!
+  \************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _queryParams = _interopRequireDefault(__webpack_require__(/*! ../../libs/function/queryParams.js */ 52));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+/**
+                                                                                                                                                                                                                                                                                            * 路由跳转
+                                                                                                                                                                                                                                                                                            * 注意:本方法没有对跳转的回调函数进行封装
+                                                                                                                                                                                                                                                                                            */
+function route() {var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+  var config = {
+    type: 'navigateTo',
+    url: '',
+    delta: 1, // navigateBack页面后退时,回退的层数
+    params: {}, // 传递的参数
+    animationType: 'pop-in', // 窗口动画,只在APP有效
+    animationDuration: 300 // 窗口动画持续时间,单位毫秒,只在APP有效
+  };
+  config = Object.assign(config, options);
+  // 如果url没有"/"开头，添加上，因为uni的路由跳转需要"/"开头
+  if (config.url[0] != '/') config.url = '/' + config.url;
+  // 判断是否有传递显式的参数,Object.keys转为数组并判断长度,switchTab类型时不能携带参数
+  if (Object.keys(config.params).length && config.type != 'switchTab') {
+    // 判断用户传递的url中，是否带有参数
+    // 使用正则匹配，主要依据是判断是否有"/","?","="等，如“/page/index/index?name=mary"
+    // 如果有url中有get参数，转换后无需带上"?"
+    var query = '';
+    if (/.*\/.*\?.*=.*/.test(config.url)) {
+      // object对象转为get类型的参数
+      query = (0, _queryParams.default)(config.params, false);
+      // 因为已有get参数,所以后面拼接的参数需要带上"&"隔开
+      config.url += "&" + query;
+    } else {
+      query = (0, _queryParams.default)(config.params);
+      config.url += query;
+    }
+  }
+  // 简写形式，把url和参数拼接起来
+  if (typeof options === 'string' && typeof params == 'object') {
+    var _query = '';
+    if (/.*\/.*\?.*=.*/.test(options)) {
+      // object对象转为get类型的参数
+      _query = (0, _queryParams.default)(params, false);
+      // 因为已有get参数,所以后面拼接的参数需要带上"&"隔开
+      options += "&" + _query;
+    } else {
+      _query = (0, _queryParams.default)(params);
+      options += _query;
+    }
+  }
+  // 判断是否一个字符串，如果是，直接跳转(简写法)
+  // 如果是中情形，默认第二个参数为对象形式的参数
+  if (typeof options === 'string') {
+    if (options[0] != '/') options = '/' + options;
+    return uni.navigateTo({
+      url: options });
+
+  }
+  // navigateTo类型的跳转
+  if (config.type == 'navigateTo' || config.type == 'to') {
+    return uni.navigateTo({
+      url: config.url,
+      animationType: config.animationType,
+      animationDuration: config.animationDuration });
+
+  }
+  if (config.type == 'redirectTo' || config.type == 'redirect') {
+    return uni.redirectTo({
+      url: config.url });
+
+  }
+  if (config.type == 'switchTab' || config.type == 'tab') {
+    return uni.switchTab({
+      url: config.url });
+
+  }
+  if (config.type == 'reLaunch') {
+    return uni.reLaunch({
+      url: config.url });
+
+  }
+  if (config.type == 'navigateBack' || config.type == 'back') {
+    return uni.navigateBack({
+      delta: parseInt(config.delta ? config.delta : this.delta) });
+
+  }
+}var _default =
+
+route;exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+
+/***/ 54:
+/*!*****************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/function/timeFormat.js ***!
+  \*****************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; // padStart 的 polyfill，因为某些机型或情况，还无法支持es7的padStart，比如电脑版的微信小程序
+// 所以这里做一个兼容polyfill的兼容处理
+if (!String.prototype.padStart) {
+  // 为了方便表示这里 fillString 用了ES6 的默认参数，不影响理解
+  String.prototype.padStart = function (maxLength) {var fillString = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : ' ';
+    if (Object.prototype.toString.call(fillString) !== "[object String]") throw new TypeError(
+    'fillString must be String');
+    var str = this;
+    // 返回 String(str) 这里是为了使返回的值是字符串字面量，在控制台中更符合直觉
+    if (str.length >= maxLength) return String(str);
+
+    var fillLength = maxLength - str.length,
+    times = Math.ceil(fillLength / fillString.length);
+    while (times >>= 1) {
+      fillString += fillString;
+      if (times === 1) {
+        fillString += fillString;
+      }
+    }
+    return fillString.slice(0, fillLength) + str;
+  };
+}
+
+function timeFormat() {var timestamp = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;var fmt = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'yyyy-mm-dd';
+  // 其他更多是格式化有如下:
+  // yyyy:mm:dd|yyyy:mm|yyyy年mm月dd日|yyyy年mm月dd日 hh时MM分等,可自定义组合
+  timestamp = parseInt(timestamp);
+  // 如果为null,则格式化当前时间
+  if (!timestamp) timestamp = Number(new Date());
+  // 判断用户输入的时间戳是秒还是毫秒,一般前端js获取的时间戳是毫秒(13位),后端传过来的为秒(10位)
+  if (timestamp.toString().length == 10) timestamp *= 1000;
+  var date = new Date(timestamp);
+  var ret;
+  var opt = {
+    "y+": date.getFullYear().toString(), // 年
+    "m+": (date.getMonth() + 1).toString(), // 月
+    "d+": date.getDate().toString(), // 日
+    "h+": date.getHours().toString(), // 时
+    "M+": date.getMinutes().toString(), // 分
+    "s+": date.getSeconds().toString() // 秒
+    // 有其他格式化字符需求可以继续添加，必须转化成字符串
+  };
+  for (var k in opt) {
+    ret = new RegExp("(" + k + ")").exec(fmt);
+    if (ret) {
+      fmt = fmt.replace(ret[1], ret[1].length == 1 ? opt[k] : opt[k].padStart(ret[1].length, "0"));
+    };
+  };
+  return fmt;
+}var _default =
+
+timeFormat;exports.default = _default;
+
+/***/ }),
+
+/***/ 55:
+/*!***************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/function/timeFrom.js ***!
+  \***************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _timeFormat = _interopRequireDefault(__webpack_require__(/*! ../../libs/function/timeFormat.js */ 54));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+
+/**
+                                                                                                                                                                                                                                                                                          * 时间戳转为多久之前
+                                                                                                                                                                                                                                                                                          * @param String timestamp 时间戳
+                                                                                                                                                                                                                                                                                          * @param String | Boolean format 如果为时间格式字符串，超出一定时间范围，返回固定的时间格式；
+                                                                                                                                                                                                                                                                                          * 如果为布尔值false，无论什么时间，都返回多久以前的格式
+                                                                                                                                                                                                                                                                                          */
+function timeFrom() {var timestamp = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;var format = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'yyyy-mm-dd';
+  if (timestamp == null) timestamp = Number(new Date());
+  timestamp = parseInt(timestamp);
+  // 判断用户输入的时间戳是秒还是毫秒,一般前端js获取的时间戳是毫秒(13位),后端传过来的为秒(10位)
+  if (timestamp.toString().length == 10) timestamp *= 1000;
+  var timer = new Date().getTime() - timestamp;
+  timer = parseInt(timer / 1000);
+  // 如果小于5分钟,则返回"刚刚",其他以此类推
+  var tips = '';
+  switch (true) {
+    case timer < 300:
+      tips = '刚刚';
+      break;
+    case timer >= 300 && timer < 3600:
+      tips = parseInt(timer / 60) + '分钟前';
+      break;
+    case timer >= 3600 && timer < 86400:
+      tips = parseInt(timer / 3600) + '小时前';
+      break;
+    case timer >= 86400 && timer < 2592000:
+      tips = parseInt(timer / 86400) + '天前';
+      break;
+    default:
+      // 如果format为false，则无论什么时间戳，都显示xx之前
+      if (format === false) {
+        if (timer >= 2592000 && timer < 365 * 86400) {
+          tips = parseInt(timer / (86400 * 30)) + '个月前';
+        } else {
+          tips = parseInt(timer / (86400 * 365)) + '年前';
+        }
+      } else {
+        tips = (0, _timeFormat.default)(timestamp, format);
+      }}
+
+  return tips;
+}var _default =
+
+timeFrom;exports.default = _default;
+
+/***/ }),
+
+/***/ 56:
+/*!********************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/function/colorGradient.js ***!
+  \********************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; /**
+                                                                                                      * 求两个颜色之间的渐变值
+                                                                                                      * @param {string} startColor 开始的颜色
+                                                                                                      * @param {string} endColor 结束的颜色
+                                                                                                      * @param {number} step 颜色等分的份额
+                                                                                                      * */
+function colorGradient() {var startColor = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'rgb(0, 0, 0)';var endColor = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'rgb(255, 255, 255)';var step = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 10;
+  var startRGB = hexToRgb(startColor, false); //转换为rgb数组模式
+  var startR = startRGB[0];
+  var startG = startRGB[1];
+  var startB = startRGB[2];
+
+  var endRGB = hexToRgb(endColor, false);
+  var endR = endRGB[0];
+  var endG = endRGB[1];
+  var endB = endRGB[2];
+
+  var sR = (endR - startR) / step; //总差值
+  var sG = (endG - startG) / step;
+  var sB = (endB - startB) / step;
+  var colorArr = [];
+  for (var i = 0; i < step; i++) {
+    //计算每一步的hex值 
+    var hex = rgbToHex('rgb(' + Math.round(sR * i + startR) + ',' + Math.round(sG * i + startG) + ',' + Math.round(sB *
+    i + startB) + ')');
+    colorArr.push(hex);
+  }
+  return colorArr;
+}
+
+// 将hex表示方式转换为rgb表示方式(这里返回rgb数组模式)
+function hexToRgb(sColor) {var str = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+  var reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/;
+  sColor = sColor.toLowerCase();
+  if (sColor && reg.test(sColor)) {
+    if (sColor.length === 4) {
+      var sColorNew = "#";
+      for (var i = 1; i < 4; i += 1) {
+        sColorNew += sColor.slice(i, i + 1).concat(sColor.slice(i, i + 1));
+      }
+      sColor = sColorNew;
+    }
+    //处理六位的颜色值
+    var sColorChange = [];
+    for (var _i = 1; _i < 7; _i += 2) {
+      sColorChange.push(parseInt("0x" + sColor.slice(_i, _i + 2)));
+    }
+    if (!str) {
+      return sColorChange;
+    } else {
+      return "rgb(".concat(sColorChange[0], ",").concat(sColorChange[1], ",").concat(sColorChange[2], ")");
+    }
+  } else if (/^(rgb|RGB)/.test(sColor)) {
+    var arr = sColor.replace(/(?:\(|\)|rgb|RGB)*/g, "").split(",");
+    return arr.map(function (val) {return Number(val);});
+  } else {
+    return sColor;
+  }
+};
+
+// 将rgb表示方式转换为hex表示方式
+function rgbToHex(rgb) {
+  var _this = rgb;
+  var reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/;
+  if (/^(rgb|RGB)/.test(_this)) {
+    var aColor = _this.replace(/(?:\(|\)|rgb|RGB)*/g, "").split(",");
+    var strHex = "#";
+    for (var i = 0; i < aColor.length; i++) {
+      var hex = Number(aColor[i]).toString(16);
+      hex = String(hex).length == 1 ? 0 + '' + hex : hex; // 保证每个rgb的值为2位
+      if (hex === "0") {
+        hex += hex;
+      }
+      strHex += hex;
+    }
+    if (strHex.length !== 7) {
+      strHex = _this;
+    }
+    return strHex;
+  } else if (reg.test(_this)) {
+    var aNum = _this.replace(/#/, "").split("");
+    if (aNum.length === 6) {
+      return _this;
+    } else if (aNum.length === 3) {
+      var numHex = "#";
+      for (var _i2 = 0; _i2 < aNum.length; _i2 += 1) {
+        numHex += aNum[_i2] + aNum[_i2];
+      }
+      return numHex;
+    }
+  } else {
+    return _this;
+  }
+}var _default =
+
+{
+  colorGradient: colorGradient,
+  hexToRgb: hexToRgb,
+  rgbToHex: rgbToHex };exports.default = _default;
+
+/***/ }),
+
+/***/ 560:
+/*!*************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/common/index.list.js ***!
+  \*************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = {
+  list: [{
+    "letter": "A",
+    "data": [{
+      "name": "阿拉斯加",
+      "mobile": "13588889999",
+      "keyword": "阿拉斯加ABA13588889999" },
+
+    {
+      "name": "阿克苏",
+      "mobile": "0551-4386721",
+      "keyword": "阿克苏AKESU0551-4386721" },
+
+    {
+      "name": "阿拉善",
+      "mobile": "4008009100",
+      "keyword": "阿拉善ALASHAN4008009100" },
+
+    {
+      "name": "阿勒泰",
+      "mobile": "13588889999",
+      "keyword": "阿勒泰ALETAI13588889999" },
+
+    {
+      "name": "阿里",
+      "mobile": "13588889999",
+      "keyword": "阿里ALI13588889999" },
+
+    {
+      "name": "安阳",
+      "mobile": "13588889999",
+      "keyword": "13588889999安阳ANYANG" }] },
+
+
+
+  {
+    "letter": "B",
+    "data": [{
+      "name": "白城",
+      "mobile": "该主子没有留电话~",
+      "keyword": "白城BAICHENG" },
+
+    {
+      "name": "白山",
+      "mobile": "13588889999",
+      "keyword": "白山BAISHAN13588889999" },
+
+    {
+      "name": "白银",
+      "mobile": "13588889999",
+      "keyword": "白银BAIYIN13588889999" },
+
+    {
+      "name": "保定",
+      "mobile": "13588889999",
+      "keyword": "保定BAODING13588889999" }] },
+
+
+
+  {
+    "letter": "C",
+    "data": [{
+      "name": "沧州",
+      "mobile": "13588889999",
+      "keyword": "沧州CANGZHOU13588889999" },
+
+    {
+      "name": "长春",
+      "mobile": "13588889999",
+      "keyword": "长春CHANGCHUN13588889999" }] },
+
+
+
+  {
+    "letter": "D",
+    "data": [{
+      "name": "大理",
+      "mobile": "13588889999",
+      "keyword": "大理DALI13588889999" },
+
+    {
+      "name": "大连",
+      "mobile": "13588889999",
+      "keyword": "大连DALIAN13588889999" }] },
+
+
+
+  {
+    "letter": "E",
+    "data": [{
+      "name": "鄂尔多斯",
+      "mobile": "13588889999",
+      "keyword": "鄂尔多斯EERDUOSI13588889999" },
+
+    {
+      "name": "恩施",
+      "mobile": "13588889999",
+      "keyword": "恩施ENSHI13588889999" },
+
+    {
+      "name": "鄂州",
+      "mobile": "13588889999",
+      "keyword": "鄂州EZHOU13588889999" }] },
+
+
+
+  {
+    "letter": "F",
+    "data": [{
+      "name": "防城港",
+      "mobile": "该主子没有留电话~",
+      "keyword": "防城港FANGCHENGGANG" },
+
+    {
+      "name": "抚顺",
+      "mobile": "13588889999",
+      "keyword": "抚顺FUSHUN13588889999" },
+
+    {
+      "name": "阜新",
+      "mobile": "13588889999",
+      "keyword": "阜新FUXIN13588889999" },
+
+    {
+      "name": "阜阳",
+      "mobile": "13588889999",
+      "keyword": "阜阳FUYANG13588889999" },
+
+    {
+      "name": "抚州",
+      "mobile": "13588889999",
+      "keyword": "抚州FUZHOU13588889999" },
+
+    {
+      "name": "福州",
+      "mobile": "13588889999",
+      "keyword": "福州FUZHOU13588889999" }] },
+
+
+
+  {
+    "letter": "G",
+    "data": [{
+      "name": "甘南",
+      "mobile": "13588889999",
+      "keyword": "甘南GANNAN13588889999" },
+
+    {
+      "name": "赣州",
+      "mobile": "13588889999",
+      "keyword": "赣州GANZHOU13588889999" },
+
+    {
+      "name": "甘孜",
+      "mobile": "13588889999",
+      "keyword": "甘孜GANZI13588889999" }] },
+
+
+
+  {
+    "letter": "H",
+    "data": [{
+      "name": "哈尔滨",
+      "mobile": "13588889999",
+      "keyword": "哈尔滨HAERBIN13588889999" },
+
+    {
+      "name": "海北",
+      "mobile": "13588889999",
+      "keyword": "海北HAIBEI13588889999" },
+
+    {
+      "name": "海东",
+      "mobile": "13588889999",
+      "keyword": "海东HAIDONG13588889999" },
+
+    {
+      "name": "海口",
+      "mobile": "13588889999",
+      "keyword": "海口HAIKOU13588889999" }] },
+
+
+
+  {
+    "letter": "I",
+    "data": [{
+      "name": "ice",
+      "mobile": "13588889999",
+      "keyword": "佳木斯JIAMUSI13588889999" }] },
+
+
+  {
+    "letter": "J",
+    "data": [{
+      "name": "佳木斯",
+      "mobile": "13588889999",
+      "keyword": "佳木斯JIAMUSI13588889999" },
+
+    {
+      "name": "吉安",
+      "mobile": "13588889999",
+      "keyword": "吉安JIAN13588889999" },
+
+    {
+      "name": "江门",
+      "mobile": "13588889999",
+      "keyword": "江门JIANGMEN13588889999" }] },
+
+
+
+  {
+    "letter": "K",
+    "data": [{
+      "name": "开封",
+      "mobile": "13588889999",
+      "keyword": "开封KAIFENG13588889999" },
+
+    {
+      "name": "喀什",
+      "mobile": "13588889999",
+      "keyword": "喀什KASHI13588889999" },
+
+    {
+      "name": "克拉玛依",
+      "mobile": "13588889999",
+      "keyword": "克拉玛依KELAMAYI13588889999" }] },
+
+
+
+  {
+    "letter": "L",
+    "data": [{
+      "name": "来宾",
+      "mobile": "13588889999",
+      "keyword": "来宾LAIBIN13588889999" },
+
+    {
+      "name": "兰州",
+      "mobile": "13588889999",
+      "keyword": "兰州LANZHOU13588889999" },
+
+    {
+      "name": "拉萨",
+      "mobile": "13588889999",
+      "keyword": "拉萨LASA13588889999" },
+
+    {
+      "name": "乐山",
+      "mobile": "13588889999",
+      "keyword": "乐山LESHAN13588889999" },
+
+    {
+      "name": "凉山",
+      "mobile": "13588889999",
+      "keyword": "凉山LIANGSHAN13588889999" },
+
+    {
+      "name": "连云港",
+      "mobile": "13588889999",
+      "keyword": "连云港LIANYUNGANG13588889999" },
+
+    {
+      "name": "聊城",
+      "mobile": "18322223333",
+      "keyword": "聊城LIAOCHENG18322223333" },
+
+    {
+      "name": "辽阳",
+      "mobile": "18322223333",
+      "keyword": "辽阳LIAOYANG18322223333" },
+
+    {
+      "name": "辽源",
+      "mobile": "18322223333",
+      "keyword": "辽源LIAOYUAN18322223333" },
+
+    {
+      "name": "丽江",
+      "mobile": "18322223333",
+      "keyword": "丽江LIJIANG18322223333" },
+
+    {
+      "name": "临沧",
+      "mobile": "18322223333",
+      "keyword": "临沧LINCANG18322223333" },
+
+    {
+      "name": "临汾",
+      "mobile": "18322223333",
+      "keyword": "临汾LINFEN18322223333" },
+
+    {
+      "name": "临夏",
+      "mobile": "18322223333",
+      "keyword": "临夏LINXIA18322223333" },
+
+    {
+      "name": "临沂",
+      "mobile": "18322223333",
+      "keyword": "临沂LINYI18322223333" },
+
+    {
+      "name": "林芝",
+      "mobile": "18322223333",
+      "keyword": "林芝LINZHI18322223333" },
+
+    {
+      "name": "丽水",
+      "mobile": "18322223333",
+      "keyword": "丽水LISHUI18322223333" }] },
+
+
+
+  {
+    "letter": "M",
+    "data": [{
+      "name": "眉山",
+      "mobile": "15544448888",
+      "keyword": "眉山MEISHAN15544448888" },
+
+    {
+      "name": "梅州",
+      "mobile": "15544448888",
+      "keyword": "梅州MEIZHOU15544448888" },
+
+    {
+      "name": "绵阳",
+      "mobile": "15544448888",
+      "keyword": "绵阳MIANYANG15544448888" },
+
+    {
+      "name": "牡丹江",
+      "mobile": "15544448888",
+      "keyword": "牡丹江MUDANJIANG15544448888" }] },
+
+
+
+  {
+    "letter": "N",
+    "data": [{
+      "name": "南昌",
+      "mobile": "15544448888",
+      "keyword": "南昌NANCHANG15544448888" },
+
+    {
+      "name": "南充",
+      "mobile": "15544448888",
+      "keyword": "南充NANCHONG15544448888" },
+
+    {
+      "name": "南京",
+      "mobile": "15544448888",
+      "keyword": "南京NANJING15544448888" },
+
+    {
+      "name": "南宁",
+      "mobile": "15544448888",
+      "keyword": "南宁NANNING15544448888" },
+
+    {
+      "name": "南平",
+      "mobile": "15544448888",
+      "keyword": "南平NANPING15544448888" }] },
+
+
+
+  {
+    "letter": "O",
+    "data": [{
+      "name": "欧阳",
+      "mobile": "15544448888",
+      "keyword": "欧阳ouyang15544448888" }] },
+
+
+  {
+    "letter": "P",
+    "data": [{
+      "name": "盘锦",
+      "mobile": "15544448888",
+      "keyword": "盘锦PANJIN15544448888" },
+
+    {
+      "name": "攀枝花",
+      "mobile": "15544448888",
+      "keyword": "攀枝花PANZHIHUA15544448888" },
+
+    {
+      "name": "平顶山",
+      "mobile": "15544448888",
+      "keyword": "平顶山PINGDINGSHAN15544448888" },
+
+    {
+      "name": "平凉",
+      "mobile": "15544448888",
+      "keyword": "平凉PINGLIANG15544448888" },
+
+    {
+      "name": "萍乡",
+      "mobile": "15544448888",
+      "keyword": "萍乡PINGXIANG15544448888" },
+
+    {
+      "name": "普洱",
+      "mobile": "15544448888",
+      "keyword": "普洱PUER15544448888" },
+
+    {
+      "name": "莆田",
+      "mobile": "15544448888",
+      "keyword": "莆田PUTIAN15544448888" },
+
+    {
+      "name": "濮阳",
+      "mobile": "15544448888",
+      "keyword": "濮阳PUYANG15544448888" }] },
+
+
+
+  {
+    "letter": "Q",
+    "data": [{
+      "name": "黔东南",
+      "mobile": "15544448888",
+      "keyword": "黔东南QIANDONGNAN15544448888" },
+
+    {
+      "name": "黔南",
+      "mobile": "15544448888",
+      "keyword": "黔南QIANNAN15544448888" },
+
+    {
+      "name": "黔西南",
+      "mobile": "15544448888",
+      "keyword": "黔西南QIANXINAN15544448888" }] },
+
+
+
+  {
+    "letter": "R",
+    "data": [{
+      "name": "日喀则",
+      "mobile": "15544448888",
+      "keyword": "日喀则RIKAZE15544448888" },
+
+    {
+      "name": "日照",
+      "mobile": "15544448888",
+      "keyword": "日照RIZHAO15544448888" }] },
+
+
+
+  {
+    "letter": "S",
+    "data": [{
+      "name": "三门峡",
+      "mobile": "15544448888",
+      "keyword": "三门峡SANMENXIA15544448888" },
+
+    {
+      "name": "三明",
+      "mobile": "15544448888",
+      "keyword": "三明SANMING15544448888" },
+
+    {
+      "name": "三沙",
+      "mobile": "15544448888",
+      "keyword": "三沙SANSHA15544448888" }] },
+
+
+
+  {
+    "letter": "T",
+    "data": [{
+      "name": "塔城",
+      "mobile": "15544448888",
+      "keyword": "塔城TACHENG15544448888" },
+
+    {
+      "name": "漯河",
+      "mobile": "15544448888",
+      "keyword": "漯河TAHE15544448888" },
+
+    {
+      "name": "泰安",
+      "mobile": "15544448888",
+      "keyword": "泰安TAIAN15544448888" }] },
+
+
+
+  {
+    "letter": "W",
+    "data": [{
+      "name": "潍坊",
+      "mobile": "15544448888",
+      "keyword": "潍坊WEIFANG15544448888" },
+
+    {
+      "name": "威海",
+      "mobile": "15544448888",
+      "keyword": "威海WEIHAI15544448888" },
+
+    {
+      "name": "渭南",
+      "mobile": "15544448888",
+      "keyword": "渭南WEINAN15544448888" },
+
+    {
+      "name": "文山",
+      "mobile": "15544448888",
+      "keyword": "文山WENSHAN15544448888" }] },
+
+
+
+  {
+    "letter": "X",
+    "data": [{
+      "name": "厦门",
+      "mobile": "15544448888",
+      "keyword": "厦门XIAMEN15544448888" },
+
+    {
+      "name": "西安",
+      "mobile": "15544448888",
+      "keyword": "西安XIAN15544448888" },
+
+    {
+      "name": "湘潭",
+      "mobile": "15544448888",
+      "keyword": "湘潭XIANGTAN15544448888" }] },
+
+
+
+  {
+    "letter": "Y",
+    "data": [{
+      "name": "雅安",
+      "mobile": "15544448888",
+      "keyword": "雅安YAAN15544448888" },
+
+    {
+      "name": "延安",
+      "mobile": "15544448888",
+      "keyword": "延安YANAN15544448888" },
+
+    {
+      "name": "延边",
+      "mobile": "15544448888",
+      "keyword": "延边YANBIAN15544448888" },
+
+    {
+      "name": "盐城",
+      "mobile": "15544448888",
+      "keyword": "盐城YANCHENG15544448888" }] },
+
+
+
+  {
+    "letter": "Z",
+    "data": [{
+      "name": "枣庄",
+      "mobile": "15544448888",
+      "keyword": "枣庄ZAOZHUANG15544448888" },
+
+    {
+      "name": "张家界",
+      "mobile": "15544448888",
+      "keyword": "张家界ZHANGJIAJIE15544448888" },
+
+    {
+      "name": "张家口",
+      "mobile": "15544448888",
+      "keyword": "张家口ZHANGJIAKOU15544448888" }] },
+
+
+
+  {
+    "letter": "#",
+    "data": [{
+      "name": "其他.",
+      "mobile": "16666666666",
+      "keyword": "echo16666666666" }] }] };
+
+/***/ }),
+
+/***/ 57:
+/*!***********************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/function/guid.js ***!
+  \***********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; /**
+                                                                                                      * 本算法来源于简书开源代码，详见：https://www.jianshu.com/p/fdbf293d0a85
+                                                                                                      * 全局唯一标识符（uuid，Globally Unique Identifier）,也称作 uuid(Universally Unique IDentifier) 
+                                                                                                      * 一般用于多个组件之间,给它一个唯一的标识符,或者v-for循环的时候,如果使用数组的index可能会导致更新列表出现问题
+                                                                                                      * 最可能的情况是左滑删除item或者对某条信息流"不喜欢"并去掉它的时候,会导致组件内的数据可能出现错乱
+                                                                                                      * v-for的时候,推荐使用后端返回的id而不是循环的index
+                                                                                                      * @param {Number} len uuid的长度
+                                                                                                      * @param {Boolean} firstU 将返回的首字母置为"u"
+                                                                                                      * @param {Nubmer} radix 生成uuid的基数(意味着返回的字符串都是这个基数),2-二进制,8-八进制,10-十进制,16-十六进制
+                                                                                                      */
+function guid() {var len = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 32;var firstU = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;var radix = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+  var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
+  var uuid = [];
+  radix = radix || chars.length;
+
+  if (len) {
+    // 如果指定uuid长度,只是取随机的字符,0|x为位运算,能去掉x的小数位,返回整数位
+    for (var i = 0; i < len; i++) {uuid[i] = chars[0 | Math.random() * radix];}
+  } else {
+    var r;
+    // rfc4122标准要求返回的uuid中,某些位为固定的字符
+    uuid[8] = uuid[13] = uuid[18] = uuid[23] = '-';
+    uuid[14] = '4';
+
+    for (var _i = 0; _i < 36; _i++) {
+      if (!uuid[_i]) {
+        r = 0 | Math.random() * 16;
+        uuid[_i] = chars[_i == 19 ? r & 0x3 | 0x8 : r];
+      }
+    }
+  }
+  // 移除第一个字符,并用u替代,因为第一个字符为数值时,该guuid不能用作id或者class
+  if (firstU) {
+    uuid.shift();
+    return 'u' + uuid.join('');
+  } else {
+    return uuid.join('');
+  }
+}var _default =
+
+guid;exports.default = _default;
+
+/***/ }),
+
+/***/ 58:
+/*!************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/function/color.js ***!
+  \************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; // 为了让用户能够自定义主题，会逐步弃用此文件，各颜色通过css提供
+// 为了给某些特殊场景使用和向后兼容，无需删除此文件(2020-06-20)
+var color = {
+  primary: "#2979ff",
+  primaryDark: "#2b85e4",
+  primaryDisabled: "#a0cfff",
+  primaryLight: "#ecf5ff",
+  bgColor: "#f3f4f6",
+
+  info: "#909399",
+  infoDark: "#82848a",
+  infoDisabled: "#c8c9cc",
+  infoLight: "#f4f4f5",
+
+  warning: "#ff9900",
+  warningDark: "#f29100",
+  warningDisabled: "#fcbd71",
+  warningLight: "#fdf6ec",
+
+  error: "#fa3534",
+  errorDark: "#dd6161",
+  errorDisabled: "#fab6b6",
+  errorLight: "#fef0f0",
+
+  success: "#19be6b",
+  successDark: "#18b566",
+  successDisabled: "#71d5a1",
+  successLight: "#dbf1e1",
+
+  mainColor: "#303133",
+  contentColor: "#606266",
+  tipsColor: "#909399",
+  lightColor: "#c0c4cc",
+  borderColor: "#e4e7ed" };var _default =
+
+
+color;exports.default = _default;
+
+/***/ }),
+
+/***/ 59:
+/*!****************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/function/type2icon.js ***!
+  \****************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; /**
+                                                                                                      * 根据主题type值,获取对应的图标
+                                                                                                      * @param String type 主题名称,primary|info|error|warning|success
+                                                                                                      * @param String fill 是否使用fill填充实体的图标  
+                                                                                                      */
+function type2icon() {var type = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'success';var fill = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+  // 如果非预置值,默认为success
+  if (['primary', 'info', 'error', 'warning', 'success'].indexOf(type) == -1) type = 'success';
+  var iconName = '';
+  // 目前(2019-12-12),info和primary使用同一个图标
+  switch (type) {
+    case 'primary':
+      iconName = 'info-circle';
+      break;
+    case 'info':
+      iconName = 'info-circle';
+      break;
+    case 'error':
+      iconName = 'close-circle';
+      break;
+    case 'warning':
+      iconName = 'error-circle';
+      break;
+    case 'success':
+      iconName = 'checkmark-circle';
+      break;
+    default:
+      iconName = 'checkmark-circle';}
+
+  // 是否是实体类型,加上-fill,在icon组件库中,实体的类名是后面加-fill的
+  if (fill) iconName += '-fill';
+  return iconName;
+}var _default =
+
+type2icon;exports.default = _default;
+
+/***/ }),
+
+/***/ 6:
+/*!*****************************************************!*\
+  !*** ./node_modules/regenerator-runtime/runtime.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+/**
+ * Copyright (c) 2014-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+!(function(global) {
+  "use strict";
+
+  var Op = Object.prototype;
+  var hasOwn = Op.hasOwnProperty;
+  var undefined; // More compressible than void 0.
+  var $Symbol = typeof Symbol === "function" ? Symbol : {};
+  var iteratorSymbol = $Symbol.iterator || "@@iterator";
+  var asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator";
+  var toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag";
+
+  var inModule = typeof module === "object";
+  var runtime = global.regeneratorRuntime;
+  if (runtime) {
+    if (inModule) {
+      // If regeneratorRuntime is defined globally and we're in a module,
+      // make the exports object identical to regeneratorRuntime.
+      module.exports = runtime;
+    }
+    // Don't bother evaluating the rest of this file if the runtime was
+    // already defined globally.
+    return;
+  }
+
+  // Define the runtime globally (as expected by generated code) as either
+  // module.exports (if we're in a module) or a new, empty object.
+  runtime = global.regeneratorRuntime = inModule ? module.exports : {};
+
+  function wrap(innerFn, outerFn, self, tryLocsList) {
+    // If outerFn provided and outerFn.prototype is a Generator, then outerFn.prototype instanceof Generator.
+    var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator;
+    var generator = Object.create(protoGenerator.prototype);
+    var context = new Context(tryLocsList || []);
+
+    // The ._invoke method unifies the implementations of the .next,
+    // .throw, and .return methods.
+    generator._invoke = makeInvokeMethod(innerFn, self, context);
+
+    return generator;
+  }
+  runtime.wrap = wrap;
+
+  // Try/catch helper to minimize deoptimizations. Returns a completion
+  // record like context.tryEntries[i].completion. This interface could
+  // have been (and was previously) designed to take a closure to be
+  // invoked without arguments, but in all the cases we care about we
+  // already have an existing method we want to call, so there's no need
+  // to create a new function object. We can even get away with assuming
+  // the method takes exactly one argument, since that happens to be true
+  // in every case, so we don't have to touch the arguments object. The
+  // only additional allocation required is the completion record, which
+  // has a stable shape and so hopefully should be cheap to allocate.
+  function tryCatch(fn, obj, arg) {
+    try {
+      return { type: "normal", arg: fn.call(obj, arg) };
+    } catch (err) {
+      return { type: "throw", arg: err };
+    }
+  }
+
+  var GenStateSuspendedStart = "suspendedStart";
+  var GenStateSuspendedYield = "suspendedYield";
+  var GenStateExecuting = "executing";
+  var GenStateCompleted = "completed";
+
+  // Returning this object from the innerFn has the same effect as
+  // breaking out of the dispatch switch statement.
+  var ContinueSentinel = {};
+
+  // Dummy constructor functions that we use as the .constructor and
+  // .constructor.prototype properties for functions that return Generator
+  // objects. For full spec compliance, you may wish to configure your
+  // minifier not to mangle the names of these two functions.
+  function Generator() {}
+  function GeneratorFunction() {}
+  function GeneratorFunctionPrototype() {}
+
+  // This is a polyfill for %IteratorPrototype% for environments that
+  // don't natively support it.
+  var IteratorPrototype = {};
+  IteratorPrototype[iteratorSymbol] = function () {
+    return this;
+  };
+
+  var getProto = Object.getPrototypeOf;
+  var NativeIteratorPrototype = getProto && getProto(getProto(values([])));
+  if (NativeIteratorPrototype &&
+      NativeIteratorPrototype !== Op &&
+      hasOwn.call(NativeIteratorPrototype, iteratorSymbol)) {
+    // This environment has a native %IteratorPrototype%; use it instead
+    // of the polyfill.
+    IteratorPrototype = NativeIteratorPrototype;
+  }
+
+  var Gp = GeneratorFunctionPrototype.prototype =
+    Generator.prototype = Object.create(IteratorPrototype);
+  GeneratorFunction.prototype = Gp.constructor = GeneratorFunctionPrototype;
+  GeneratorFunctionPrototype.constructor = GeneratorFunction;
+  GeneratorFunctionPrototype[toStringTagSymbol] =
+    GeneratorFunction.displayName = "GeneratorFunction";
+
+  // Helper for defining the .next, .throw, and .return methods of the
+  // Iterator interface in terms of a single ._invoke method.
+  function defineIteratorMethods(prototype) {
+    ["next", "throw", "return"].forEach(function(method) {
+      prototype[method] = function(arg) {
+        return this._invoke(method, arg);
+      };
+    });
+  }
+
+  runtime.isGeneratorFunction = function(genFun) {
+    var ctor = typeof genFun === "function" && genFun.constructor;
+    return ctor
+      ? ctor === GeneratorFunction ||
+        // For the native GeneratorFunction constructor, the best we can
+        // do is to check its .name property.
+        (ctor.displayName || ctor.name) === "GeneratorFunction"
+      : false;
+  };
+
+  runtime.mark = function(genFun) {
+    if (Object.setPrototypeOf) {
+      Object.setPrototypeOf(genFun, GeneratorFunctionPrototype);
+    } else {
+      genFun.__proto__ = GeneratorFunctionPrototype;
+      if (!(toStringTagSymbol in genFun)) {
+        genFun[toStringTagSymbol] = "GeneratorFunction";
+      }
+    }
+    genFun.prototype = Object.create(Gp);
+    return genFun;
+  };
+
+  // Within the body of any async function, `await x` is transformed to
+  // `yield regeneratorRuntime.awrap(x)`, so that the runtime can test
+  // `hasOwn.call(value, "__await")` to determine if the yielded value is
+  // meant to be awaited.
+  runtime.awrap = function(arg) {
+    return { __await: arg };
+  };
+
+  function AsyncIterator(generator) {
+    function invoke(method, arg, resolve, reject) {
+      var record = tryCatch(generator[method], generator, arg);
+      if (record.type === "throw") {
+        reject(record.arg);
+      } else {
+        var result = record.arg;
+        var value = result.value;
+        if (value &&
+            typeof value === "object" &&
+            hasOwn.call(value, "__await")) {
+          return Promise.resolve(value.__await).then(function(value) {
+            invoke("next", value, resolve, reject);
+          }, function(err) {
+            invoke("throw", err, resolve, reject);
+          });
+        }
+
+        return Promise.resolve(value).then(function(unwrapped) {
+          // When a yielded Promise is resolved, its final value becomes
+          // the .value of the Promise<{value,done}> result for the
+          // current iteration.
+          result.value = unwrapped;
+          resolve(result);
+        }, function(error) {
+          // If a rejected Promise was yielded, throw the rejection back
+          // into the async generator function so it can be handled there.
+          return invoke("throw", error, resolve, reject);
+        });
+      }
+    }
+
+    var previousPromise;
+
+    function enqueue(method, arg) {
+      function callInvokeWithMethodAndArg() {
+        return new Promise(function(resolve, reject) {
+          invoke(method, arg, resolve, reject);
+        });
+      }
+
+      return previousPromise =
+        // If enqueue has been called before, then we want to wait until
+        // all previous Promises have been resolved before calling invoke,
+        // so that results are always delivered in the correct order. If
+        // enqueue has not been called before, then it is important to
+        // call invoke immediately, without waiting on a callback to fire,
+        // so that the async generator function has the opportunity to do
+        // any necessary setup in a predictable way. This predictability
+        // is why the Promise constructor synchronously invokes its
+        // executor callback, and why async functions synchronously
+        // execute code before the first await. Since we implement simple
+        // async functions in terms of async generators, it is especially
+        // important to get this right, even though it requires care.
+        previousPromise ? previousPromise.then(
+          callInvokeWithMethodAndArg,
+          // Avoid propagating failures to Promises returned by later
+          // invocations of the iterator.
+          callInvokeWithMethodAndArg
+        ) : callInvokeWithMethodAndArg();
+    }
+
+    // Define the unified helper method that is used to implement .next,
+    // .throw, and .return (see defineIteratorMethods).
+    this._invoke = enqueue;
+  }
+
+  defineIteratorMethods(AsyncIterator.prototype);
+  AsyncIterator.prototype[asyncIteratorSymbol] = function () {
+    return this;
+  };
+  runtime.AsyncIterator = AsyncIterator;
+
+  // Note that simple async functions are implemented on top of
+  // AsyncIterator objects; they just return a Promise for the value of
+  // the final result produced by the iterator.
+  runtime.async = function(innerFn, outerFn, self, tryLocsList) {
+    var iter = new AsyncIterator(
+      wrap(innerFn, outerFn, self, tryLocsList)
+    );
+
+    return runtime.isGeneratorFunction(outerFn)
+      ? iter // If outerFn is a generator, return the full iterator.
+      : iter.next().then(function(result) {
+          return result.done ? result.value : iter.next();
+        });
+  };
+
+  function makeInvokeMethod(innerFn, self, context) {
+    var state = GenStateSuspendedStart;
+
+    return function invoke(method, arg) {
+      if (state === GenStateExecuting) {
+        throw new Error("Generator is already running");
+      }
+
+      if (state === GenStateCompleted) {
+        if (method === "throw") {
+          throw arg;
+        }
+
+        // Be forgiving, per 25.3.3.3.3 of the spec:
+        // https://people.mozilla.org/~jorendorff/es6-draft.html#sec-generatorresume
+        return doneResult();
+      }
+
+      context.method = method;
+      context.arg = arg;
+
+      while (true) {
+        var delegate = context.delegate;
+        if (delegate) {
+          var delegateResult = maybeInvokeDelegate(delegate, context);
+          if (delegateResult) {
+            if (delegateResult === ContinueSentinel) continue;
+            return delegateResult;
+          }
+        }
+
+        if (context.method === "next") {
+          // Setting context._sent for legacy support of Babel's
+          // function.sent implementation.
+          context.sent = context._sent = context.arg;
+
+        } else if (context.method === "throw") {
+          if (state === GenStateSuspendedStart) {
+            state = GenStateCompleted;
+            throw context.arg;
+          }
+
+          context.dispatchException(context.arg);
+
+        } else if (context.method === "return") {
+          context.abrupt("return", context.arg);
+        }
+
+        state = GenStateExecuting;
+
+        var record = tryCatch(innerFn, self, context);
+        if (record.type === "normal") {
+          // If an exception is thrown from innerFn, we leave state ===
+          // GenStateExecuting and loop back for another invocation.
+          state = context.done
+            ? GenStateCompleted
+            : GenStateSuspendedYield;
+
+          if (record.arg === ContinueSentinel) {
+            continue;
+          }
+
+          return {
+            value: record.arg,
+            done: context.done
+          };
+
+        } else if (record.type === "throw") {
+          state = GenStateCompleted;
+          // Dispatch the exception by looping back around to the
+          // context.dispatchException(context.arg) call above.
+          context.method = "throw";
+          context.arg = record.arg;
+        }
+      }
+    };
+  }
+
+  // Call delegate.iterator[context.method](context.arg) and handle the
+  // result, either by returning a { value, done } result from the
+  // delegate iterator, or by modifying context.method and context.arg,
+  // setting context.delegate to null, and returning the ContinueSentinel.
+  function maybeInvokeDelegate(delegate, context) {
+    var method = delegate.iterator[context.method];
+    if (method === undefined) {
+      // A .throw or .return when the delegate iterator has no .throw
+      // method always terminates the yield* loop.
+      context.delegate = null;
+
+      if (context.method === "throw") {
+        if (delegate.iterator.return) {
+          // If the delegate iterator has a return method, give it a
+          // chance to clean up.
+          context.method = "return";
+          context.arg = undefined;
+          maybeInvokeDelegate(delegate, context);
+
+          if (context.method === "throw") {
+            // If maybeInvokeDelegate(context) changed context.method from
+            // "return" to "throw", let that override the TypeError below.
+            return ContinueSentinel;
+          }
+        }
+
+        context.method = "throw";
+        context.arg = new TypeError(
+          "The iterator does not provide a 'throw' method");
+      }
+
+      return ContinueSentinel;
+    }
+
+    var record = tryCatch(method, delegate.iterator, context.arg);
+
+    if (record.type === "throw") {
+      context.method = "throw";
+      context.arg = record.arg;
+      context.delegate = null;
+      return ContinueSentinel;
+    }
+
+    var info = record.arg;
+
+    if (! info) {
+      context.method = "throw";
+      context.arg = new TypeError("iterator result is not an object");
+      context.delegate = null;
+      return ContinueSentinel;
+    }
+
+    if (info.done) {
+      // Assign the result of the finished delegate to the temporary
+      // variable specified by delegate.resultName (see delegateYield).
+      context[delegate.resultName] = info.value;
+
+      // Resume execution at the desired location (see delegateYield).
+      context.next = delegate.nextLoc;
+
+      // If context.method was "throw" but the delegate handled the
+      // exception, let the outer generator proceed normally. If
+      // context.method was "next", forget context.arg since it has been
+      // "consumed" by the delegate iterator. If context.method was
+      // "return", allow the original .return call to continue in the
+      // outer generator.
+      if (context.method !== "return") {
+        context.method = "next";
+        context.arg = undefined;
+      }
+
+    } else {
+      // Re-yield the result returned by the delegate method.
+      return info;
+    }
+
+    // The delegate iterator is finished, so forget it and continue with
+    // the outer generator.
+    context.delegate = null;
+    return ContinueSentinel;
+  }
+
+  // Define Generator.prototype.{next,throw,return} in terms of the
+  // unified ._invoke helper method.
+  defineIteratorMethods(Gp);
+
+  Gp[toStringTagSymbol] = "Generator";
+
+  // A Generator should always return itself as the iterator object when the
+  // @@iterator function is called on it. Some browsers' implementations of the
+  // iterator prototype chain incorrectly implement this, causing the Generator
+  // object to not be returned from this call. This ensures that doesn't happen.
+  // See https://github.com/facebook/regenerator/issues/274 for more details.
+  Gp[iteratorSymbol] = function() {
+    return this;
+  };
+
+  Gp.toString = function() {
+    return "[object Generator]";
+  };
+
+  function pushTryEntry(locs) {
+    var entry = { tryLoc: locs[0] };
+
+    if (1 in locs) {
+      entry.catchLoc = locs[1];
+    }
+
+    if (2 in locs) {
+      entry.finallyLoc = locs[2];
+      entry.afterLoc = locs[3];
+    }
+
+    this.tryEntries.push(entry);
+  }
+
+  function resetTryEntry(entry) {
+    var record = entry.completion || {};
+    record.type = "normal";
+    delete record.arg;
+    entry.completion = record;
+  }
+
+  function Context(tryLocsList) {
+    // The root entry object (effectively a try statement without a catch
+    // or a finally block) gives us a place to store values thrown from
+    // locations where there is no enclosing try statement.
+    this.tryEntries = [{ tryLoc: "root" }];
+    tryLocsList.forEach(pushTryEntry, this);
+    this.reset(true);
+  }
+
+  runtime.keys = function(object) {
+    var keys = [];
+    for (var key in object) {
+      keys.push(key);
+    }
+    keys.reverse();
+
+    // Rather than returning an object with a next method, we keep
+    // things simple and return the next function itself.
+    return function next() {
+      while (keys.length) {
+        var key = keys.pop();
+        if (key in object) {
+          next.value = key;
+          next.done = false;
+          return next;
+        }
+      }
+
+      // To avoid creating an additional object, we just hang the .value
+      // and .done properties off the next function object itself. This
+      // also ensures that the minifier will not anonymize the function.
+      next.done = true;
+      return next;
+    };
+  };
+
+  function values(iterable) {
+    if (iterable) {
+      var iteratorMethod = iterable[iteratorSymbol];
+      if (iteratorMethod) {
+        return iteratorMethod.call(iterable);
+      }
+
+      if (typeof iterable.next === "function") {
+        return iterable;
+      }
+
+      if (!isNaN(iterable.length)) {
+        var i = -1, next = function next() {
+          while (++i < iterable.length) {
+            if (hasOwn.call(iterable, i)) {
+              next.value = iterable[i];
+              next.done = false;
+              return next;
+            }
+          }
+
+          next.value = undefined;
+          next.done = true;
+
+          return next;
+        };
+
+        return next.next = next;
+      }
+    }
+
+    // Return an iterator with no values.
+    return { next: doneResult };
+  }
+  runtime.values = values;
+
+  function doneResult() {
+    return { value: undefined, done: true };
+  }
+
+  Context.prototype = {
+    constructor: Context,
+
+    reset: function(skipTempReset) {
+      this.prev = 0;
+      this.next = 0;
+      // Resetting context._sent for legacy support of Babel's
+      // function.sent implementation.
+      this.sent = this._sent = undefined;
+      this.done = false;
+      this.delegate = null;
+
+      this.method = "next";
+      this.arg = undefined;
+
+      this.tryEntries.forEach(resetTryEntry);
+
+      if (!skipTempReset) {
+        for (var name in this) {
+          // Not sure about the optimal order of these conditions:
+          if (name.charAt(0) === "t" &&
+              hasOwn.call(this, name) &&
+              !isNaN(+name.slice(1))) {
+            this[name] = undefined;
+          }
+        }
+      }
+    },
+
+    stop: function() {
+      this.done = true;
+
+      var rootEntry = this.tryEntries[0];
+      var rootRecord = rootEntry.completion;
+      if (rootRecord.type === "throw") {
+        throw rootRecord.arg;
+      }
+
+      return this.rval;
+    },
+
+    dispatchException: function(exception) {
+      if (this.done) {
+        throw exception;
+      }
+
+      var context = this;
+      function handle(loc, caught) {
+        record.type = "throw";
+        record.arg = exception;
+        context.next = loc;
+
+        if (caught) {
+          // If the dispatched exception was caught by a catch block,
+          // then let that catch block handle the exception normally.
+          context.method = "next";
+          context.arg = undefined;
+        }
+
+        return !! caught;
+      }
+
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        var record = entry.completion;
+
+        if (entry.tryLoc === "root") {
+          // Exception thrown outside of any try block that could handle
+          // it, so set the completion value of the entire function to
+          // throw the exception.
+          return handle("end");
+        }
+
+        if (entry.tryLoc <= this.prev) {
+          var hasCatch = hasOwn.call(entry, "catchLoc");
+          var hasFinally = hasOwn.call(entry, "finallyLoc");
+
+          if (hasCatch && hasFinally) {
+            if (this.prev < entry.catchLoc) {
+              return handle(entry.catchLoc, true);
+            } else if (this.prev < entry.finallyLoc) {
+              return handle(entry.finallyLoc);
+            }
+
+          } else if (hasCatch) {
+            if (this.prev < entry.catchLoc) {
+              return handle(entry.catchLoc, true);
+            }
+
+          } else if (hasFinally) {
+            if (this.prev < entry.finallyLoc) {
+              return handle(entry.finallyLoc);
+            }
+
+          } else {
+            throw new Error("try statement without catch or finally");
+          }
+        }
+      }
+    },
+
+    abrupt: function(type, arg) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.tryLoc <= this.prev &&
+            hasOwn.call(entry, "finallyLoc") &&
+            this.prev < entry.finallyLoc) {
+          var finallyEntry = entry;
+          break;
+        }
+      }
+
+      if (finallyEntry &&
+          (type === "break" ||
+           type === "continue") &&
+          finallyEntry.tryLoc <= arg &&
+          arg <= finallyEntry.finallyLoc) {
+        // Ignore the finally entry if control is not jumping to a
+        // location outside the try/catch block.
+        finallyEntry = null;
+      }
+
+      var record = finallyEntry ? finallyEntry.completion : {};
+      record.type = type;
+      record.arg = arg;
+
+      if (finallyEntry) {
+        this.method = "next";
+        this.next = finallyEntry.finallyLoc;
+        return ContinueSentinel;
+      }
+
+      return this.complete(record);
+    },
+
+    complete: function(record, afterLoc) {
+      if (record.type === "throw") {
+        throw record.arg;
+      }
+
+      if (record.type === "break" ||
+          record.type === "continue") {
+        this.next = record.arg;
+      } else if (record.type === "return") {
+        this.rval = this.arg = record.arg;
+        this.method = "return";
+        this.next = "end";
+      } else if (record.type === "normal" && afterLoc) {
+        this.next = afterLoc;
+      }
+
+      return ContinueSentinel;
+    },
+
+    finish: function(finallyLoc) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.finallyLoc === finallyLoc) {
+          this.complete(entry.completion, entry.afterLoc);
+          resetTryEntry(entry);
+          return ContinueSentinel;
+        }
+      }
+    },
+
+    "catch": function(tryLoc) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.tryLoc === tryLoc) {
+          var record = entry.completion;
+          if (record.type === "throw") {
+            var thrown = record.arg;
+            resetTryEntry(entry);
+          }
+          return thrown;
+        }
+      }
+
+      // The context.catch method must only be called with a location
+      // argument that corresponds to a known catch block.
+      throw new Error("illegal catch attempt");
+    },
+
+    delegateYield: function(iterable, resultName, nextLoc) {
+      this.delegate = {
+        iterator: values(iterable),
+        resultName: resultName,
+        nextLoc: nextLoc
+      };
+
+      if (this.method === "next") {
+        // Deliberately forget the last sent value so that we don't
+        // accidentally pass it on to the delegate.
+        this.arg = undefined;
+      }
+
+      return ContinueSentinel;
+    }
+  };
+})(
+  // In sloppy mode, unbound `this` refers to the global object, fallback to
+  // Function constructor if we're in global strict mode. That is sadly a form
+  // of indirect eval which violates Content Security Policy.
+  (function() {
+    return this || (typeof self === "object" && self);
+  })() || Function("return this")()
+);
+
+
+/***/ }),
+
+/***/ 60:
+/*!******************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/function/randomArray.js ***!
+  \******************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; // 打乱数组
+function randomArray() {var array = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+  // 原理是sort排序,Math.random()产生0<= x < 1之间的数,会导致x-0.05大于或者小于0
+  return array.sort(function () {return Math.random() - 0.5;});
+}var _default =
+
+randomArray;exports.default = _default;
+
+/***/ }),
+
+/***/ 61:
+/*!**************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/function/addUnit.js ***!
+  \**************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = addUnit;var _test = _interopRequireDefault(__webpack_require__(/*! ./test.js */ 51));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+
+// 添加单位，如果有rpx，%，px等单位结尾或者值为auto，直接返回，否则加上rpx单位结尾
+function addUnit() {var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'auto';var unit = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'rpx';
+  value = String(value);
+  // 用uView内置验证规则中的number判断是否为数值
+  return _test.default.number(value) ? "".concat(value).concat(unit) : value;
+}
+
+/***/ }),
+
+/***/ 62:
+/*!*************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/function/random.js ***!
+  \*************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;function random(min, max) {
+  if (min >= 0 && max > 0 && max >= min) {
+    var gab = max - min + 1;
+    return Math.floor(Math.random() * gab + min);
+  } else {
+    return 0;
+  }
+}var _default =
+
+random;exports.default = _default;
+
+/***/ }),
+
+/***/ 63:
+/*!***********************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/function/trim.js ***!
+  \***********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;function trim(str) {var pos = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'both';
+  if (pos == 'both') {
+    return str.replace(/^\s+|\s+$/g, "");
+  } else if (pos == "left") {
+    return str.replace(/^\s*/, '');
+  } else if (pos == 'right') {
+    return str.replace(/(\s*$)/g, "");
+  } else if (pos == 'all') {
+    return str.replace(/\s+/g, "");
+  } else {
+    return str;
+  }
+}var _default =
+
+trim;exports.default = _default;
+
+/***/ }),
+
+/***/ 64:
+/*!************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/function/toast.js ***!
+  \************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;function toast(title) {var duration = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1500;
+  uni.showToast({
+    title: title,
+    icon: 'none',
+    duration: duration });
+
+}var _default =
+
+toast;exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+
+/***/ 65:
+/*!****************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/function/getParent.js ***!
+  \****************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = getParent; // 获取父组件的参数，因为支付宝小程序不支持provide/inject的写法
+// this.$parent在非H5中，可以准确获取到父组件，但是在H5中，需要多次this.$parent.$parent.xxx
+function getParent(name, keys) {
+  var parent = this.$parent;
+  // 通过while历遍，这里主要是为了H5需要多层解析的问题
+  while (parent) {
+    // 父组件
+    if (parent.$options.name !== name) {
+      // 如果组件的name不相等，继续上一级寻找
+      parent = parent.$parent;
+    } else {var _ret = function () {
+        var data = {};
+        // 判断keys是否数组，如果传过来的是一个数组，那么直接使用数组元素值当做键值去父组件寻找
+        if (Array.isArray(keys)) {
+          keys.map(function (val) {
+            data[val] = parent[val] ? parent[val] : '';
+          });
+        } else {
+          // 历遍传过来的对象参数
+          for (var i in keys) {
+            // 如果子组件有此值则用，无此值则用父组件的值
+            // 判断是否空数组，如果是，则用父组件的值，否则用子组件的值
+            if (Array.isArray(keys[i])) {
+              if (keys[i].length) {
+                data[i] = keys[i];
+              } else {
+                data[i] = parent[i];
+              }
+            } else if (keys[i].constructor === Object) {
+              // 判断是否对象，如果是对象，且有属性，那么使用子组件的值，否则使用父组件的值
+              if (Object.keys(keys[i]).length) {
+                data[i] = keys[i];
+              } else {
+                data[i] = parent[i];
+              }
+            } else {
+              // 只要子组件有传值，即使是false值，也是“传值”了，也需要覆盖父组件的同名参数
+              data[i] = keys[i] || keys[i] === false ? keys[i] : parent[i];
+            }
+          }
+        }
+        return { v: data };}();if (typeof _ret === "object") return _ret.v;
+    }
+  }
+
+  return {};
+}
+
+/***/ }),
+
+/***/ 66:
+/*!**************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/function/$parent.js ***!
+  \**************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = $parent; // 获取父组件的参数，因为支付宝小程序不支持provide/inject的写法
+// this.$parent在非H5中，可以准确获取到父组件，但是在H5中，需要多次this.$parent.$parent.xxx
+// 这里默认值等于undefined有它的含义，因为最顶层元素(组件)的$parent就是undefined，意味着不传name
+// 值(默认为undefined)，就是查找最顶层的$parent
+function $parent() {var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : undefined;
+  var parent = this.$parent;
+  // 通过while历遍，这里主要是为了H5需要多层解析的问题
+  while (parent) {
+    // 父组件
+    if (parent.$options && parent.$options.name !== name) {
+      // 如果组件的name不相等，继续上一级寻找
+      parent = parent.$parent;
+    } else {
+      return parent;
+    }
+  }
+  return false;
+}
+
+/***/ }),
+
+/***/ 67:
+/*!**********************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/function/sys.js ***!
+  \**********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.os = os;exports.sys = sys;function os() {
+  return uni.getSystemInfoSync().platform;
+};
+
+function sys() {
+  return uni.getSystemInfoSync();
+}
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+
+/***/ 68:
 /*!***************************************************************************************!*\
   !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/function/debounce.js ***!
   \***************************************************************************************/
@@ -14086,7 +17019,7 @@ debounce;exports.default = _default;
 
 /***/ }),
 
-/***/ 34:
+/***/ 69:
 /*!***************************************************************************************!*\
   !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/function/throttle.js ***!
   \***************************************************************************************/
@@ -14129,7 +17062,18 @@ throttle;exports.default = _default;
 
 /***/ }),
 
-/***/ 35:
+/***/ 7:
+/*!***************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/pages.json ***!
+  \***************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+
+
+/***/ }),
+
+/***/ 70:
 /*!***********************************************************************************!*\
   !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/config/config.js ***!
   \***********************************************************************************/
@@ -14153,7 +17097,7 @@ var version = '1.7.8';var _default =
 
 /***/ }),
 
-/***/ 36:
+/***/ 71:
 /*!***********************************************************************************!*\
   !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/config/zIndex.js ***!
   \***********************************************************************************/
@@ -14183,7 +17127,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 
-/***/ 37:
+/***/ 72:
 /*!*******************************************************************!*\
   !*** /Users/chengyongming/WeChatProjects/mini-car/store/index.js ***!
   \*******************************************************************/
@@ -14192,7 +17136,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ 2));
-var _vuex = _interopRequireDefault(__webpack_require__(/*! vuex */ 38));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+var _vuex = _interopRequireDefault(__webpack_require__(/*! vuex */ 73));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 _vue.default.use(_vuex.default);
 
 var lifeData = {};
@@ -14280,7 +17224,7 @@ store;exports.default = _default;
 
 /***/ }),
 
-/***/ 38:
+/***/ 73:
 /*!********************************************!*\
   !*** ./node_modules/vuex/dist/vuex.esm.js ***!
   \********************************************/
@@ -15393,7 +18337,7 @@ var index = {
 
 /***/ }),
 
-/***/ 39:
+/***/ 74:
 /*!*************************************************************************!*\
   !*** /Users/chengyongming/WeChatProjects/mini-car/common/locales/zh.js ***!
   \*************************************************************************/
@@ -15423,18 +18367,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 
-/***/ 4:
-/*!***************************************************************!*\
-  !*** /Users/chengyongming/WeChatProjects/mini-car/pages.json ***!
-  \***************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-
-
-/***/ }),
-
-/***/ 40:
+/***/ 75:
 /*!*************************************************************************!*\
   !*** /Users/chengyongming/WeChatProjects/mini-car/common/locales/en.js ***!
   \*************************************************************************/
@@ -15464,7 +18397,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 
-/***/ 41:
+/***/ 76:
 /*!***************************************************************************!*\
   !*** /Users/chengyongming/WeChatProjects/mini-car/common/vue-i18n.min.js ***!
   \***************************************************************************/
@@ -15480,7 +18413,7 @@ var t, e;t = this, e = function e() {"use strict";var t = ["style", "currency", 
 
 /***/ }),
 
-/***/ 42:
+/***/ 77:
 /*!*******************************************************************************!*\
   !*** /Users/chengyongming/WeChatProjects/mini-car/common/http.interceptor.js ***!
   \*******************************************************************************/
@@ -15488,11 +18421,63 @@ var t, e;t = this, e = function e() {"use strict";var t = ["style", "currency", 
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; // 这里的vm，就是我们在vue文件里面的this，所以我们能在这里获取vuex的变量，比如存放在里面的token
-// 同时，我们也可以在此使用getApp().globalData，如果你把token放在getApp().globalData的话，也是可以使用的
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _regenerator = _interopRequireDefault(__webpack_require__(/*! ./node_modules/@babel/runtime/regenerator */ 4));
+
+var _httpApi = _interopRequireDefault(__webpack_require__(/*! ./http.api.js */ 45));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};}function
+doRequest(_x, _x2) {return _doRequest.apply(this, arguments);}function _doRequest() {_doRequest = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee6(res, config) {return _regenerator.default.wrap(function _callee6$(_context6) {while (1) {switch (_context6.prev = _context6.next) {case 0:_context6.next = 2;return (
+              uni.login({
+                provider: 'weixin',
+                success: function () {var _success = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee5(loginRes) {return _regenerator.default.wrap(function _callee5$(_context5) {while (1) {switch (_context5.prev = _context5.next) {case 0:_context5.next = 2;return (
+                              uni.getUserInfo({
+                                provider: 'weixin',
+                                success: function () {var _success2 = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee4(infoRes) {var data;return _regenerator.default.wrap(function _callee4$(_context4) {while (1) {switch (_context4.prev = _context4.next) {case 0:
+                                            data = {
+                                              code: loginRes.code,
+                                              encryptedData: infoRes.encryptedData,
+                                              iv: infoRes.iv,
+                                              userInfo: infoRes.userInfo,
+                                              rawData: infoRes.rawData,
+                                              signature: infoRes.signature,
+                                              channel: "wechat",
+                                              inviter: uni.getStorageSync("inviter_user_id") };_context4.next = 3;return (
+
+                                              uni.request({
+                                                url: _httpApi.default.tokenUrl,
+                                                method: 'POST',
+                                                header: {
+                                                  "content-type": "application/json" },
+
+                                                data: data,
+                                                success: function () {var _success3 = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee3(ress) {return _regenerator.default.wrap(function _callee3$(_context3) {while (1) {switch (_context3.prev = _context3.next) {case 0:if (!(
+                                                            ress && ress.statusCode === 200)) {_context3.next = 8;break;}
+                                                            uni.setStorageSync("mini_car_token", ress.data.token);
+                                                            uni.setStorageSync("mini_car_userid", ress.data.userid);
+                                                            config.headers['Authorization'] = 'Bearer ' + ress.data.token;_context3.next = 6;return (
+                                                              uni.request({
+                                                                url: config.url,
+                                                                method: config.method,
+                                                                header: config.header,
+                                                                data: config.data,
+                                                                success: function () {var _success4 = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee2(res2) {return _regenerator.default.wrap(function _callee2$(_context2) {while (1) {switch (_context2.prev = _context2.next) {case 0:return _context2.abrupt("return",
+                                                                            res2.data);case 1:case "end":return _context2.stop();}}}, _callee2);}));function success(_x8) {return _success4.apply(this, arguments);}return success;}() }));case 6:_context3.next = 8;break;case 8:case "end":return _context3.stop();}}}, _callee3);}));function success(_x7) {return _success3.apply(this, arguments);}return success;}(),
+
+
+
+
+
+
+                                                fail: function fail(err) {
+                                                  console.log(err);
+                                                } }));case 3:case "end":return _context4.stop();}}}, _callee4);}));function success(_x6) {return _success2.apply(this, arguments);}return success;}() }));case 2:case "end":return _context5.stop();}}}, _callee5);}));function success(_x5) {return _success.apply(this, arguments);}return success;}() }));case 2:case "end":return _context6.stop();}}}, _callee6);}));return _doRequest.apply(this, arguments);}
+
+
+
+
+
+
 var install = function install(Vue, vm) {
   Vue.prototype.$u.http.setConfig({
-    baseUrl: 'https://api.youzixy.com'
+    baseUrl: _httpApi.default.baseUrl
     // 如果将此值设置为true，拦截回调中将会返回服务端返回的所有数据response，而不是response.data
     // 设置为true后，就需要在this.$u.http.interceptor.response进行多一次的判断，请打印查看具体值
     // originalData: true, 
@@ -15501,9 +18486,10 @@ var install = function install(Vue, vm) {
     // 	'content-type': 'xxx'
     // }
   });
+
   // 请求拦截，配置Token等参数
   Vue.prototype.$u.http.interceptor.request = function (config) {
-    config.header.Token = 'xxxxxx';
+    // config.header.Token = 'xxxxxx';
 
     // 方式一，存放在vuex的token，假设使用了uView封装的vuex方式，见：https://uviewui.com/components/globalVariable.html
     // config.header.token = vm.token;
@@ -15515,60 +18501,38 @@ var install = function install(Vue, vm) {
     // config.header.token = getApp().globalData.username;
 
     // 方式四，如果token放在了Storage本地存储中，拦截是每次请求都执行的，所以哪怕您重新登录修改了Storage，下一次的请求将会是最新值
-    // const token = uni.getStorageSync('token');
-    // config.header.token = token;
+    if (_httpApi.default.noNeedtokenUrl.indexOf(config.url) != -1) {
+
+    } else {
+      var token = uni.getStorageSync('mini_car_token');
+      config.header.Authorization = 'Bearer ' + token;
+    }
 
     return config;
   };
   // 响应拦截，判断状态码是否通过
-  Vue.prototype.$u.http.interceptor.response = function (res) {
-    // 如果把originalData设置为了true，这里得到将会是服务器返回的所有的原始数据
-    // 判断可能变成了res.statueCode，或者res.data.code之类的，请打印查看结果
-    if (res.code == 200) {
-      // 如果把originalData设置为了true，这里return回什么，this.$u.post的then回调中就会得到什么
-      return res.data;
-    } else return false;
-  };
+  Vue.prototype.$u.http.interceptor.response = /*#__PURE__*/function () {var _ref = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee(res, config) {return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:if (!(
+
+
+              res.code == 200)) {_context.next = 4;break;}return _context.abrupt("return",
+
+              res);case 4:if (!(
+              res.code == 401)) {_context.next = 10;break;}_context.next = 7;return (
+                doRequest(res, config));case 7:return _context.abrupt("return", _context.sent);case 10:return _context.abrupt("return",
+              false);case 11:case "end":return _context.stop();}}}, _callee);}));return function (_x3, _x4) {return _ref.apply(this, arguments);};}();
+
 };var _default =
 
+
+
 {
-  install: install };exports.default = _default;
+  install: install,
+  doRequest: doRequest };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
 
-/***/ 43:
-/*!***********************************************************************!*\
-  !*** /Users/chengyongming/WeChatProjects/mini-car/common/http.api.js ***!
-  \***********************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; // 如果没有通过拦截器配置域名的话，可以在这里写上完整的URL(加上域名部分)
-var hotSearchUrl = '/ebapi/store_api/hot_search';
-var indexUrl = '/ebapi/public_api/index';
-
-// 此处第二个参数vm，就是我们在页面使用的this，你可以通过vm获取vuex等操作，更多内容详见uView对拦截器的介绍部分：
-// https://uviewui.com/js/http.html#%E4%BD%95%E8%B0%93%E8%AF%B7%E6%B1%82%E6%8B%A6%E6%88%AA%EF%BC%9F
-var install = function install(Vue, vm) {
-  // 此处没有使用传入的params参数
-  var getSearch = function getSearch() {var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};return vm.$u.get(hotSearchUrl, {
-      id: 2 });};
-
-
-  // 此处使用了传入的params参数，一切自定义即可
-  var getInfo = function getInfo() {var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};return vm.$u.post(indexUrl, params);};
-
-  // 将各个定义的接口名称，统一放进对象挂载到vm.$u.api(因为vm就是this，也即this.$u.api)下
-  vm.$u.api = { getSearch: getSearch, getInfo: getInfo };
-};var _default =
-
-{
-  install: install };exports.default = _default;
-
-/***/ }),
-
-/***/ 44:
+/***/ 78:
 /*!**********************************************************************!*\
   !*** /Users/chengyongming/WeChatProjects/mini-car/store/$u.mixin.js ***!
   \**********************************************************************/
@@ -15576,8 +18540,8 @@ var install = function install(Vue, vm) {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-var _vuex = __webpack_require__(/*! vuex */ 38);
-var _store = _interopRequireDefault(__webpack_require__(/*! @/store */ 37));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}
+var _vuex = __webpack_require__(/*! vuex */ 73);
+var _store = _interopRequireDefault(__webpack_require__(/*! @/store */ 72));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}
 
 // 尝试将用户在根目录中的store/index.js的vuex的state变量，全部加载到全局变量中
 var $uStoreKey = [];
@@ -15604,7 +18568,7 @@ module.exports = {
 
 /***/ }),
 
-/***/ 45:
+/***/ 79:
 /*!***********************************************************************************!*\
   !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/mixin/mpShare.js ***!
   \***********************************************************************************/
@@ -15630,2870 +18594,1511 @@ module.exports = {
 
 /***/ }),
 
-/***/ 542:
-/*!**********************************************************************************!*\
-  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/function/md5.js ***!
-  \**********************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-/*
- * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message
- * Digest Algorithm, as defined in RFC 1321.
- * Version 2.2 Copyright (C) Paul Johnston 1999 - 2009
- * Other contributors: Greg Holt, Andrew Kepert, Ydnar, Lostinet
- * Distributed under the BSD License
- * See http://pajhome.org.uk/crypt/md5 for more info.
- */
-
-/*
-     * Configurable variables. You may need to tweak these to be compatible with
-     * the server-side, but the defaults work in most cases.
-     */
-var hexcase = 0; /* hex output format. 0 - lowercase; 1 - uppercase        */
-var b64pad = ""; /* base-64 pad character. "=" for strict RFC compliance   */
-
-/*
-                                                                               * These are the functions you'll usually want to call
-                                                                               * They take string arguments and return either hex or base-64 encoded strings
-                                                                               */
-function hex_md5(s) {return rstr2hex(rstr_md5(str2rstr_utf8(s)));}
-function b64_md5(s) {return rstr2b64(rstr_md5(str2rstr_utf8(s)));}
-function any_md5(s, e) {return rstr2any(rstr_md5(str2rstr_utf8(s)), e);}
-function hex_hmac_md5(k, d)
-{return rstr2hex(rstr_hmac_md5(str2rstr_utf8(k), str2rstr_utf8(d)));}
-function b64_hmac_md5(k, d)
-{return rstr2b64(rstr_hmac_md5(str2rstr_utf8(k), str2rstr_utf8(d)));}
-function any_hmac_md5(k, d, e)
-{return rstr2any(rstr_hmac_md5(str2rstr_utf8(k), str2rstr_utf8(d)), e);}
-
-/*
-                                                                          * Perform a simple self-test to see if the VM is working
-                                                                          */
-function md5_vm_test()
-{
-  return hex_md5("abc").toLowerCase() == "900150983cd24fb0d6963f7d28e17f72";
-}
-
-/*
-   * Calculate the MD5 of a raw string
-   */
-function rstr_md5(s)
-{
-  return binl2rstr(binl_md5(rstr2binl(s), s.length * 8));
-}
-
-/*
-   * Calculate the HMAC-MD5, of a key and some data (raw strings)
-   */
-function rstr_hmac_md5(key, data)
-{
-  var bkey = rstr2binl(key);
-  if (bkey.length > 16) bkey = binl_md5(bkey, key.length * 8);
-
-  var ipad = Array(16),opad = Array(16);
-  for (var i = 0; i < 16; i++)
-  {
-    ipad[i] = bkey[i] ^ 0x36363636;
-    opad[i] = bkey[i] ^ 0x5C5C5C5C;
-  }
-
-  var hash = binl_md5(ipad.concat(rstr2binl(data)), 512 + data.length * 8);
-  return binl2rstr(binl_md5(opad.concat(hash), 512 + 128));
-}
-
-/*
-   * Convert a raw string to a hex string
-   */
-function rstr2hex(input)
-{
-  try {hexcase;} catch (e) {hexcase = 0;}
-  var hex_tab = hexcase ? "0123456789ABCDEF" : "0123456789abcdef";
-  var output = "";
-  var x;
-  for (var i = 0; i < input.length; i++)
-  {
-    x = input.charCodeAt(i);
-    output += hex_tab.charAt(x >>> 4 & 0x0F) +
-    hex_tab.charAt(x & 0x0F);
-  }
-  return output;
-}
-
-/*
-   * Convert a raw string to a base-64 string
-   */
-function rstr2b64(input)
-{
-  try {b64pad;} catch (e) {b64pad = '';}
-  var tab = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-  var output = "";
-  var len = input.length;
-  for (var i = 0; i < len; i += 3)
-  {
-    var triplet = input.charCodeAt(i) << 16 | (
-    i + 1 < len ? input.charCodeAt(i + 1) << 8 : 0) | (
-    i + 2 < len ? input.charCodeAt(i + 2) : 0);
-    for (var j = 0; j < 4; j++)
-    {
-      if (i * 8 + j * 6 > input.length * 8) output += b64pad;else
-      output += tab.charAt(triplet >>> 6 * (3 - j) & 0x3F);
-    }
-  }
-  return output;
-}
-
-/*
-   * Convert a raw string to an arbitrary string encoding
-   */
-function rstr2any(input, encoding)
-{
-  var divisor = encoding.length;
-  var i, j, q, x, quotient;
-
-  /* Convert to an array of 16-bit big-endian values, forming the dividend */
-  var dividend = Array(Math.ceil(input.length / 2));
-  for (i = 0; i < dividend.length; i++)
-  {
-    dividend[i] = input.charCodeAt(i * 2) << 8 | input.charCodeAt(i * 2 + 1);
-  }
-
-  /*
-     * Repeatedly perform a long division. The binary array forms the dividend,
-     * the length of the encoding is the divisor. Once computed, the quotient
-     * forms the dividend for the next step. All remainders are stored for later
-     * use.
-     */
-  var full_length = Math.ceil(input.length * 8 / (
-  Math.log(encoding.length) / Math.log(2)));
-  var remainders = Array(full_length);
-  for (j = 0; j < full_length; j++)
-  {
-    quotient = Array();
-    x = 0;
-    for (i = 0; i < dividend.length; i++)
-    {
-      x = (x << 16) + dividend[i];
-      q = Math.floor(x / divisor);
-      x -= q * divisor;
-      if (quotient.length > 0 || q > 0)
-      quotient[quotient.length] = q;
-    }
-    remainders[j] = x;
-    dividend = quotient;
-  }
-
-  /* Convert the remainders to the output string */
-  var output = "";
-  for (i = remainders.length - 1; i >= 0; i--) {
-    output += encoding.charAt(remainders[i]);}
-
-  return output;
-}
-
-/*
-   * Encode a string as utf-8.
-   * For efficiency, this assumes the input is valid utf-16.
-   */
-function str2rstr_utf8(input)
-{
-  var output = "";
-  var i = -1;
-  var x, y;
-
-  while (++i < input.length)
-  {
-    /* Decode utf-16 surrogate pairs */
-    x = input.charCodeAt(i);
-    y = i + 1 < input.length ? input.charCodeAt(i + 1) : 0;
-    if (0xD800 <= x && x <= 0xDBFF && 0xDC00 <= y && y <= 0xDFFF)
-    {
-      x = 0x10000 + ((x & 0x03FF) << 10) + (y & 0x03FF);
-      i++;
-    }
-
-    /* Encode output as utf-8 */
-    if (x <= 0x7F)
-    output += String.fromCharCode(x);else
-    if (x <= 0x7FF)
-    output += String.fromCharCode(0xC0 | x >>> 6 & 0x1F,
-    0x80 | x & 0x3F);else
-    if (x <= 0xFFFF)
-    output += String.fromCharCode(0xE0 | x >>> 12 & 0x0F,
-    0x80 | x >>> 6 & 0x3F,
-    0x80 | x & 0x3F);else
-    if (x <= 0x1FFFFF)
-    output += String.fromCharCode(0xF0 | x >>> 18 & 0x07,
-    0x80 | x >>> 12 & 0x3F,
-    0x80 | x >>> 6 & 0x3F,
-    0x80 | x & 0x3F);
-  }
-  return output;
-}
-
-/*
-   * Encode a string as utf-16
-   */
-function str2rstr_utf16le(input)
-{
-  var output = "";
-  for (var i = 0; i < input.length; i++) {
-    output += String.fromCharCode(input.charCodeAt(i) & 0xFF,
-    input.charCodeAt(i) >>> 8 & 0xFF);}
-  return output;
-}
-
-function str2rstr_utf16be(input)
-{
-  var output = "";
-  for (var i = 0; i < input.length; i++) {
-    output += String.fromCharCode(input.charCodeAt(i) >>> 8 & 0xFF,
-    input.charCodeAt(i) & 0xFF);}
-  return output;
-}
-
-/*
-   * Convert a raw string to an array of little-endian words
-   * Characters >255 have their high-byte silently ignored.
-   */
-function rstr2binl(input)
-{
-  var output = Array(input.length >> 2);
-  for (var i = 0; i < output.length; i++) {
-    output[i] = 0;}
-  for (var i = 0; i < input.length * 8; i += 8) {
-    output[i >> 5] |= (input.charCodeAt(i / 8) & 0xFF) << i % 32;}
-  return output;
-}
-
-/*
-   * Convert an array of little-endian words to a string
-   */
-function binl2rstr(input)
-{
-  var output = "";
-  for (var i = 0; i < input.length * 32; i += 8) {
-    output += String.fromCharCode(input[i >> 5] >>> i % 32 & 0xFF);}
-  return output;
-}
-
-/*
-   * Calculate the MD5 of an array of little-endian words, and a bit length.
-   */
-function binl_md5(x, len)
-{
-  /* append padding */
-  x[len >> 5] |= 0x80 << len % 32;
-  x[(len + 64 >>> 9 << 4) + 14] = len;
-
-  var a = 1732584193;
-  var b = -271733879;
-  var c = -1732584194;
-  var d = 271733878;
-
-  for (var i = 0; i < x.length; i += 16)
-  {
-    var olda = a;
-    var oldb = b;
-    var oldc = c;
-    var oldd = d;
-
-    a = md5_ff(a, b, c, d, x[i + 0], 7, -680876936);
-    d = md5_ff(d, a, b, c, x[i + 1], 12, -389564586);
-    c = md5_ff(c, d, a, b, x[i + 2], 17, 606105819);
-    b = md5_ff(b, c, d, a, x[i + 3], 22, -1044525330);
-    a = md5_ff(a, b, c, d, x[i + 4], 7, -176418897);
-    d = md5_ff(d, a, b, c, x[i + 5], 12, 1200080426);
-    c = md5_ff(c, d, a, b, x[i + 6], 17, -1473231341);
-    b = md5_ff(b, c, d, a, x[i + 7], 22, -45705983);
-    a = md5_ff(a, b, c, d, x[i + 8], 7, 1770035416);
-    d = md5_ff(d, a, b, c, x[i + 9], 12, -1958414417);
-    c = md5_ff(c, d, a, b, x[i + 10], 17, -42063);
-    b = md5_ff(b, c, d, a, x[i + 11], 22, -1990404162);
-    a = md5_ff(a, b, c, d, x[i + 12], 7, 1804603682);
-    d = md5_ff(d, a, b, c, x[i + 13], 12, -40341101);
-    c = md5_ff(c, d, a, b, x[i + 14], 17, -1502002290);
-    b = md5_ff(b, c, d, a, x[i + 15], 22, 1236535329);
-
-    a = md5_gg(a, b, c, d, x[i + 1], 5, -165796510);
-    d = md5_gg(d, a, b, c, x[i + 6], 9, -1069501632);
-    c = md5_gg(c, d, a, b, x[i + 11], 14, 643717713);
-    b = md5_gg(b, c, d, a, x[i + 0], 20, -373897302);
-    a = md5_gg(a, b, c, d, x[i + 5], 5, -701558691);
-    d = md5_gg(d, a, b, c, x[i + 10], 9, 38016083);
-    c = md5_gg(c, d, a, b, x[i + 15], 14, -660478335);
-    b = md5_gg(b, c, d, a, x[i + 4], 20, -405537848);
-    a = md5_gg(a, b, c, d, x[i + 9], 5, 568446438);
-    d = md5_gg(d, a, b, c, x[i + 14], 9, -1019803690);
-    c = md5_gg(c, d, a, b, x[i + 3], 14, -187363961);
-    b = md5_gg(b, c, d, a, x[i + 8], 20, 1163531501);
-    a = md5_gg(a, b, c, d, x[i + 13], 5, -1444681467);
-    d = md5_gg(d, a, b, c, x[i + 2], 9, -51403784);
-    c = md5_gg(c, d, a, b, x[i + 7], 14, 1735328473);
-    b = md5_gg(b, c, d, a, x[i + 12], 20, -1926607734);
-
-    a = md5_hh(a, b, c, d, x[i + 5], 4, -378558);
-    d = md5_hh(d, a, b, c, x[i + 8], 11, -2022574463);
-    c = md5_hh(c, d, a, b, x[i + 11], 16, 1839030562);
-    b = md5_hh(b, c, d, a, x[i + 14], 23, -35309556);
-    a = md5_hh(a, b, c, d, x[i + 1], 4, -1530992060);
-    d = md5_hh(d, a, b, c, x[i + 4], 11, 1272893353);
-    c = md5_hh(c, d, a, b, x[i + 7], 16, -155497632);
-    b = md5_hh(b, c, d, a, x[i + 10], 23, -1094730640);
-    a = md5_hh(a, b, c, d, x[i + 13], 4, 681279174);
-    d = md5_hh(d, a, b, c, x[i + 0], 11, -358537222);
-    c = md5_hh(c, d, a, b, x[i + 3], 16, -722521979);
-    b = md5_hh(b, c, d, a, x[i + 6], 23, 76029189);
-    a = md5_hh(a, b, c, d, x[i + 9], 4, -640364487);
-    d = md5_hh(d, a, b, c, x[i + 12], 11, -421815835);
-    c = md5_hh(c, d, a, b, x[i + 15], 16, 530742520);
-    b = md5_hh(b, c, d, a, x[i + 2], 23, -995338651);
-
-    a = md5_ii(a, b, c, d, x[i + 0], 6, -198630844);
-    d = md5_ii(d, a, b, c, x[i + 7], 10, 1126891415);
-    c = md5_ii(c, d, a, b, x[i + 14], 15, -1416354905);
-    b = md5_ii(b, c, d, a, x[i + 5], 21, -57434055);
-    a = md5_ii(a, b, c, d, x[i + 12], 6, 1700485571);
-    d = md5_ii(d, a, b, c, x[i + 3], 10, -1894986606);
-    c = md5_ii(c, d, a, b, x[i + 10], 15, -1051523);
-    b = md5_ii(b, c, d, a, x[i + 1], 21, -2054922799);
-    a = md5_ii(a, b, c, d, x[i + 8], 6, 1873313359);
-    d = md5_ii(d, a, b, c, x[i + 15], 10, -30611744);
-    c = md5_ii(c, d, a, b, x[i + 6], 15, -1560198380);
-    b = md5_ii(b, c, d, a, x[i + 13], 21, 1309151649);
-    a = md5_ii(a, b, c, d, x[i + 4], 6, -145523070);
-    d = md5_ii(d, a, b, c, x[i + 11], 10, -1120210379);
-    c = md5_ii(c, d, a, b, x[i + 2], 15, 718787259);
-    b = md5_ii(b, c, d, a, x[i + 9], 21, -343485551);
-
-    a = safe_add(a, olda);
-    b = safe_add(b, oldb);
-    c = safe_add(c, oldc);
-    d = safe_add(d, oldd);
-  }
-  return Array(a, b, c, d);
-}
-
-/*
-   * These functions implement the four basic operations the algorithm uses.
-   */
-function md5_cmn(q, a, b, x, s, t)
-{
-  return safe_add(bit_rol(safe_add(safe_add(a, q), safe_add(x, t)), s), b);
-}
-function md5_ff(a, b, c, d, x, s, t)
-{
-  return md5_cmn(b & c | ~b & d, a, b, x, s, t);
-}
-function md5_gg(a, b, c, d, x, s, t)
-{
-  return md5_cmn(b & d | c & ~d, a, b, x, s, t);
-}
-function md5_hh(a, b, c, d, x, s, t)
-{
-  return md5_cmn(b ^ c ^ d, a, b, x, s, t);
-}
-function md5_ii(a, b, c, d, x, s, t)
-{
-  return md5_cmn(c ^ (b | ~d), a, b, x, s, t);
-}
-
-/*
-   * Add integers, wrapping at 2^32. This uses 16-bit operations internally
-   * to work around bugs in some JS interpreters.
-   */
-function safe_add(x, y)
-{
-  var lsw = (x & 0xFFFF) + (y & 0xFFFF);
-  var msw = (x >> 16) + (y >> 16) + (lsw >> 16);
-  return msw << 16 | lsw & 0xFFFF;
-}
-
-/*
-   * Bitwise rotate a 32-bit number to the left.
-   */
-function bit_rol(num, cnt)
-{
-  return num << cnt | num >>> 32 - cnt;
-}
-
-module.exports = {
-  md5: function md5(str) {
-    return hex_md5(str);
-  } };
-
-/***/ }),
-
-/***/ 60:
-/*!***************************************************************************************!*\
-  !*** /Users/chengyongming/WeChatProjects/mini-car/pages/example/components.config.js ***!
-  \***************************************************************************************/
+/***/ 877:
+/*!********************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/components/xiujun-time-selector/date.js ***!
+  \********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default =
-[{
-  groupName: '基础组件',
-  groupName_en: 'Basic components',
-  list: [{
-    path: '/pages/componentsC/color/index',
-    icon: 'color',
-    title: 'Color 色彩',
-    title_en: 'Color' },
-  {
-    path: '/pages/componentsA/icon/index',
-    icon: 'icon',
-    title: 'Icon 图标',
-    title_en: 'Icon' },
-  {
-    path: '/pages/componentsB/image/index',
-    icon: 'image',
-    title: 'Image 图片',
-    title_en: 'Image' },
-  {
-    path: '/pages/componentsC/button/index',
-    icon: 'button',
-    title: 'Button 按钮',
-    title_en: 'Button' },
-  {
-    path: '/pages/componentsC/layout/index',
-    icon: 'layout',
-    title: 'Layout 布局',
-    title_en: 'Layout' },
-  {
-    path: '/pages/componentsC/cell/index',
-    icon: 'cell',
-    title: 'Cell 单元格',
-    title_en: 'Cell' },
-  {
-    path: '/pages/componentsC/badge/index',
-    icon: 'badge',
-    title: 'Badge 徽标数',
-    title_en: 'Badge' },
-  {
-    path: '/pages/componentsA/tag/index',
-    icon: 'tag',
-    title: 'Tag 标签',
-    title_en: 'Tag' }] },
-
-
-{
-  groupName: '表单组件',
-  groupName_en: 'Form components',
-  list: [{
-    path: '/pages/componentsA/form/index',
-    icon: 'form',
-    title: 'Form 表单',
-    title_en: 'Form' },
-  {
-    path: '/pages/componentsA/calendar/index',
-    icon: 'calendar',
-    title: 'Calendar 日历',
-    title_en: 'Calendar' },
-  {
-    path: '/pages/componentsA/select/index',
-    icon: 'select',
-    title: 'Select 列选择器',
-    title_en: 'Select' },
-  {
-    path: '/pages/componentsA/keyboard/index',
-    icon: 'keyboard',
-    title: 'Keyboard 键盘',
-    title_en: 'Keyboard' },
-  {
-    path: '/pages/componentsB/picker/index',
-    icon: 'picker',
-    title: 'Picker 选择器',
-    title_en: 'Picker' },
-  {
-    path: '/pages/componentsB/rate/index',
-    icon: 'rate',
-    title: 'Rate 评分',
-    title_en: 'Rate' },
-  {
-    path: '/pages/componentsB/search/index',
-    icon: 'search',
-    title: 'Search 搜索',
-    title_en: 'Search' },
-  {
-    path: '/pages/componentsC/numberBox/index',
-    icon: 'numberBox',
-    title: 'NumberBox 步进器',
-    title_en: 'NumberBox' },
-  {
-    path: '/pages/componentsB/upload/index',
-    icon: 'upload',
-    title: 'Upload 上传',
-    title_en: 'Upload' },
-  {
-    path: '/pages/componentsA/verificationCode/index',
-    icon: 'verificationCode',
-    title: 'VerificationCode 验证码倒计时',
-    title_en: 'VerificationCode' },
-  {
-    path: '/pages/componentsA/field/index',
-    icon: 'field',
-    title: 'Field 输入框',
-    title_en: 'Field' },
-  {
-    path: '/pages/componentsB/checkbox/index',
-    icon: 'checkbox',
-    title: 'Checkbox 复选框',
-    title_en: 'Checkbox' },
-  {
-    path: '/pages/componentsB/radio/index',
-    icon: 'radio',
-    title: 'Radio 单选框',
-    title_en: 'Radio' },
-  {
-    path: '/pages/componentsB/switch/index',
-    icon: 'switch',
-    title: 'Switch 开关选择器',
-    title_en: 'Switch' },
-  {
-    path: '/pages/componentsA/slider/index',
-    icon: 'slider',
-    title: 'Slider 滑动选择器',
-    title_en: 'Slider' }] },
-
-{
-  groupName: '数据组件',
-  groupName_en: 'Data components',
-  list: [{
-    path: '/pages/componentsC/progress/index',
-    icon: 'progress',
-    title: 'Progress 进度条',
-    title_en: 'Progress' },
-  {
-    path: '/pages/componentsB/table/index',
-    icon: 'table',
-    title: 'Table 表格',
-    title_en: 'Table' },
-  {
-    path: '/pages/componentsC/countDown/index',
-    icon: 'countDown',
-    title: 'CountDown 倒计时',
-    title_en: 'CountDown' },
-  {
-    path: '/pages/componentsC/countTo/index',
-    icon: 'countTo',
-    title: 'CountTo 数字滚动',
-    title_en: 'CountTo' }] },
-
-{
-  groupName: '反馈组件',
-  groupName_en: 'Feedback components',
-  list: [{
-    path: '/pages/componentsC/actionSheet/index',
-    icon: 'actionSheet',
-    title: 'ActionSheet 操作菜单',
-    title_en: 'ActionSheet' },
-  {
-    path: '/pages/componentsC/alertTips/index',
-    icon: 'alertTips',
-    title: 'AlertTips 警告提示',
-    title_en: 'AlertTips' },
-  {
-    path: '/pages/componentsA/toast/index',
-    icon: 'toast',
-    title: 'Toast 消息提示',
-    title_en: 'Toast' },
-  {
-    path: '/pages/componentsB/noticeBar/index',
-    icon: 'noticeBar',
-    title: 'NoticeBar 滚动通知',
-    title_en: 'NoticeBar' },
-  {
-    path: '/pages/componentsA/topTips/index',
-    icon: 'topTips',
-    title: 'TopTips 顶部提示',
-    title_en: 'TopTips' },
-  {
-    path: '/pages/componentsB/swipeAction/index',
-    icon: 'swipeAction',
-    title: 'SwipeAction 滑动单元格',
-    title_en: 'SwipeAction' },
-  {
-    path: '/pages/componentsC/collapse/index',
-    icon: 'collapse',
-    title: 'Collapse 折叠面板',
-    title_en: 'Collapse' },
-  {
-    path: '/pages/componentsC/popup/index',
-    icon: 'popup',
-    title: 'Popup 弹出层',
-    title_en: 'Popup' },
-  {
-    path: '/pages/componentsA/modal/index',
-    icon: 'modal',
-    title: 'Modal 模态框',
-    title_en: 'Modal' },
-  {
-    path: '/pages/componentsA/fullScreen/index',
-    icon: 'pressingScreen',
-    title: 'fullScreen 压窗屏',
-    title_en: 'fullScreen' }] },
-
-{
-  groupName: '布局组件',
-  groupName_en: 'Layout components',
-  list: [{
-    path: '/pages/componentsB/line/index',
-    icon: 'line',
-    title: 'Line 线条',
-    title_en: 'Line' },
-  {
-    path: '/pages/componentsB/card/index',
-    icon: 'card',
-    title: 'Card 卡片',
-    title_en: 'Card' },
-  {
-    path: '/pages/componentsC/mask/index',
-    icon: 'mask',
-    title: 'Mask 遮罩层',
-    title_en: 'Mask' },
-
-
-  {
-    path: '/pages/componentsA/noNetwork/index',
-    icon: 'noNetwork',
-    title: 'NoNetwork 无网络提示',
-    title_en: 'NoNetwork' },
-
-
-  {
-    path: '/pages/componentsC/grid/index',
-    icon: 'grid',
-    title: 'Grid 宫格布局',
-    title_en: 'Grid' },
-  {
-    path: '/pages/componentsB/swiper/index',
-    icon: 'swiper',
-    title: 'Swiper 轮播图',
-    title_en: 'Swiper' },
-  {
-    path: '/pages/componentsA/timeLine/index',
-    icon: 'timeLine',
-    title: 'TimeLine 时间轴',
-    title_en: 'TimeLine' },
-  {
-    path: '/pages/componentsB/skeleton/index',
-    icon: 'skeleton',
-    title: 'Skeleton 骨架屏',
-    title_en: 'Skeleton' },
-  {
-    path: '/pages/componentsB/sticky/index',
-    icon: 'sticky',
-    title: 'Sticky 吸顶',
-    title_en: 'Sticky' },
-
-
-  {
-    path: '/pages/componentsB/waterfall/index',
-    icon: 'waterfall',
-    title: 'Waterfall 瀑布流',
-    title_en: 'Waterfall' },
-
-
-  {
-    path: '/pages/componentsB/divider/index',
-    icon: 'divider',
-    title: 'Divider 分割线',
-    title_en: 'Divider' }] },
-
-{
-  groupName: '导航组件',
-  groupName_en: 'Navigation components',
-  list: [{
-    path: '/pages/componentsB/dropdown/index',
-    icon: 'dropdown',
-    title: 'Dropdown 下拉菜单',
-    title_en: 'Dropdown' },
-  {
-    path: '/pages/componentsB/tabbar/index',
-    icon: 'tabbar',
-    title: 'Tabbar 底部导航栏',
-    title_en: 'Tabbar' },
-  {
-    path: '/pages/componentsA/backTop/index',
-    icon: 'backTop',
-    title: 'BackTop 返回顶部',
-    title_en: 'BackTop' },
-  {
-    path: '/pages/componentsA/navbar/index',
-    icon: 'navbar',
-    title: 'Navbar 导航栏',
-    title_en: 'Navbar' },
-  {
-    path: '/pages/componentsA/tabs/index',
-    icon: 'tabs',
-    title: 'Tabs 标签',
-    title_en: 'Tabs' },
-
-
-  {
-    path: '/pages/template/order/index',
-    icon: 'tabsSwiper',
-    title: 'TabsSwiper 全屏选项卡',
-    title_en: 'TabsSwiper' },
-
-
-  {
-    path: '/pages/componentsC/subsection/index',
-    icon: 'subsection',
-    title: 'Subsection 分段器',
-    title_en: 'Subsection' },
-  {
-    path: '/pages/componentsA/indexList/index',
-    icon: 'indexList',
-    title: 'IndexList 索引列表',
-    title_en: 'IndexList' },
-  {
-    path: '/pages/componentsB/steps/index',
-    icon: 'steps',
-    title: 'Steps 步骤条',
-    title_en: 'Steps' },
-  {
-    path: '/pages/componentsA/empty/index',
-    icon: 'empty',
-    title: 'Empty 内容为空',
-    title_en: 'Empty' },
-  {
-    path: '/pages/componentsC/section/index',
-    icon: 'section',
-    title: 'Section 查看更多',
-    title_en: 'Section' }] },
-
-{
-  groupName: '其他组件',
-  groupName_en: 'Other components',
-  list: [{
-    path: '/pages/componentsA/parse/index',
-    icon: 'parse',
-    title: 'Parse 富文本解析器',
-    title_en: 'Parse' },
-  {
-    path: '/pages/componentsC/messageInput/index',
-    icon: 'messageInput',
-    title: 'MessageInput 验证码输入',
-    title_en: 'MessageInput' },
-  {
-    path: '/pages/componentsA/avatarCropper/index',
-    icon: 'avatarCropper',
-    title: 'AvatarCropper 头像裁剪',
-    title_en: 'AvatarCropper' },
-  {
-    path: '/pages/componentsC/loadmore/index',
-    icon: 'loadmore',
-    title: 'Loadmore 加载更多',
-    title_en: 'Loadmore' },
-  {
-    path: '/pages/componentsB/readMore/index',
-    icon: 'readMore',
-    title: 'ReadMore 展开阅读更多',
-    title_en: 'ReadMore' },
-  {
-    path: '/pages/componentsA/lazyLoad/index',
-    icon: 'lazyLoad',
-    title: 'LazyLoad 懒加载',
-    title_en: 'LazyLoad' },
-  {
-    path: '/pages/componentsC/gap/index',
-    icon: 'gap',
-    title: 'Gap 间隔槽',
-    title_en: 'Gap' },
-  {
-    path: '/pages/componentsA/avatar/index',
-    icon: 'avatar',
-    title: 'Avatar 头像',
-    title_en: 'Avatar' },
-  {
-    path: '/pages/componentsC/link/index',
-    icon: 'link',
-    title: 'Link 超链接',
-    title_en: 'Link' },
-  {
-    path: '/pages/componentsB/loading/index',
-    icon: 'loading',
-    title: 'Loading 加载动画',
-    title_en: 'Loading' }] }];exports.default = _default;
+Object.defineProperty(exports, "__esModule", { value: true });exports.timeStamp = timeStamp;exports.dateData = dateData;exports.timeData = timeData; //字符串拼接
+function strFormat(str) {
+  return str < 10 ? "0".concat(str) : str;
+}
+//时间戳转日期
+function timeStamp(time) {
+  var dates = new Date(time);
+  var year = dates.getFullYear();
+  var month = dates.getMonth() + 1;
+  var date = dates.getDate();
+  var day = dates.getDay();
+  var hour = dates.getHours();
+  var min = dates.getMinutes();
+  var days = ['日', '一', '二', '三', '四', '五', '六'];
+  return {
+    allDate: "".concat(year, "/").concat(strFormat(month), "/").concat(strFormat(date)), //注:此处ios系统如"-"分割无法显示,只能用"/"分割符
+    date: "".concat(strFormat(month), "-").concat(strFormat(date)), //返回的日期 07-01
+    day: "\u661F\u671F".concat(days[day]), //返回的礼拜天数  星期一
+    hour: strFormat(hour) + ':' + strFormat(min) //返回的时钟 08:00
+  };
+}
+//获取最近7天的日期和礼拜天数
+function dateData() {
+  var time = [];
+  var date = new Date();
+  var now = date.getTime(); //获取当前日期的时间戳
+  var timeStr = 3600 * 24 * 1000; //一天的时间戳
+  for (var i = 0; i < 7; i++) {
+    var timeObj = {};
+    timeObj.date = timeStamp(now + timeStr * i).date; //保存日期
+    timeObj.timeStamp = now + timeStr * i; //保存时间戳
+    if (i == 0) {
+      timeObj.week = '今天';
+    } else if (i == 1) {
+      timeObj.week = '明天';
+    } else if (i == 2) {
+      timeObj.week = '后天';
+    } else {
+      timeObj.week = timeStamp(now + timeStr * i).day;
+    }
+    time.push(timeObj);
+  }
+  return time;
+}
+//时间数组
+function timeData() {var startTime = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '08:00';var endTime = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '18:30';var timeInterval = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0.5;
+  var time = [];
+  var date = timeStamp(Date.now()).allDate;
+  var startDate = "".concat(date, " ").concat(startTime);
+  var endDate = "".concat(date, " ").concat(endTime);
+  var startTimeStamp = new Date(startDate).getTime();
+  var endTimeStamp = new Date(endDate).getTime();
+  var timeStr = 3600 * 1000 * timeInterval;
+  console.log(startTimeStamp);
+  var count = 0;
+  for (var i = startTimeStamp; i <= endTimeStamp; i = i + timeStr) {
+    var timeObj = {};
+    timeObj.time = timeStamp(i).hour;
+    timeObj.disable = 1;
+    timeObj.index = count;
+    time.push(timeObj);
+    count++;
+  }
+  console.log(JSON.stringify(time));
+  return time;
+}
 
 /***/ }),
 
-/***/ 687:
-/*!*************************************************************************!*\
-  !*** /Users/chengyongming/WeChatProjects/mini-car/common/index.list.js ***!
-  \*************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = {
-  list: [{
-    "letter": "A",
-    "data": [{
-      "name": "阿拉斯加",
-      "mobile": "13588889999",
-      "keyword": "阿拉斯加ABA13588889999" },
-
-    {
-      "name": "阿克苏",
-      "mobile": "0551-4386721",
-      "keyword": "阿克苏AKESU0551-4386721" },
-
-    {
-      "name": "阿拉善",
-      "mobile": "4008009100",
-      "keyword": "阿拉善ALASHAN4008009100" },
-
-    {
-      "name": "阿勒泰",
-      "mobile": "13588889999",
-      "keyword": "阿勒泰ALETAI13588889999" },
-
-    {
-      "name": "阿里",
-      "mobile": "13588889999",
-      "keyword": "阿里ALI13588889999" },
-
-    {
-      "name": "安阳",
-      "mobile": "13588889999",
-      "keyword": "13588889999安阳ANYANG" }] },
-
-
-
-  {
-    "letter": "B",
-    "data": [{
-      "name": "白城",
-      "mobile": "该主子没有留电话~",
-      "keyword": "白城BAICHENG" },
-
-    {
-      "name": "白山",
-      "mobile": "13588889999",
-      "keyword": "白山BAISHAN13588889999" },
-
-    {
-      "name": "白银",
-      "mobile": "13588889999",
-      "keyword": "白银BAIYIN13588889999" },
-
-    {
-      "name": "保定",
-      "mobile": "13588889999",
-      "keyword": "保定BAODING13588889999" }] },
-
-
-
-  {
-    "letter": "C",
-    "data": [{
-      "name": "沧州",
-      "mobile": "13588889999",
-      "keyword": "沧州CANGZHOU13588889999" },
-
-    {
-      "name": "长春",
-      "mobile": "13588889999",
-      "keyword": "长春CHANGCHUN13588889999" }] },
-
-
-
-  {
-    "letter": "D",
-    "data": [{
-      "name": "大理",
-      "mobile": "13588889999",
-      "keyword": "大理DALI13588889999" },
-
-    {
-      "name": "大连",
-      "mobile": "13588889999",
-      "keyword": "大连DALIAN13588889999" }] },
-
-
-
-  {
-    "letter": "E",
-    "data": [{
-      "name": "鄂尔多斯",
-      "mobile": "13588889999",
-      "keyword": "鄂尔多斯EERDUOSI13588889999" },
-
-    {
-      "name": "恩施",
-      "mobile": "13588889999",
-      "keyword": "恩施ENSHI13588889999" },
-
-    {
-      "name": "鄂州",
-      "mobile": "13588889999",
-      "keyword": "鄂州EZHOU13588889999" }] },
-
-
-
-  {
-    "letter": "F",
-    "data": [{
-      "name": "防城港",
-      "mobile": "该主子没有留电话~",
-      "keyword": "防城港FANGCHENGGANG" },
-
-    {
-      "name": "抚顺",
-      "mobile": "13588889999",
-      "keyword": "抚顺FUSHUN13588889999" },
-
-    {
-      "name": "阜新",
-      "mobile": "13588889999",
-      "keyword": "阜新FUXIN13588889999" },
-
-    {
-      "name": "阜阳",
-      "mobile": "13588889999",
-      "keyword": "阜阳FUYANG13588889999" },
-
-    {
-      "name": "抚州",
-      "mobile": "13588889999",
-      "keyword": "抚州FUZHOU13588889999" },
-
-    {
-      "name": "福州",
-      "mobile": "13588889999",
-      "keyword": "福州FUZHOU13588889999" }] },
-
-
-
-  {
-    "letter": "G",
-    "data": [{
-      "name": "甘南",
-      "mobile": "13588889999",
-      "keyword": "甘南GANNAN13588889999" },
-
-    {
-      "name": "赣州",
-      "mobile": "13588889999",
-      "keyword": "赣州GANZHOU13588889999" },
-
-    {
-      "name": "甘孜",
-      "mobile": "13588889999",
-      "keyword": "甘孜GANZI13588889999" }] },
-
-
-
-  {
-    "letter": "H",
-    "data": [{
-      "name": "哈尔滨",
-      "mobile": "13588889999",
-      "keyword": "哈尔滨HAERBIN13588889999" },
-
-    {
-      "name": "海北",
-      "mobile": "13588889999",
-      "keyword": "海北HAIBEI13588889999" },
-
-    {
-      "name": "海东",
-      "mobile": "13588889999",
-      "keyword": "海东HAIDONG13588889999" },
-
-    {
-      "name": "海口",
-      "mobile": "13588889999",
-      "keyword": "海口HAIKOU13588889999" }] },
-
-
-
-  {
-    "letter": "I",
-    "data": [{
-      "name": "ice",
-      "mobile": "13588889999",
-      "keyword": "佳木斯JIAMUSI13588889999" }] },
-
-
-  {
-    "letter": "J",
-    "data": [{
-      "name": "佳木斯",
-      "mobile": "13588889999",
-      "keyword": "佳木斯JIAMUSI13588889999" },
-
-    {
-      "name": "吉安",
-      "mobile": "13588889999",
-      "keyword": "吉安JIAN13588889999" },
-
-    {
-      "name": "江门",
-      "mobile": "13588889999",
-      "keyword": "江门JIANGMEN13588889999" }] },
-
-
-
-  {
-    "letter": "K",
-    "data": [{
-      "name": "开封",
-      "mobile": "13588889999",
-      "keyword": "开封KAIFENG13588889999" },
-
-    {
-      "name": "喀什",
-      "mobile": "13588889999",
-      "keyword": "喀什KASHI13588889999" },
-
-    {
-      "name": "克拉玛依",
-      "mobile": "13588889999",
-      "keyword": "克拉玛依KELAMAYI13588889999" }] },
-
-
-
-  {
-    "letter": "L",
-    "data": [{
-      "name": "来宾",
-      "mobile": "13588889999",
-      "keyword": "来宾LAIBIN13588889999" },
-
-    {
-      "name": "兰州",
-      "mobile": "13588889999",
-      "keyword": "兰州LANZHOU13588889999" },
-
-    {
-      "name": "拉萨",
-      "mobile": "13588889999",
-      "keyword": "拉萨LASA13588889999" },
-
-    {
-      "name": "乐山",
-      "mobile": "13588889999",
-      "keyword": "乐山LESHAN13588889999" },
-
-    {
-      "name": "凉山",
-      "mobile": "13588889999",
-      "keyword": "凉山LIANGSHAN13588889999" },
-
-    {
-      "name": "连云港",
-      "mobile": "13588889999",
-      "keyword": "连云港LIANYUNGANG13588889999" },
-
-    {
-      "name": "聊城",
-      "mobile": "18322223333",
-      "keyword": "聊城LIAOCHENG18322223333" },
-
-    {
-      "name": "辽阳",
-      "mobile": "18322223333",
-      "keyword": "辽阳LIAOYANG18322223333" },
-
-    {
-      "name": "辽源",
-      "mobile": "18322223333",
-      "keyword": "辽源LIAOYUAN18322223333" },
-
-    {
-      "name": "丽江",
-      "mobile": "18322223333",
-      "keyword": "丽江LIJIANG18322223333" },
-
-    {
-      "name": "临沧",
-      "mobile": "18322223333",
-      "keyword": "临沧LINCANG18322223333" },
-
-    {
-      "name": "临汾",
-      "mobile": "18322223333",
-      "keyword": "临汾LINFEN18322223333" },
-
-    {
-      "name": "临夏",
-      "mobile": "18322223333",
-      "keyword": "临夏LINXIA18322223333" },
-
-    {
-      "name": "临沂",
-      "mobile": "18322223333",
-      "keyword": "临沂LINYI18322223333" },
-
-    {
-      "name": "林芝",
-      "mobile": "18322223333",
-      "keyword": "林芝LINZHI18322223333" },
-
-    {
-      "name": "丽水",
-      "mobile": "18322223333",
-      "keyword": "丽水LISHUI18322223333" }] },
-
-
-
-  {
-    "letter": "M",
-    "data": [{
-      "name": "眉山",
-      "mobile": "15544448888",
-      "keyword": "眉山MEISHAN15544448888" },
-
-    {
-      "name": "梅州",
-      "mobile": "15544448888",
-      "keyword": "梅州MEIZHOU15544448888" },
-
-    {
-      "name": "绵阳",
-      "mobile": "15544448888",
-      "keyword": "绵阳MIANYANG15544448888" },
-
-    {
-      "name": "牡丹江",
-      "mobile": "15544448888",
-      "keyword": "牡丹江MUDANJIANG15544448888" }] },
-
-
-
-  {
-    "letter": "N",
-    "data": [{
-      "name": "南昌",
-      "mobile": "15544448888",
-      "keyword": "南昌NANCHANG15544448888" },
-
-    {
-      "name": "南充",
-      "mobile": "15544448888",
-      "keyword": "南充NANCHONG15544448888" },
-
-    {
-      "name": "南京",
-      "mobile": "15544448888",
-      "keyword": "南京NANJING15544448888" },
-
-    {
-      "name": "南宁",
-      "mobile": "15544448888",
-      "keyword": "南宁NANNING15544448888" },
-
-    {
-      "name": "南平",
-      "mobile": "15544448888",
-      "keyword": "南平NANPING15544448888" }] },
-
-
-
-  {
-    "letter": "O",
-    "data": [{
-      "name": "欧阳",
-      "mobile": "15544448888",
-      "keyword": "欧阳ouyang15544448888" }] },
-
-
-  {
-    "letter": "P",
-    "data": [{
-      "name": "盘锦",
-      "mobile": "15544448888",
-      "keyword": "盘锦PANJIN15544448888" },
-
-    {
-      "name": "攀枝花",
-      "mobile": "15544448888",
-      "keyword": "攀枝花PANZHIHUA15544448888" },
-
-    {
-      "name": "平顶山",
-      "mobile": "15544448888",
-      "keyword": "平顶山PINGDINGSHAN15544448888" },
-
-    {
-      "name": "平凉",
-      "mobile": "15544448888",
-      "keyword": "平凉PINGLIANG15544448888" },
-
-    {
-      "name": "萍乡",
-      "mobile": "15544448888",
-      "keyword": "萍乡PINGXIANG15544448888" },
-
-    {
-      "name": "普洱",
-      "mobile": "15544448888",
-      "keyword": "普洱PUER15544448888" },
-
-    {
-      "name": "莆田",
-      "mobile": "15544448888",
-      "keyword": "莆田PUTIAN15544448888" },
-
-    {
-      "name": "濮阳",
-      "mobile": "15544448888",
-      "keyword": "濮阳PUYANG15544448888" }] },
-
-
-
-  {
-    "letter": "Q",
-    "data": [{
-      "name": "黔东南",
-      "mobile": "15544448888",
-      "keyword": "黔东南QIANDONGNAN15544448888" },
-
-    {
-      "name": "黔南",
-      "mobile": "15544448888",
-      "keyword": "黔南QIANNAN15544448888" },
-
-    {
-      "name": "黔西南",
-      "mobile": "15544448888",
-      "keyword": "黔西南QIANXINAN15544448888" }] },
-
-
-
-  {
-    "letter": "R",
-    "data": [{
-      "name": "日喀则",
-      "mobile": "15544448888",
-      "keyword": "日喀则RIKAZE15544448888" },
-
-    {
-      "name": "日照",
-      "mobile": "15544448888",
-      "keyword": "日照RIZHAO15544448888" }] },
-
-
-
-  {
-    "letter": "S",
-    "data": [{
-      "name": "三门峡",
-      "mobile": "15544448888",
-      "keyword": "三门峡SANMENXIA15544448888" },
-
-    {
-      "name": "三明",
-      "mobile": "15544448888",
-      "keyword": "三明SANMING15544448888" },
-
-    {
-      "name": "三沙",
-      "mobile": "15544448888",
-      "keyword": "三沙SANSHA15544448888" }] },
-
-
-
-  {
-    "letter": "T",
-    "data": [{
-      "name": "塔城",
-      "mobile": "15544448888",
-      "keyword": "塔城TACHENG15544448888" },
-
-    {
-      "name": "漯河",
-      "mobile": "15544448888",
-      "keyword": "漯河TAHE15544448888" },
-
-    {
-      "name": "泰安",
-      "mobile": "15544448888",
-      "keyword": "泰安TAIAN15544448888" }] },
-
-
-
-  {
-    "letter": "W",
-    "data": [{
-      "name": "潍坊",
-      "mobile": "15544448888",
-      "keyword": "潍坊WEIFANG15544448888" },
-
-    {
-      "name": "威海",
-      "mobile": "15544448888",
-      "keyword": "威海WEIHAI15544448888" },
-
-    {
-      "name": "渭南",
-      "mobile": "15544448888",
-      "keyword": "渭南WEINAN15544448888" },
-
-    {
-      "name": "文山",
-      "mobile": "15544448888",
-      "keyword": "文山WENSHAN15544448888" }] },
-
-
-
-  {
-    "letter": "X",
-    "data": [{
-      "name": "厦门",
-      "mobile": "15544448888",
-      "keyword": "厦门XIAMEN15544448888" },
-
-    {
-      "name": "西安",
-      "mobile": "15544448888",
-      "keyword": "西安XIAN15544448888" },
-
-    {
-      "name": "湘潭",
-      "mobile": "15544448888",
-      "keyword": "湘潭XIANGTAN15544448888" }] },
-
-
-
-  {
-    "letter": "Y",
-    "data": [{
-      "name": "雅安",
-      "mobile": "15544448888",
-      "keyword": "雅安YAAN15544448888" },
-
-    {
-      "name": "延安",
-      "mobile": "15544448888",
-      "keyword": "延安YANAN15544448888" },
-
-    {
-      "name": "延边",
-      "mobile": "15544448888",
-      "keyword": "延边YANBIAN15544448888" },
-
-    {
-      "name": "盐城",
-      "mobile": "15544448888",
-      "keyword": "盐城YANCHENG15544448888" }] },
-
-
-
-  {
-    "letter": "Z",
-    "data": [{
-      "name": "枣庄",
-      "mobile": "15544448888",
-      "keyword": "枣庄ZAOZHUANG15544448888" },
-
-    {
-      "name": "张家界",
-      "mobile": "15544448888",
-      "keyword": "张家界ZHANGJIAJIE15544448888" },
-
-    {
-      "name": "张家口",
-      "mobile": "15544448888",
-      "keyword": "张家口ZHANGJIAKOU15544448888" }] },
-
-
-
-  {
-    "letter": "#",
-    "data": [{
-      "name": "其他.",
-      "mobile": "16666666666",
-      "keyword": "echo16666666666" }] }] };
-
-/***/ }),
-
-/***/ 71:
-/*!******************************************************************************************************!*\
-  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/components/u-avatar-cropper/weCropper.js ***!
-  \******************************************************************************************************/
+/***/ 899:
+/*!**********************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/util/emitter.js ***!
+  \**********************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(uni, global) {/**
- * we-cropper v1.3.9
- * (c) 2020 dlhandsome
- * @license MIT
- */
-(function (global, factory) {
-   true ? module.exports = factory() :
-  undefined;
-})(this, function () {
-  'use strict';
-
-  var device = void 0;
-  var TOUCH_STATE = ['touchstarted', 'touchmoved', 'touchended'];
-
-  function firstLetterUpper(str) {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-  }
-
-  function setTouchState(instance) {
-    var arg = [],
-    len = arguments.length - 1;
-    while (len-- > 0) {arg[len] = arguments[len + 1];}
-
-    TOUCH_STATE.forEach(function (key, i) {
-      if (arg[i] !== undefined) {
-        instance[key] = arg[i];
-      }
-    });
-  }
-
-  function validator(instance, o) {
-    Object.defineProperties(instance, o);
-  }
-
-  function getDevice() {
-    if (!device) {
-      device = uni.getSystemInfoSync();
-    }
-    return device;
-  }
-
-  var tmp = {};
-
-  var ref = getDevice();
-  var pixelRatio = ref.pixelRatio;
-
-  var DEFAULT = {
-    id: {
-      default: 'cropper',
-      get: function get() {
-        return tmp.id;
-      },
-      set: function set(value) {
-        if (typeof value !== 'string') {
-          console.error("id：" + value + " is invalid");
-        }
-        tmp.id = value;
-      } },
-
-    width: {
-      default: 750,
-      get: function get() {
-        return tmp.width;
-      },
-      set: function set(value) {
-        if (typeof value !== 'number') {
-          console.error("width：" + value + " is invalid");
-        }
-        tmp.width = value;
-      } },
-
-    height: {
-      default: 750,
-      get: function get() {
-        return tmp.height;
-      },
-      set: function set(value) {
-        if (typeof value !== 'number') {
-          console.error("height：" + value + " is invalid");
-        }
-        tmp.height = value;
-      } },
-
-    pixelRatio: {
-      default: pixelRatio,
-      get: function get() {
-        return tmp.pixelRatio;
-      },
-      set: function set(value) {
-        if (typeof value !== 'number') {
-          console.error("pixelRatio：" + value + " is invalid");
-        }
-        tmp.pixelRatio = value;
-      } },
-
-    scale: {
-      default: 2.5,
-      get: function get() {
-        return tmp.scale;
-      },
-      set: function set(value) {
-        if (typeof value !== 'number') {
-          console.error("scale：" + value + " is invalid");
-        }
-        tmp.scale = value;
-      } },
-
-    zoom: {
-      default: 5,
-      get: function get() {
-        return tmp.zoom;
-      },
-      set: function set(value) {
-        if (typeof value !== 'number') {
-          console.error("zoom：" + value + " is invalid");
-        } else if (value < 0 || value > 10) {
-          console.error("zoom should be ranged in 0 ~ 10");
-        }
-        tmp.zoom = value;
-      } },
-
-    src: {
-      default: '',
-      get: function get() {
-        return tmp.src;
-      },
-      set: function set(value) {
-        if (typeof value !== 'string') {
-          console.error("src：" + value + " is invalid");
-        }
-        tmp.src = value;
-      } },
-
-    cut: {
-      default: {},
-      get: function get() {
-        return tmp.cut;
-      },
-      set: function set(value) {
-        if (typeof value !== 'object') {
-          console.error("cut：" + value + " is invalid");
-        }
-        tmp.cut = value;
-      } },
-
-    boundStyle: {
-      default: {},
-      get: function get() {
-        return tmp.boundStyle;
-      },
-      set: function set(value) {
-        if (typeof value !== 'object') {
-          console.error("boundStyle：" + value + " is invalid");
-        }
-        tmp.boundStyle = value;
-      } },
-
-    onReady: {
-      default: null,
-      get: function get() {
-        return tmp.ready;
-      },
-      set: function set(value) {
-        tmp.ready = value;
-      } },
-
-    onBeforeImageLoad: {
-      default: null,
-      get: function get() {
-        return tmp.beforeImageLoad;
-      },
-      set: function set(value) {
-        tmp.beforeImageLoad = value;
-      } },
-
-    onImageLoad: {
-      default: null,
-      get: function get() {
-        return tmp.imageLoad;
-      },
-      set: function set(value) {
-        tmp.imageLoad = value;
-      } },
-
-    onBeforeDraw: {
-      default: null,
-      get: function get() {
-        return tmp.beforeDraw;
-      },
-      set: function set(value) {
-        tmp.beforeDraw = value;
-      } } };
-
-
-
-  var ref$1 = getDevice();
-  var windowWidth = ref$1.windowWidth;
-
-  function prepare() {
-    var self = this;
-
-    // v1.4.0 版本中将不再自动绑定we-cropper实例
-    self.attachPage = function () {
-      var pages = getCurrentPages();
-      // 获取到当前page上下文
-      var pageContext = pages[pages.length - 1];
-      // 把this依附在Page上下文的wecropper属性上，便于在page钩子函数中访问
-      Object.defineProperty(pageContext, 'wecropper', {
-        get: function get() {
-          console.warn(
-          'Instance will not be automatically bound to the page after v1.4.0\n\n' +
-          'Please use a custom instance name instead\n\n' +
-          'Example: \n' +
-          'this.mycropper = new WeCropper(options)\n\n' +
-          '// ...\n' +
-          'this.mycropper.getCropperImage()');
-
-          return self;
-        },
-        configurable: true });
-
-    };
-
-    self.createCtx = function () {
-      var id = self.id;
-      var targetId = self.targetId;
-
-      if (id) {
-        self.ctx = self.ctx || uni.createCanvasContext(id);
-        self.targetCtx = self.targetCtx || uni.createCanvasContext(targetId);
-      } else {
-        console.error("constructor: create canvas context failed, 'id' must be valuable");
-      }
-    };
-
-    self.deviceRadio = windowWidth / 750;
-  }
-
-  var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !==
-  'undefined' ? self : {};
-
-
-
-
-
-  function createCommonjsModule(fn, module) {
-    return module = {
-      exports: {} },
-    fn(module, module.exports), module.exports;
-  }
-
-  var tools = createCommonjsModule(function (module, exports) {
-    /**
-                                                                * String type check
-                                                                */
-    exports.isStr = function (v) {
-      return typeof v === 'string';
-    };
-    /**
-        * Number type check
-        */
-    exports.isNum = function (v) {
-      return typeof v === 'number';
-    };
-    /**
-        * Array type check
-        */
-    exports.isArr = Array.isArray;
-    /**
-                                    * undefined type check
-                                    */
-    exports.isUndef = function (v) {
-      return v === undefined;
-    };
-
-    exports.isTrue = function (v) {
-      return v === true;
-    };
-
-    exports.isFalse = function (v) {
-      return v === false;
-    };
-    /**
-        * Function type check
-        */
-    exports.isFunc = function (v) {
-      return typeof v === 'function';
-    };
-    /**
-        * Quick object check - this is primarily used to tell
-        * Objects from primitive values when we know the value
-        * is a JSON-compliant type.
-        */
-    exports.isObj = exports.isObject = function (obj) {
-      return obj !== null && typeof obj === 'object';
-    };
-
-    /**
-        * Strict object type check. Only returns true
-        * for plain JavaScript objects.
-        */
-    var _toString = Object.prototype.toString;
-    exports.isPlainObject = function (obj) {
-      return _toString.call(obj) === '[object Object]';
-    };
-
-    /**
-        * Check whether the object has the property.
-        */
-    var hasOwnProperty = Object.prototype.hasOwnProperty;
-    exports.hasOwn = function (obj, key) {
-      return hasOwnProperty.call(obj, key);
-    };
-
-    /**
-        * Perform no operation.
-        * Stubbing args to make Flow happy without leaving useless transpiled code
-        * with ...rest (https://flow.org/blog/2017/05/07/Strict-Function-Call-Arity/)
-        */
-    exports.noop = function (a, b, c) {};
-
-    /**
-                                           * Check if val is a valid array index.
-                                           */
-    exports.isValidArrayIndex = function (val) {
-      var n = parseFloat(String(val));
-      return n >= 0 && Math.floor(n) === n && isFinite(val);
-    };
-  });
-
-  var tools_7 = tools.isFunc;
-  var tools_10 = tools.isPlainObject;
-
-  var EVENT_TYPE = ['ready', 'beforeImageLoad', 'beforeDraw', 'imageLoad'];
-
-  function observer() {
-    var self = this;
-
-    self.on = function (event, fn) {
-      if (EVENT_TYPE.indexOf(event) > -1) {
-        if (tools_7(fn)) {
-          event === 'ready' ?
-          fn(self) :
-          self["on" + firstLetterUpper(event)] = fn;
-        }
-      } else {
-        console.error("event: " + event + " is invalid");
-      }
-      return self;
-    };
-  }
-
-  function wxPromise(fn) {
-    return function (obj) {
-      var args = [],
-      len = arguments.length - 1;
-      while (len-- > 0) {args[len] = arguments[len + 1];}
-
-      if (obj === void 0) obj = {};
-      return new Promise(function (resolve, reject) {
-        obj.success = function (res) {
-          resolve(res);
-        };
-        obj.fail = function (err) {
-          reject(err);
-        };
-        fn.apply(void 0, [obj].concat(args));
-      });
-    };
-  }
-
-  function draw(ctx, reserve) {
-    if (reserve === void 0) reserve = false;
-
-    return new Promise(function (resolve) {
-      ctx.draw(reserve, resolve);
-    });
-  }
-
-  var getImageInfo = wxPromise(uni.getImageInfo);
-
-  var canvasToTempFilePath = wxPromise(uni.canvasToTempFilePath);
-
-  var base64 = createCommonjsModule(function (module, exports) {
-    /*! http://mths.be/base64 v0.1.0 by @mathias | MIT license */
-    (function (root) {
-
-      // Detect free variables `exports`.
-      var freeExports =  true && exports;
-
-      // Detect free variable `module`.
-      var freeModule =  true && module &&
-      module.exports == freeExports && module;
-
-      // Detect free variable `global`, from Node.js or Browserified code, and use
-      // it as `root`.
-      var freeGlobal = typeof commonjsGlobal == 'object' && commonjsGlobal;
-      if (freeGlobal.global === freeGlobal || freeGlobal.window === freeGlobal) {
-        root = freeGlobal;
-      }
-
-      /*--------------------------------------------------------------------------*/
-
-      var InvalidCharacterError = function InvalidCharacterError(message) {
-        this.message = message;
-      };
-      InvalidCharacterError.prototype = new Error();
-      InvalidCharacterError.prototype.name = 'InvalidCharacterError';
-
-      var error = function error(message) {
-        // Note: the error messages used throughout this file match those used by
-        // the native `atob`/`btoa` implementation in Chromium.
-        throw new InvalidCharacterError(message);
-      };
-
-      var TABLE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-      // http://whatwg.org/html/common-microsyntaxes.html#space-character
-      var REGEX_SPACE_CHARACTERS = /[\t\n\f\r ]/g;
-
-      // `decode` is designed to be fully compatible with `atob` as described in the
-      // HTML Standard. http://whatwg.org/html/webappapis.html#dom-windowbase64-atob
-      // The optimized base64-decoding algorithm used is based on @atk’s excellent
-      // implementation. https://gist.github.com/atk/1020396
-      var decode = function decode(input) {
-        input = String(input).
-        replace(REGEX_SPACE_CHARACTERS, '');
-        var length = input.length;
-        if (length % 4 == 0) {
-          input = input.replace(/==?$/, '');
-          length = input.length;
-        }
-        if (
-        length % 4 == 1 ||
-        // http://whatwg.org/C#alphanumeric-ascii-characters
-        /[^+a-zA-Z0-9/]/.test(input))
-        {
-          error(
-          'Invalid character: the string to be decoded is not correctly encoded.');
-
-        }
-        var bitCounter = 0;
-        var bitStorage;
-        var buffer;
-        var output = '';
-        var position = -1;
-        while (++position < length) {
-          buffer = TABLE.indexOf(input.charAt(position));
-          bitStorage = bitCounter % 4 ? bitStorage * 64 + buffer : buffer;
-          // Unless this is the first of a group of 4 characters…
-          if (bitCounter++ % 4) {
-            // …convert the first 8 bits to a single ASCII character.
-            output += String.fromCharCode(
-            0xFF & bitStorage >> (-2 * bitCounter & 6));
-
-          }
-        }
-        return output;
-      };
-
-      // `encode` is designed to be fully compatible with `btoa` as described in the
-      // HTML Standard: http://whatwg.org/html/webappapis.html#dom-windowbase64-btoa
-      var encode = function encode(input) {
-        input = String(input);
-        if (/[^\0-\xFF]/.test(input)) {
-          // Note: no need to special-case astral symbols here, as surrogates are
-          // matched, and the input is supposed to only contain ASCII anyway.
-          error(
-          'The string to be encoded contains characters outside of the ' +
-          'Latin1 range.');
-
-        }
-        var padding = input.length % 3;
-        var output = '';
-        var position = -1;
-        var a;
-        var b;
-        var c;
-        var buffer;
-        // Make sure any padding is handled outside of the loop.
-        var length = input.length - padding;
-
-        while (++position < length) {
-          // Read three bytes, i.e. 24 bits.
-          a = input.charCodeAt(position) << 16;
-          b = input.charCodeAt(++position) << 8;
-          c = input.charCodeAt(++position);
-          buffer = a + b + c;
-          // Turn the 24 bits into four chunks of 6 bits each, and append the
-          // matching character for each of them to the output.
-          output +=
-          TABLE.charAt(buffer >> 18 & 0x3F) +
-          TABLE.charAt(buffer >> 12 & 0x3F) +
-          TABLE.charAt(buffer >> 6 & 0x3F) +
-          TABLE.charAt(buffer & 0x3F);
-
-        }
-
-        if (padding == 2) {
-          a = input.charCodeAt(position) << 8;
-          b = input.charCodeAt(++position);
-          buffer = a + b;
-          output +=
-          TABLE.charAt(buffer >> 10) +
-          TABLE.charAt(buffer >> 4 & 0x3F) +
-          TABLE.charAt(buffer << 2 & 0x3F) +
-          '=';
-
-        } else if (padding == 1) {
-          buffer = input.charCodeAt(position);
-          output +=
-          TABLE.charAt(buffer >> 2) +
-          TABLE.charAt(buffer << 4 & 0x3F) +
-          '==';
-
-        }
-
-        return output;
-      };
-
-      var base64 = {
-        'encode': encode,
-        'decode': decode,
-        'version': '0.1.0' };
-
-
-      // Some AMD build optimizers, like r.js, check for specific condition patterns
-      // like the following:
-      if (
-      false)
-      {} else if (freeExports && !freeExports.nodeType) {
-        if (freeModule) {// in Node.js or RingoJS v0.8.0+
-          freeModule.exports = base64;
-        } else {// in Narwhal or RingoJS v0.7.0-
-          for (var key in base64) {
-            base64.hasOwnProperty(key) && (freeExports[key] = base64[key]);
-          }
-        }
-      } else {// in Rhino or a web browser
-        root.base64 = base64;
-      }
-
-    })(commonjsGlobal);
-  });
-
-  function makeURI(strData, type) {
-    return 'data:' + type + ';base64,' + strData;
-  }
-
-  function fixType(type) {
-    type = type.toLowerCase().replace(/jpg/i, 'jpeg');
-    var r = type.match(/png|jpeg|bmp|gif/)[0];
-    return 'image/' + r;
-  }
-
-  function encodeData(data) {
-    var str = '';
-    if (typeof data === 'string') {
-      str = data;
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; /**
+                                                                                                      * 递归使用 call 方式this指向
+                                                                                                      * @param componentName // 需要找的组件的名称
+                                                                                                      * @param eventName // 事件名称
+                                                                                                      * @param params // 需要传递的参数
+                                                                                                      */
+function _broadcast(componentName, eventName, params) {
+  // 循环子节点找到名称一样的子节点 否则 递归 当前子节点
+  this.$children.map(function (child) {
+    if (componentName === child.$options.name) {
+      child.$emit.apply(child, [eventName].concat(params));
     } else {
-      for (var i = 0; i < data.length; i++) {
-        str += String.fromCharCode(data[i]);
+      _broadcast.apply(child, [componentName, eventName].concat(params));
+    }
+  });
+}var _default =
+{
+  methods: {
+    /**
+              * 派发 (向上查找) (一个)
+              * @param componentName // 需要找的组件的名称
+              * @param eventName // 事件名称
+              * @param params // 需要传递的参数
+              */
+    dispatch: function dispatch(componentName, eventName, params) {
+      var parent = this.$parent || this.$root; //$parent 找到最近的父节点 $root 根节点
+      var name = parent.$options.name; // 获取当前组件实例的name
+      // 如果当前有节点 && 当前没名称 且 当前名称等于需要传进来的名称的时候就去查找当前的节点
+      // 循环出当前名称的一样的组件实例
+      while (parent && (!name || name !== componentName)) {
+        parent = parent.$parent;
+        if (parent) {
+          name = parent.$options.name;
+        }
+      }
+      // 有节点表示当前找到了name一样的实例
+      if (parent) {
+        parent.$emit.apply(parent, [eventName].concat(params));
+      }
+    },
+    /**
+        * 广播 (向下查找) (广播多个)
+        * @param componentName // 需要找的组件的名称
+        * @param eventName // 事件名称
+        * @param params // 需要传递的参数
+        */
+    broadcast: function broadcast(componentName, eventName, params) {
+      _broadcast.call(this, componentName, eventName, params);
+    } } };exports.default = _default;
+
+/***/ }),
+
+/***/ 900:
+/*!******************************************************************************************!*\
+  !*** /Users/chengyongming/WeChatProjects/mini-car/uview-ui/libs/util/async-validator.js ***!
+  \******************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;function _extends() {
+  _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
       }
     }
-    return base64.encode(str);
-  }
 
-  /**
-     * 获取图像区域隐含的像素数据
-     * @param canvasId canvas标识
-     * @param x 将要被提取的图像数据矩形区域的左上角 x 坐标
-     * @param y 将要被提取的图像数据矩形区域的左上角 y 坐标
-     * @param width 将要被提取的图像数据矩形区域的宽度
-     * @param height 将要被提取的图像数据矩形区域的高度
-     * @param done 完成回调
-     */
-  function getImageData(canvasId, x, y, width, height, done) {
-    uni.canvasGetImageData({
-      canvasId: canvasId,
-      x: x,
-      y: y,
-      width: width,
-      height: height,
-      success: function success(res) {
-        done(res, null);
-      },
-      fail: function fail(res) {
-        done(null, res);
-      } });
-
-  }
-
-  /**
-     * 生成bmp格式图片
-     * 按照规则生成图片响应头和响应体
-     * @param oData 用来描述 canvas 区域隐含的像素数据 { data, width, height } = oData
-     * @returns {*} base64字符串
-     */
-  function genBitmapImage(oData) {
-    //
-    // BITMAPFILEHEADER: http://msdn.microsoft.com/en-us/library/windows/desktop/dd183374(v=vs.85).aspx
-    // BITMAPINFOHEADER: http://msdn.microsoft.com/en-us/library/dd183376.aspx
-    //
-    var biWidth = oData.width;
-    var biHeight = oData.height;
-    var biSizeImage = biWidth * biHeight * 3;
-    var bfSize = biSizeImage + 54; // total header size = 54 bytes
-
-    //
-    //  typedef struct tagBITMAPFILEHEADER {
-    //  	WORD bfType;
-    //  	DWORD bfSize;
-    //  	WORD bfReserved1;
-    //  	WORD bfReserved2;
-    //  	DWORD bfOffBits;
-    //  } BITMAPFILEHEADER;
-    //
-    var BITMAPFILEHEADER = [
-    // WORD bfType -- The file type signature; must be "BM"
-    0x42, 0x4D,
-    // DWORD bfSize -- The size, in bytes, of the bitmap file
-    bfSize & 0xff, bfSize >> 8 & 0xff, bfSize >> 16 & 0xff, bfSize >> 24 & 0xff,
-    // WORD bfReserved1 -- Reserved; must be zero
-    0, 0,
-    // WORD bfReserved2 -- Reserved; must be zero
-    0, 0,
-    // DWORD bfOffBits -- The offset, in bytes, from the beginning of the BITMAPFILEHEADER structure to the bitmap bits.
-    54, 0, 0, 0];
-
-
-    //
-    //  typedef struct tagBITMAPINFOHEADER {
-    //  	DWORD biSize;
-    //  	LONG  biWidth;
-    //  	LONG  biHeight;
-    //  	WORD  biPlanes;
-    //  	WORD  biBitCount;
-    //  	DWORD biCompression;
-    //  	DWORD biSizeImage;
-    //  	LONG  biXPelsPerMeter;
-    //  	LONG  biYPelsPerMeter;
-    //  	DWORD biClrUsed;
-    //  	DWORD biClrImportant;
-    //  } BITMAPINFOHEADER, *PBITMAPINFOHEADER;
-    //
-    var BITMAPINFOHEADER = [
-    // DWORD biSize -- The number of bytes required by the structure
-    40, 0, 0, 0,
-    // LONG biWidth -- The width of the bitmap, in pixels
-    biWidth & 0xff, biWidth >> 8 & 0xff, biWidth >> 16 & 0xff, biWidth >> 24 & 0xff,
-    // LONG biHeight -- The height of the bitmap, in pixels
-    biHeight & 0xff, biHeight >> 8 & 0xff, biHeight >> 16 & 0xff, biHeight >> 24 & 0xff,
-    // WORD biPlanes -- The number of planes for the target device. This value must be set to 1
-    1, 0,
-    // WORD biBitCount -- The number of bits-per-pixel, 24 bits-per-pixel -- the bitmap
-    // has a maximum of 2^24 colors (16777216, Truecolor)
-    24, 0,
-    // DWORD biCompression -- The type of compression, BI_RGB (code 0) -- uncompressed
-    0, 0, 0, 0,
-    // DWORD biSizeImage -- The size, in bytes, of the image. This may be set to zero for BI_RGB bitmaps
-    biSizeImage & 0xff, biSizeImage >> 8 & 0xff, biSizeImage >> 16 & 0xff, biSizeImage >> 24 & 0xff,
-    // LONG biXPelsPerMeter, unused
-    0, 0, 0, 0,
-    // LONG biYPelsPerMeter, unused
-    0, 0, 0, 0,
-    // DWORD biClrUsed, the number of color indexes of palette, unused
-    0, 0, 0, 0,
-    // DWORD biClrImportant, unused
-    0, 0, 0, 0];
-
-
-    var iPadding = (4 - biWidth * 3 % 4) % 4;
-
-    var aImgData = oData.data;
-
-    var strPixelData = '';
-    var biWidth4 = biWidth << 2;
-    var y = biHeight;
-    var fromCharCode = String.fromCharCode;
-
-    do {
-      var iOffsetY = biWidth4 * (y - 1);
-      var strPixelRow = '';
-      for (var x = 0; x < biWidth; x++) {
-        var iOffsetX = x << 2;
-        strPixelRow += fromCharCode(aImgData[iOffsetY + iOffsetX + 2]) +
-        fromCharCode(aImgData[iOffsetY + iOffsetX + 1]) +
-        fromCharCode(aImgData[iOffsetY + iOffsetX]);
-      }
-
-      for (var c = 0; c < iPadding; c++) {
-        strPixelRow += String.fromCharCode(0);
-      }
-
-      strPixelData += strPixelRow;
-    } while (--y);
-
-    var strEncoded = encodeData(BITMAPFILEHEADER.concat(BITMAPINFOHEADER)) + encodeData(strPixelData);
-
-    return strEncoded;
-  }
-
-  /**
-     * 转换为图片base64
-     * @param canvasId canvas标识
-     * @param x 将要被提取的图像数据矩形区域的左上角 x 坐标
-     * @param y 将要被提取的图像数据矩形区域的左上角 y 坐标
-     * @param width 将要被提取的图像数据矩形区域的宽度
-     * @param height 将要被提取的图像数据矩形区域的高度
-     * @param type 转换图片类型
-     * @param done 完成回调
-     */
-  function convertToImage(canvasId, x, y, width, height, type, done) {
-    if (done === void 0) done = function done() {};
-
-    if (type === undefined) {
-      type = 'png';
-    }
-    type = fixType(type);
-    if (/bmp/.test(type)) {
-      getImageData(canvasId, x, y, width, height, function (data, err) {
-        var strData = genBitmapImage(data);
-        tools_7(done) && done(makeURI(strData, 'image/' + type), err);
-      });
-    } else {
-      console.error('暂不支持生成\'' + type + '\'类型的base64图片');
-    }
-  }
-
-  var CanvasToBase64 = {
-    convertToImage: convertToImage,
-    // convertToPNG: function (width, height, done) {
-    //   return convertToImage(width, height, 'png', done)
-    // },
-    // convertToJPEG: function (width, height, done) {
-    //   return convertToImage(width, height, 'jpeg', done)
-    // },
-    // convertToGIF: function (width, height, done) {
-    //   return convertToImage(width, height, 'gif', done)
-    // },
-    convertToBMP: function convertToBMP(ref, done) {
-      if (ref === void 0) ref = {};
-      var canvasId = ref.canvasId;
-      var x = ref.x;
-      var y = ref.y;
-      var width = ref.width;
-      var height = ref.height;
-      if (done === void 0) done = function done() {};
-
-      return convertToImage(canvasId, x, y, width, height, 'bmp', done);
-    } };
-
-
-  function methods() {
-    var self = this;
-
-    var boundWidth = self.width; // 裁剪框默认宽度，即整个画布宽度
-    var boundHeight = self.height; // 裁剪框默认高度，即整个画布高度
-
-    var id = self.id;
-    var targetId = self.targetId;
-    var pixelRatio = self.pixelRatio;
-
-    var ref = self.cut;
-    var x = ref.x;
-    if (x === void 0) x = 0;
-    var y = ref.y;
-    if (y === void 0) y = 0;
-    var width = ref.width;
-    if (width === void 0) width = boundWidth;
-    var height = ref.height;
-    if (height === void 0) height = boundHeight;
-
-    self.updateCanvas = function (done) {
-      if (self.croperTarget) {
-        //  画布绘制图片
-        self.ctx.drawImage(
-        self.croperTarget,
-        self.imgLeft,
-        self.imgTop,
-        self.scaleWidth,
-        self.scaleHeight);
-
-      }
-      tools_7(self.onBeforeDraw) && self.onBeforeDraw(self.ctx, self);
-
-      self.setBoundStyle(self.boundStyle); //	设置边界样式
-
-      self.ctx.draw(false, done);
-      return self;
-    };
-
-    self.pushOrigin = self.pushOrign = function (src) {
-      self.src = src;
-
-      tools_7(self.onBeforeImageLoad) && self.onBeforeImageLoad(self.ctx, self);
-
-      return getImageInfo({
-        src: src }).
-
-      then(function (res) {
-        var innerAspectRadio = res.width / res.height;
-        var customAspectRadio = width / height;
-
-        self.croperTarget = res.path;
-
-        if (innerAspectRadio < customAspectRadio) {
-          self.rectX = x;
-          self.baseWidth = width;
-          self.baseHeight = width / innerAspectRadio;
-          self.rectY = y - Math.abs((height - self.baseHeight) / 2);
-        } else {
-          self.rectY = y;
-          self.baseWidth = height * innerAspectRadio;
-          self.baseHeight = height;
-          self.rectX = x - Math.abs((width - self.baseWidth) / 2);
-        }
-
-        self.imgLeft = self.rectX;
-        self.imgTop = self.rectY;
-        self.scaleWidth = self.baseWidth;
-        self.scaleHeight = self.baseHeight;
-
-        self.update();
-
-        return new Promise(function (resolve) {
-          self.updateCanvas(resolve);
-        });
-      }).
-      then(function () {
-        tools_7(self.onImageLoad) && self.onImageLoad(self.ctx, self);
-      });
-    };
-
-    self.removeImage = function () {
-      self.src = '';
-      self.croperTarget = '';
-      return draw(self.ctx);
-    };
-
-    self.getCropperBase64 = function (done) {
-      if (done === void 0) done = function done() {};
-
-      CanvasToBase64.convertToBMP({
-        canvasId: id,
-        x: x,
-        y: y,
-        width: width,
-        height: height },
-      done);
-    };
-
-    self.getCropperImage = function (opt, fn) {
-      var customOptions = opt;
-
-      var canvasOptions = {
-        canvasId: id,
-        x: x,
-        y: y,
-        width: width,
-        height: height };
-
-
-      var task = function task() {
-        return Promise.resolve();
-      };
-
-      if (
-      tools_10(customOptions) &&
-      customOptions.original)
-      {
-        // original mode
-        task = function task() {
-          self.targetCtx.drawImage(
-          self.croperTarget,
-          self.imgLeft * pixelRatio,
-          self.imgTop * pixelRatio,
-          self.scaleWidth * pixelRatio,
-          self.scaleHeight * pixelRatio);
-
-
-          canvasOptions = {
-            canvasId: targetId,
-            x: x * pixelRatio,
-            y: y * pixelRatio,
-            width: width * pixelRatio,
-            height: height * pixelRatio };
-
-
-          return draw(self.targetCtx);
-        };
-      }
-
-      return task().
-      then(function () {
-        if (tools_10(customOptions)) {
-          canvasOptions = Object.assign({}, canvasOptions, customOptions);
-        }
-
-        if (tools_7(customOptions)) {
-          fn = customOptions;
-        }
-
-        var arg = canvasOptions.componentContext ?
-        [canvasOptions, canvasOptions.componentContext] :
-        [canvasOptions];
-
-        return canvasToTempFilePath.apply(null, arg);
-      }).
-      then(function (res) {
-        var tempFilePath = res.tempFilePath;
-
-        return tools_7(fn) ?
-        fn.call(self, tempFilePath, null) :
-        tempFilePath;
-      }).
-      catch(function (err) {
-        if (tools_7(fn)) {
-          fn.call(self, null, err);
-        } else {
-          throw err;
-        }
-      });
-    };
-  }
-
-  /**
-     * 获取最新缩放值
-     * @param oldScale 上一次触摸结束后的缩放值
-     * @param oldDistance 上一次触摸结束后的双指距离
-     * @param zoom 缩放系数
-     * @param touch0 第一指touch对象
-     * @param touch1 第二指touch对象
-     * @returns {*}
-     */
-  var getNewScale = function getNewScale(oldScale, oldDistance, zoom, touch0, touch1) {
-    var xMove, yMove, newDistance;
-    // 计算二指最新距离
-    xMove = Math.round(touch1.x - touch0.x);
-    yMove = Math.round(touch1.y - touch0.y);
-    newDistance = Math.round(Math.sqrt(xMove * xMove + yMove * yMove));
-
-    return oldScale + 0.001 * zoom * (newDistance - oldDistance);
+    return target;
   };
 
-  function update() {
-    var self = this;
+  return _extends.apply(this, arguments);
+}
 
-    if (!self.src) {
+/* eslint no-console:0 */
+var formatRegExp = /%[sdj%]/g;
+var warning = function warning() {}; // don't print warning message when in production env or node runtime
+
+if (typeof process !== 'undefined' && Object({"NODE_ENV":"development","VUE_APP_NAME":"mini-car","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}) && "development" !== 'production' && typeof window !==
+'undefined' && typeof document !== 'undefined') {
+  warning = function warning(type, errors) {
+    if (typeof console !== 'undefined' && console.warn) {
+      if (errors.every(function (e) {
+        return typeof e === 'string';
+      })) {
+        console.warn(type, errors);
+      }
+    }
+  };
+}
+
+function convertFieldsError(errors) {
+  if (!errors || !errors.length) return null;
+  var fields = {};
+  errors.forEach(function (error) {
+    var field = error.field;
+    fields[field] = fields[field] || [];
+    fields[field].push(error);
+  });
+  return fields;
+}
+
+function format() {
+  for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+    args[_key] = arguments[_key];
+  }
+
+  var i = 1;
+  var f = args[0];
+  var len = args.length;
+
+  if (typeof f === 'function') {
+    return f.apply(null, args.slice(1));
+  }
+
+  if (typeof f === 'string') {
+    var str = String(f).replace(formatRegExp, function (x) {
+      if (x === '%%') {
+        return '%';
+      }
+
+      if (i >= len) {
+        return x;
+      }
+
+      switch (x) {
+        case '%s':
+          return String(args[i++]);
+
+        case '%d':
+          return Number(args[i++]);
+
+        case '%j':
+          try {
+            return JSON.stringify(args[i++]);
+          } catch (_) {
+            return '[Circular]';
+          }
+
+          break;
+
+        default:
+          return x;}
+
+    });
+
+    for (var arg = args[i]; i < len; arg = args[++i]) {
+      str += " " + arg;
+    }
+
+    return str;
+  }
+
+  return f;
+}
+
+function isNativeStringType(type) {
+  return type === 'string' || type === 'url' || type === 'hex' || type === 'email' || type === 'pattern';
+}
+
+function isEmptyValue(value, type) {
+  if (value === undefined || value === null) {
+    return true;
+  }
+
+  if (type === 'array' && Array.isArray(value) && !value.length) {
+    return true;
+  }
+
+  if (isNativeStringType(type) && typeof value === 'string' && !value) {
+    return true;
+  }
+
+  return false;
+}
+
+function asyncParallelArray(arr, func, callback) {
+  var results = [];
+  var total = 0;
+  var arrLength = arr.length;
+
+  function count(errors) {
+    results.push.apply(results, errors);
+    total++;
+
+    if (total === arrLength) {
+      callback(results);
+    }
+  }
+
+  arr.forEach(function (a) {
+    func(a, count);
+  });
+}
+
+function asyncSerialArray(arr, func, callback) {
+  var index = 0;
+  var arrLength = arr.length;
+
+  function next(errors) {
+    if (errors && errors.length) {
+      callback(errors);
       return;
     }
 
-    self.__oneTouchStart = function (touch) {
-      self.touchX0 = Math.round(touch.x);
-      self.touchY0 = Math.round(touch.y);
-    };
+    var original = index;
+    index = index + 1;
 
-    self.__oneTouchMove = function (touch) {
-      var xMove, yMove;
-      // 计算单指移动的距离
-      if (self.touchended) {
-        return self.updateCanvas();
-      }
-      xMove = Math.round(touch.x - self.touchX0);
-      yMove = Math.round(touch.y - self.touchY0);
-
-      var imgLeft = Math.round(self.rectX + xMove);
-      var imgTop = Math.round(self.rectY + yMove);
-
-      self.outsideBound(imgLeft, imgTop);
-
-      self.updateCanvas();
-    };
-
-    self.__twoTouchStart = function (touch0, touch1) {
-      var xMove, yMove, oldDistance;
-
-      self.touchX1 = Math.round(self.rectX + self.scaleWidth / 2);
-      self.touchY1 = Math.round(self.rectY + self.scaleHeight / 2);
-
-      // 计算两指距离
-      xMove = Math.round(touch1.x - touch0.x);
-      yMove = Math.round(touch1.y - touch0.y);
-      oldDistance = Math.round(Math.sqrt(xMove * xMove + yMove * yMove));
-
-      self.oldDistance = oldDistance;
-    };
-
-    self.__twoTouchMove = function (touch0, touch1) {
-      var oldScale = self.oldScale;
-      var oldDistance = self.oldDistance;
-      var scale = self.scale;
-      var zoom = self.zoom;
-
-      self.newScale = getNewScale(oldScale, oldDistance, zoom, touch0, touch1);
-
-      //  设定缩放范围
-      self.newScale <= 1 && (self.newScale = 1);
-      self.newScale >= scale && (self.newScale = scale);
-
-      self.scaleWidth = Math.round(self.newScale * self.baseWidth);
-      self.scaleHeight = Math.round(self.newScale * self.baseHeight);
-      var imgLeft = Math.round(self.touchX1 - self.scaleWidth / 2);
-      var imgTop = Math.round(self.touchY1 - self.scaleHeight / 2);
-
-      self.outsideBound(imgLeft, imgTop);
-
-      self.updateCanvas();
-    };
-
-    self.__xtouchEnd = function () {
-      self.oldScale = self.newScale;
-      self.rectX = self.imgLeft;
-      self.rectY = self.imgTop;
-    };
+    if (original < arrLength) {
+      func(arr[original], next);
+    } else {
+      callback([]);
+    }
   }
 
-  var handle = {
-    //  图片手势初始监测
-    touchStart: function touchStart(e) {
-      var self = this;
-      var ref = e.touches;
-      var touch0 = ref[0];
-      var touch1 = ref[1];
+  next([]);
+}
 
-      if (!self.src) {
-        return;
+function flattenObjArr(objArr) {
+  var ret = [];
+  Object.keys(objArr).forEach(function (k) {
+    ret.push.apply(ret, objArr[k]);
+  });
+  return ret;
+}
+
+function asyncMap(objArr, option, func, callback) {
+  if (option.first) {
+    var _pending = new Promise(function (resolve, reject) {
+      var next = function next(errors) {
+        callback(errors);
+        return errors.length ? reject({
+          errors: errors,
+          fields: convertFieldsError(errors) }) :
+        resolve();
+      };
+
+      var flattenArr = flattenObjArr(objArr);
+      asyncSerialArray(flattenArr, func, next);
+    });
+
+    _pending["catch"](function (e) {
+      return e;
+    });
+
+    return _pending;
+  }
+
+  var firstFields = option.firstFields || [];
+
+  if (firstFields === true) {
+    firstFields = Object.keys(objArr);
+  }
+
+  var objArrKeys = Object.keys(objArr);
+  var objArrLength = objArrKeys.length;
+  var total = 0;
+  var results = [];
+  var pending = new Promise(function (resolve, reject) {
+    var next = function next(errors) {
+      results.push.apply(results, errors);
+      total++;
+
+      if (total === objArrLength) {
+        callback(results);
+        return results.length ? reject({
+          errors: results,
+          fields: convertFieldsError(results) }) :
+        resolve();
+      }
+    };
+
+    if (!objArrKeys.length) {
+      callback(results);
+      resolve();
+    }
+
+    objArrKeys.forEach(function (key) {
+      var arr = objArr[key];
+
+      if (firstFields.indexOf(key) !== -1) {
+        asyncSerialArray(arr, func, next);
+      } else {
+        asyncParallelArray(arr, func, next);
+      }
+    });
+  });
+  pending["catch"](function (e) {
+    return e;
+  });
+  return pending;
+}
+
+function complementError(rule) {
+  return function (oe) {
+    if (oe && oe.message) {
+      oe.field = oe.field || rule.fullField;
+      return oe;
+    }
+
+    return {
+      message: typeof oe === 'function' ? oe() : oe,
+      field: oe.field || rule.fullField };
+
+  };
+}
+
+function deepMerge(target, source) {
+  if (source) {
+    for (var s in source) {
+      if (source.hasOwnProperty(s)) {
+        var value = source[s];
+
+        if (typeof value === 'object' && typeof target[s] === 'object') {
+          target[s] = _extends({}, target[s], {}, value);
+        } else {
+          target[s] = value;
+        }
+      }
+    }
+  }
+
+  return target;
+}
+
+/**
+   *  Rule for validating required fields.
+   *
+   *  @param rule The validation rule.
+   *  @param value The value of the field on the source object.
+   *  @param source The source object being validated.
+   *  @param errors An array of errors that this rule may add
+   *  validation errors to.
+   *  @param options The validation options.
+   *  @param options.messages The validation messages.
+   */
+
+function required(rule, value, source, errors, options, type) {
+  if (rule.required && (!source.hasOwnProperty(rule.field) || isEmptyValue(value, type || rule.type))) {
+    errors.push(format(options.messages.required, rule.fullField));
+  }
+}
+
+/**
+   *  Rule for validating whitespace.
+   *
+   *  @param rule The validation rule.
+   *  @param value The value of the field on the source object.
+   *  @param source The source object being validated.
+   *  @param errors An array of errors that this rule may add
+   *  validation errors to.
+   *  @param options The validation options.
+   *  @param options.messages The validation messages.
+   */
+
+function whitespace(rule, value, source, errors, options) {
+  if (/^\s+$/.test(value) || value === '') {
+    errors.push(format(options.messages.whitespace, rule.fullField));
+  }
+}
+
+/* eslint max-len:0 */
+
+var pattern = {
+  // http://emailregex.com/
+  email: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+  url: new RegExp(
+  "^(?!mailto:)(?:(?:http|https|ftp)://|//)(?:\\S+(?::\\S*)?@)?(?:(?:(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[0-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z\\u00a1-\\uffff0-9]+-*)*[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]+-*)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,})))|localhost)(?::\\d{2,5})?(?:(/|\\?|#)[^\\s]*)?$",
+  'i'),
+  hex: /^#?([a-f0-9]{6}|[a-f0-9]{3})$/i };
+
+var types = {
+  integer: function integer(value) {
+    return types.number(value) && parseInt(value, 10) === value;
+  },
+  "float": function _float(value) {
+    return types.number(value) && !types.integer(value);
+  },
+  array: function array(value) {
+    return Array.isArray(value);
+  },
+  regexp: function regexp(value) {
+    if (value instanceof RegExp) {
+      return true;
+    }
+
+    try {
+      return !!new RegExp(value);
+    } catch (e) {
+      return false;
+    }
+  },
+  date: function date(value) {
+    return typeof value.getTime === 'function' && typeof value.getMonth === 'function' && typeof value.getYear ===
+    'function';
+  },
+  number: function number(value) {
+    if (isNaN(value)) {
+      return false;
+    }
+
+    // 修改源码，将字符串数值先转为数值
+    return typeof +value === 'number';
+  },
+  object: function object(value) {
+    return typeof value === 'object' && !types.array(value);
+  },
+  method: function method(value) {
+    return typeof value === 'function';
+  },
+  email: function email(value) {
+    return typeof value === 'string' && !!value.match(pattern.email) && value.length < 255;
+  },
+  url: function url(value) {
+    return typeof value === 'string' && !!value.match(pattern.url);
+  },
+  hex: function hex(value) {
+    return typeof value === 'string' && !!value.match(pattern.hex);
+  } };
+
+/**
+        *  Rule for validating the type of a value.
+        *
+        *  @param rule The validation rule.
+        *  @param value The value of the field on the source object.
+        *  @param source The source object being validated.
+        *  @param errors An array of errors that this rule may add
+        *  validation errors to.
+        *  @param options The validation options.
+        *  @param options.messages The validation messages.
+        */
+
+function type(rule, value, source, errors, options) {
+  if (rule.required && value === undefined) {
+    required(rule, value, source, errors, options);
+    return;
+  }
+
+  var custom = ['integer', 'float', 'array', 'regexp', 'object', 'method', 'email', 'number', 'date', 'url', 'hex'];
+  var ruleType = rule.type;
+
+  if (custom.indexOf(ruleType) > -1) {
+    if (!types[ruleType](value)) {
+      errors.push(format(options.messages.types[ruleType], rule.fullField, rule.type));
+    } // straight typeof check
+
+  } else if (ruleType && typeof value !== rule.type) {
+    errors.push(format(options.messages.types[ruleType], rule.fullField, rule.type));
+  }
+}
+
+/**
+   *  Rule for validating minimum and maximum allowed values.
+   *
+   *  @param rule The validation rule.
+   *  @param value The value of the field on the source object.
+   *  @param source The source object being validated.
+   *  @param errors An array of errors that this rule may add
+   *  validation errors to.
+   *  @param options The validation options.
+   *  @param options.messages The validation messages.
+   */
+
+function range(rule, value, source, errors, options) {
+  var len = typeof rule.len === 'number';
+  var min = typeof rule.min === 'number';
+  var max = typeof rule.max === 'number'; // 正则匹配码点范围从U+010000一直到U+10FFFF的文字（补充平面Supplementary Plane）
+
+  var spRegexp = /[\uD800-\uDBFF][\uDC00-\uDFFF]/g;
+  var val = value;
+  var key = null;
+  var num = typeof value === 'number';
+  var str = typeof value === 'string';
+  var arr = Array.isArray(value);
+
+  if (num) {
+    key = 'number';
+  } else if (str) {
+    key = 'string';
+  } else if (arr) {
+    key = 'array';
+  } // if the value is not of a supported type for range validation
+  // the validation rule rule should use the
+  // type property to also test for a particular type
+
+
+  if (!key) {
+    return false;
+  }
+
+  if (arr) {
+    val = value.length;
+  }
+
+  if (str) {
+    // 处理码点大于U+010000的文字length属性不准确的bug，如"𠮷𠮷𠮷".lenght !== 3
+    val = value.replace(spRegexp, '_').length;
+  }
+
+  if (len) {
+    if (val !== rule.len) {
+      errors.push(format(options.messages[key].len, rule.fullField, rule.len));
+    }
+  } else if (min && !max && val < rule.min) {
+    errors.push(format(options.messages[key].min, rule.fullField, rule.min));
+  } else if (max && !min && val > rule.max) {
+    errors.push(format(options.messages[key].max, rule.fullField, rule.max));
+  } else if (min && max && (val < rule.min || val > rule.max)) {
+    errors.push(format(options.messages[key].range, rule.fullField, rule.min, rule.max));
+  }
+}
+
+var ENUM = 'enum';
+/**
+                    *  Rule for validating a value exists in an enumerable list.
+                    *
+                    *  @param rule The validation rule.
+                    *  @param value The value of the field on the source object.
+                    *  @param source The source object being validated.
+                    *  @param errors An array of errors that this rule may add
+                    *  validation errors to.
+                    *  @param options The validation options.
+                    *  @param options.messages The validation messages.
+                    */
+
+function enumerable(rule, value, source, errors, options) {
+  rule[ENUM] = Array.isArray(rule[ENUM]) ? rule[ENUM] : [];
+
+  if (rule[ENUM].indexOf(value) === -1) {
+    errors.push(format(options.messages[ENUM], rule.fullField, rule[ENUM].join(', ')));
+  }
+}
+
+/**
+   *  Rule for validating a regular expression pattern.
+   *
+   *  @param rule The validation rule.
+   *  @param value The value of the field on the source object.
+   *  @param source The source object being validated.
+   *  @param errors An array of errors that this rule may add
+   *  validation errors to.
+   *  @param options The validation options.
+   *  @param options.messages The validation messages.
+   */
+
+function pattern$1(rule, value, source, errors, options) {
+  if (rule.pattern) {
+    if (rule.pattern instanceof RegExp) {
+      // if a RegExp instance is passed, reset `lastIndex` in case its `global`
+      // flag is accidentally set to `true`, which in a validation scenario
+      // is not necessary and the result might be misleading
+      rule.pattern.lastIndex = 0;
+
+      if (!rule.pattern.test(value)) {
+        errors.push(format(options.messages.pattern.mismatch, rule.fullField, value, rule.pattern));
+      }
+    } else if (typeof rule.pattern === 'string') {
+      var _pattern = new RegExp(rule.pattern);
+
+      if (!_pattern.test(value)) {
+        errors.push(format(options.messages.pattern.mismatch, rule.fullField, value, rule.pattern));
+      }
+    }
+  }
+}
+
+var rules = {
+  required: required,
+  whitespace: whitespace,
+  type: type,
+  range: range,
+  "enum": enumerable,
+  pattern: pattern$1 };
+
+
+/**
+                         *  Performs validation for string types.
+                         *
+                         *  @param rule The validation rule.
+                         *  @param value The value of the field on the source object.
+                         *  @param callback The callback function.
+                         *  @param source The source object being validated.
+                         *  @param options The validation options.
+                         *  @param options.messages The validation messages.
+                         */
+
+function string(rule, value, callback, source, options) {
+  var errors = [];
+  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+
+  if (validate) {
+    if (isEmptyValue(value, 'string') && !rule.required) {
+      return callback();
+    }
+
+    rules.required(rule, value, source, errors, options, 'string');
+
+    if (!isEmptyValue(value, 'string')) {
+      rules.type(rule, value, source, errors, options);
+      rules.range(rule, value, source, errors, options);
+      rules.pattern(rule, value, source, errors, options);
+
+      if (rule.whitespace === true) {
+        rules.whitespace(rule, value, source, errors, options);
+      }
+    }
+  }
+
+  callback(errors);
+}
+
+/**
+   *  Validates a function.
+   *
+   *  @param rule The validation rule.
+   *  @param value The value of the field on the source object.
+   *  @param callback The callback function.
+   *  @param source The source object being validated.
+   *  @param options The validation options.
+   *  @param options.messages The validation messages.
+   */
+
+function method(rule, value, callback, source, options) {
+  var errors = [];
+  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+
+  if (validate) {
+    if (isEmptyValue(value) && !rule.required) {
+      return callback();
+    }
+
+    rules.required(rule, value, source, errors, options);
+
+    if (value !== undefined) {
+      rules.type(rule, value, source, errors, options);
+    }
+  }
+
+  callback(errors);
+}
+
+/**
+   *  Validates a number.
+   *
+   *  @param rule The validation rule.
+   *  @param value The value of the field on the source object.
+   *  @param callback The callback function.
+   *  @param source The source object being validated.
+   *  @param options The validation options.
+   *  @param options.messages The validation messages.
+   */
+
+function number(rule, value, callback, source, options) {
+  var errors = [];
+  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+
+  if (validate) {
+    if (value === '') {
+      value = undefined;
+    }
+
+    if (isEmptyValue(value) && !rule.required) {
+      return callback();
+    }
+
+    rules.required(rule, value, source, errors, options);
+
+    if (value !== undefined) {
+      rules.type(rule, value, source, errors, options);
+      rules.range(rule, value, source, errors, options);
+    }
+  }
+
+  callback(errors);
+}
+
+/**
+   *  Validates a boolean.
+   *
+   *  @param rule The validation rule.
+   *  @param value The value of the field on the source object.
+   *  @param callback The callback function.
+   *  @param source The source object being validated.
+   *  @param options The validation options.
+   *  @param options.messages The validation messages.
+   */
+
+function _boolean(rule, value, callback, source, options) {
+  var errors = [];
+  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+
+  if (validate) {
+    if (isEmptyValue(value) && !rule.required) {
+      return callback();
+    }
+
+    rules.required(rule, value, source, errors, options);
+
+    if (value !== undefined) {
+      rules.type(rule, value, source, errors, options);
+    }
+  }
+
+  callback(errors);
+}
+
+/**
+   *  Validates the regular expression type.
+   *
+   *  @param rule The validation rule.
+   *  @param value The value of the field on the source object.
+   *  @param callback The callback function.
+   *  @param source The source object being validated.
+   *  @param options The validation options.
+   *  @param options.messages The validation messages.
+   */
+
+function regexp(rule, value, callback, source, options) {
+  var errors = [];
+  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+
+  if (validate) {
+    if (isEmptyValue(value) && !rule.required) {
+      return callback();
+    }
+
+    rules.required(rule, value, source, errors, options);
+
+    if (!isEmptyValue(value)) {
+      rules.type(rule, value, source, errors, options);
+    }
+  }
+
+  callback(errors);
+}
+
+/**
+   *  Validates a number is an integer.
+   *
+   *  @param rule The validation rule.
+   *  @param value The value of the field on the source object.
+   *  @param callback The callback function.
+   *  @param source The source object being validated.
+   *  @param options The validation options.
+   *  @param options.messages The validation messages.
+   */
+
+function integer(rule, value, callback, source, options) {
+  var errors = [];
+  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+
+  if (validate) {
+    if (isEmptyValue(value) && !rule.required) {
+      return callback();
+    }
+
+    rules.required(rule, value, source, errors, options);
+
+    if (value !== undefined) {
+      rules.type(rule, value, source, errors, options);
+      rules.range(rule, value, source, errors, options);
+    }
+  }
+
+  callback(errors);
+}
+
+/**
+   *  Validates a number is a floating point number.
+   *
+   *  @param rule The validation rule.
+   *  @param value The value of the field on the source object.
+   *  @param callback The callback function.
+   *  @param source The source object being validated.
+   *  @param options The validation options.
+   *  @param options.messages The validation messages.
+   */
+
+function floatFn(rule, value, callback, source, options) {
+  var errors = [];
+  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+
+  if (validate) {
+    if (isEmptyValue(value) && !rule.required) {
+      return callback();
+    }
+
+    rules.required(rule, value, source, errors, options);
+
+    if (value !== undefined) {
+      rules.type(rule, value, source, errors, options);
+      rules.range(rule, value, source, errors, options);
+    }
+  }
+
+  callback(errors);
+}
+
+/**
+   *  Validates an array.
+   *
+   *  @param rule The validation rule.
+   *  @param value The value of the field on the source object.
+   *  @param callback The callback function.
+   *  @param source The source object being validated.
+   *  @param options The validation options.
+   *  @param options.messages The validation messages.
+   */
+
+function array(rule, value, callback, source, options) {
+  var errors = [];
+  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+
+  if (validate) {
+    if (isEmptyValue(value, 'array') && !rule.required) {
+      return callback();
+    }
+
+    rules.required(rule, value, source, errors, options, 'array');
+
+    if (!isEmptyValue(value, 'array')) {
+      rules.type(rule, value, source, errors, options);
+      rules.range(rule, value, source, errors, options);
+    }
+  }
+
+  callback(errors);
+}
+
+/**
+   *  Validates an object.
+   *
+   *  @param rule The validation rule.
+   *  @param value The value of the field on the source object.
+   *  @param callback The callback function.
+   *  @param source The source object being validated.
+   *  @param options The validation options.
+   *  @param options.messages The validation messages.
+   */
+
+function object(rule, value, callback, source, options) {
+  var errors = [];
+  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+
+  if (validate) {
+    if (isEmptyValue(value) && !rule.required) {
+      return callback();
+    }
+
+    rules.required(rule, value, source, errors, options);
+
+    if (value !== undefined) {
+      rules.type(rule, value, source, errors, options);
+    }
+  }
+
+  callback(errors);
+}
+
+var ENUM$1 = 'enum';
+/**
+                      *  Validates an enumerable list.
+                      *
+                      *  @param rule The validation rule.
+                      *  @param value The value of the field on the source object.
+                      *  @param callback The callback function.
+                      *  @param source The source object being validated.
+                      *  @param options The validation options.
+                      *  @param options.messages The validation messages.
+                      */
+
+function enumerable$1(rule, value, callback, source, options) {
+  var errors = [];
+  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+
+  if (validate) {
+    if (isEmptyValue(value) && !rule.required) {
+      return callback();
+    }
+
+    rules.required(rule, value, source, errors, options);
+
+    if (value !== undefined) {
+      rules[ENUM$1](rule, value, source, errors, options);
+    }
+  }
+
+  callback(errors);
+}
+
+/**
+   *  Validates a regular expression pattern.
+   *
+   *  Performs validation when a rule only contains
+   *  a pattern property but is not declared as a string type.
+   *
+   *  @param rule The validation rule.
+   *  @param value The value of the field on the source object.
+   *  @param callback The callback function.
+   *  @param source The source object being validated.
+   *  @param options The validation options.
+   *  @param options.messages The validation messages.
+   */
+
+function pattern$2(rule, value, callback, source, options) {
+  var errors = [];
+  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+
+  if (validate) {
+    if (isEmptyValue(value, 'string') && !rule.required) {
+      return callback();
+    }
+
+    rules.required(rule, value, source, errors, options);
+
+    if (!isEmptyValue(value, 'string')) {
+      rules.pattern(rule, value, source, errors, options);
+    }
+  }
+
+  callback(errors);
+}
+
+function date(rule, value, callback, source, options) {
+  var errors = [];
+  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+
+  if (validate) {
+    if (isEmptyValue(value) && !rule.required) {
+      return callback();
+    }
+
+    rules.required(rule, value, source, errors, options);
+
+    if (!isEmptyValue(value)) {
+      var dateObject;
+
+      if (typeof value === 'number') {
+        dateObject = new Date(value);
+      } else {
+        dateObject = value;
       }
 
-      setTouchState(self, true, null, null);
+      rules.type(rule, dateObject, source, errors, options);
 
-      // 计算第一个触摸点的位置，并参照改点进行缩放
-      self.__oneTouchStart(touch0);
-
-      // 两指手势触发
-      if (e.touches.length >= 2) {
-        self.__twoTouchStart(touch0, touch1);
+      if (dateObject) {
+        rules.range(rule, dateObject.getTime(), source, errors, options);
       }
-    },
+    }
+  }
 
-    //  图片手势动态缩放
-    touchMove: function touchMove(e) {
-      var self = this;
-      var ref = e.touches;
-      var touch0 = ref[0];
-      var touch1 = ref[1];
+  callback(errors);
+}
 
-      if (!self.src) {
-        return;
-      }
+function required$1(rule, value, callback, source, options) {
+  var errors = [];
+  var type = Array.isArray(value) ? 'array' : typeof value;
+  rules.required(rule, value, source, errors, options, type);
+  callback(errors);
+}
 
-      setTouchState(self, null, true);
+function type$1(rule, value, callback, source, options) {
+  var ruleType = rule.type;
+  var errors = [];
+  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
 
-      // 单指手势时触发
-      if (e.touches.length === 1) {
-        self.__oneTouchMove(touch0);
-      }
-      // 两指手势触发
-      if (e.touches.length >= 2) {
-        self.__twoTouchMove(touch0, touch1);
-      }
-    },
+  if (validate) {
+    if (isEmptyValue(value, ruleType) && !rule.required) {
+      return callback();
+    }
 
-    touchEnd: function touchEnd(e) {
-      var self = this;
+    rules.required(rule, value, source, errors, options, ruleType);
 
-      if (!self.src) {
-        return;
-      }
+    if (!isEmptyValue(value, ruleType)) {
+      rules.type(rule, value, source, errors, options);
+    }
+  }
 
-      setTouchState(self, false, false, true);
-      self.__xtouchEnd();
+  callback(errors);
+}
+
+/**
+   *  Performs validation for any type.
+   *
+   *  @param rule The validation rule.
+   *  @param value The value of the field on the source object.
+   *  @param callback The callback function.
+   *  @param source The source object being validated.
+   *  @param options The validation options.
+   *  @param options.messages The validation messages.
+   */
+
+function any(rule, value, callback, source, options) {
+  var errors = [];
+  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+
+  if (validate) {
+    if (isEmptyValue(value) && !rule.required) {
+      return callback();
+    }
+
+    rules.required(rule, value, source, errors, options);
+  }
+
+  callback(errors);
+}
+
+var validators = {
+  string: string,
+  method: method,
+  number: number,
+  "boolean": _boolean,
+  regexp: regexp,
+  integer: integer,
+  "float": floatFn,
+  array: array,
+  object: object,
+  "enum": enumerable$1,
+  pattern: pattern$2,
+  date: date,
+  url: type$1,
+  hex: type$1,
+  email: type$1,
+  required: required$1,
+  any: any };
+
+
+function newMessages() {
+  return {
+    "default": 'Validation error on field %s',
+    required: '%s is required',
+    "enum": '%s must be one of %s',
+    whitespace: '%s cannot be empty',
+    date: {
+      format: '%s date %s is invalid for format %s',
+      parse: '%s date could not be parsed, %s is invalid ',
+      invalid: '%s date %s is invalid' },
+
+    types: {
+      string: '%s is not a %s',
+      method: '%s is not a %s (function)',
+      array: '%s is not an %s',
+      object: '%s is not an %s',
+      number: '%s is not a %s',
+      date: '%s is not a %s',
+      "boolean": '%s is not a %s',
+      integer: '%s is not an %s',
+      "float": '%s is not a %s',
+      regexp: '%s is not a valid %s',
+      email: '%s is not a valid %s',
+      url: '%s is not a valid %s',
+      hex: '%s is not a valid %s' },
+
+    string: {
+      len: '%s must be exactly %s characters',
+      min: '%s must be at least %s characters',
+      max: '%s cannot be longer than %s characters',
+      range: '%s must be between %s and %s characters' },
+
+    number: {
+      len: '%s must equal %s',
+      min: '%s cannot be less than %s',
+      max: '%s cannot be greater than %s',
+      range: '%s must be between %s and %s' },
+
+    array: {
+      len: '%s must be exactly %s in length',
+      min: '%s cannot be less than %s in length',
+      max: '%s cannot be greater than %s in length',
+      range: '%s must be between %s and %s in length' },
+
+    pattern: {
+      mismatch: '%s value %s does not match pattern %s' },
+
+    clone: function clone() {
+      var cloned = JSON.parse(JSON.stringify(this));
+      cloned.clone = this.clone;
+      return cloned;
     } };
 
+}
+var messages = newMessages();
 
-  function cut() {
-    var self = this;
-    var boundWidth = self.width; // 裁剪框默认宽度，即整个画布宽度
-    var boundHeight = self.height;
-    // 裁剪框默认高度，即整个画布高度
-    var ref = self.cut;
-    var x = ref.x;
-    if (x === void 0) x = 0;
-    var y = ref.y;
-    if (y === void 0) y = 0;
-    var width = ref.width;
-    if (width === void 0) width = boundWidth;
-    var height = ref.height;
-    if (height === void 0) height = boundHeight;
+/**
+                               *  Encapsulates a validation schema.
+                               *
+                               *  @param descriptor An object declaring validation rules
+                               *  for this schema.
+                               */
 
-    /**
-                                                  * 设置边界
-                                                  * @param imgLeft 图片左上角横坐标值
-                                                  * @param imgTop 图片左上角纵坐标值
-                                                  */
-    self.outsideBound = function (imgLeft, imgTop) {
-      self.imgLeft = imgLeft >= x ?
-      x :
-      self.scaleWidth + imgLeft - x <= width ?
-      x + width - self.scaleWidth :
-      imgLeft;
+function Schema(descriptor) {
+  this.rules = null;
+  this._messages = messages;
+  this.define(descriptor);
+}
 
-      self.imgTop = imgTop >= y ?
-      y :
-      self.scaleHeight + imgTop - y <= height ?
-      y + height - self.scaleHeight :
-      imgTop;
-    };
+Schema.prototype = {
+  messages: function messages(_messages) {
+    if (_messages) {
+      this._messages = deepMerge(newMessages(), _messages);
+    }
 
-    /**
-        * 设置边界样式
-        * @param color	边界颜色
-        */
-    self.setBoundStyle = function (ref) {
-      if (ref === void 0) ref = {};
-      var color = ref.color;
-      if (color === void 0) color = '#04b00f';
-      var mask = ref.mask;
-      if (mask === void 0) mask = 'rgba(0, 0, 0, 0.3)';
-      var lineWidth = ref.lineWidth;
-      if (lineWidth === void 0) lineWidth = 1;
+    return this._messages;
+  },
+  define: function define(rules) {
+    if (!rules) {
+      throw new Error('Cannot configure a schema with no rules');
+    }
 
-      var half = lineWidth / 2;
-      var boundOption = [{
-        start: {
-          x: x - half,
-          y: y + 10 - half },
+    if (typeof rules !== 'object' || Array.isArray(rules)) {
+      throw new Error('Rules must be an object');
+    }
 
-        step1: {
-          x: x - half,
-          y: y - half },
+    this.rules = {};
+    var z;
+    var item;
 
-        step2: {
-          x: x + 10 - half,
-          y: y - half } },
+    for (z in rules) {
+      if (rules.hasOwnProperty(z)) {
+        item = rules[z];
+        this.rules[z] = Array.isArray(item) ? item : [item];
+      }
+    }
+  },
+  validate: function validate(source_, o, oc) {
+    var _this = this;
 
+    if (o === void 0) {
+      o = {};
+    }
 
-      {
-        start: {
-          x: x - half,
-          y: y + height - 10 + half },
+    if (oc === void 0) {
+      oc = function oc() {};
+    }
 
-        step1: {
-          x: x - half,
-          y: y + height + half },
+    var source = source_;
+    var options = o;
+    var callback = oc;
 
-        step2: {
-          x: x + 10 - half,
-          y: y + height + half } },
+    if (typeof options === 'function') {
+      callback = options;
+      options = {};
+    }
 
+    if (!this.rules || Object.keys(this.rules).length === 0) {
+      if (callback) {
+        callback();
+      }
 
-      {
-        start: {
-          x: x + width - 10 + half,
-          y: y - half },
+      return Promise.resolve();
+    }
 
-        step1: {
-          x: x + width + half,
-          y: y - half },
+    function complete(results) {
+      var i;
+      var errors = [];
+      var fields = {};
 
-        step2: {
-          x: x + width + half,
-          y: y + 10 - half } },
+      function add(e) {
+        if (Array.isArray(e)) {
+          var _errors;
 
+          errors = (_errors = errors).concat.apply(_errors, e);
+        } else {
+          errors.push(e);
+        }
+      }
 
-      {
-        start: {
-          x: x + width + half,
-          y: y + height - 10 + half },
+      for (i = 0; i < results.length; i++) {
+        add(results[i]);
+      }
 
-        step1: {
-          x: x + width + half,
-          y: y + height + half },
+      if (!errors.length) {
+        errors = null;
+        fields = null;
+      } else {
+        fields = convertFieldsError(errors);
+      }
 
-        step2: {
-          x: x + width - 10 + half,
-          y: y + height + half } }];
+      callback(errors, fields);
+    }
 
+    if (options.messages) {
+      var messages$1 = this.messages();
 
+      if (messages$1 === messages) {
+        messages$1 = newMessages();
+      }
 
+      deepMerge(messages$1, options.messages);
+      options.messages = messages$1;
+    } else {
+      options.messages = this.messages();
+    }
 
-      // 绘制半透明层
-      self.ctx.beginPath();
-      self.ctx.setFillStyle(mask);
-      self.ctx.fillRect(0, 0, x, boundHeight);
-      self.ctx.fillRect(x, 0, width, y);
-      self.ctx.fillRect(x, y + height, width, boundHeight - y - height);
-      self.ctx.fillRect(x + width, 0, boundWidth - x - width, boundHeight);
-      self.ctx.fill();
+    var arr;
+    var value;
+    var series = {};
+    var keys = options.keys || Object.keys(this.rules);
+    keys.forEach(function (z) {
+      arr = _this.rules[z];
+      value = source[z];
+      arr.forEach(function (r) {
+        var rule = r;
 
-      boundOption.forEach(function (op) {
-        self.ctx.beginPath();
-        self.ctx.setStrokeStyle(color);
-        self.ctx.setLineWidth(lineWidth);
-        self.ctx.moveTo(op.start.x, op.start.y);
-        self.ctx.lineTo(op.step1.x, op.step1.y);
-        self.ctx.lineTo(op.step2.x, op.step2.y);
-        self.ctx.stroke();
+        if (typeof rule.transform === 'function') {
+          if (source === source_) {
+            source = _extends({}, source);
+          }
+
+          value = source[z] = rule.transform(value);
+        }
+
+        if (typeof rule === 'function') {
+          rule = {
+            validator: rule };
+
+        } else {
+          rule = _extends({}, rule);
+        }
+
+        rule.validator = _this.getValidationMethod(rule);
+        rule.field = z;
+        rule.fullField = rule.fullField || z;
+        rule.type = _this.getType(rule);
+
+        if (!rule.validator) {
+          return;
+        }
+
+        series[z] = series[z] || [];
+        series[z].push({
+          rule: rule,
+          value: value,
+          source: source,
+          field: z });
+
       });
-    };
+    });
+    var errorFields = {};
+    return asyncMap(series, options, function (data, doIt) {
+      var rule = data.rule;
+      var deep = (rule.type === 'object' || rule.type === 'array') && (typeof rule.fields === 'object' || typeof rule.defaultField ===
+      'object');
+      deep = deep && (rule.required || !rule.required && data.value);
+      rule.field = data.field;
+
+      function addFullfield(key, schema) {
+        return _extends({}, schema, {
+          fullField: rule.fullField + "." + key });
+
+      }
+
+      function cb(e) {
+        if (e === void 0) {
+          e = [];
+        }
+
+        var errors = e;
+
+        if (!Array.isArray(errors)) {
+          errors = [errors];
+        }
+
+        if (!options.suppressWarning && errors.length) {
+          Schema.warning('async-validator:', errors);
+        }
+
+        if (errors.length && rule.message) {
+          errors = [].concat(rule.message);
+        }
+
+        errors = errors.map(complementError(rule));
+
+        if (options.first && errors.length) {
+          errorFields[rule.field] = 1;
+          return doIt(errors);
+        }
+
+        if (!deep) {
+          doIt(errors);
+        } else {
+          // if rule is required but the target object
+          // does not exist fail at the rule level and don't
+          // go deeper
+          if (rule.required && !data.value) {
+            if (rule.message) {
+              errors = [].concat(rule.message).map(complementError(rule));
+            } else if (options.error) {
+              errors = [options.error(rule, format(options.messages.required, rule.field))];
+            } else {
+              errors = [];
+            }
+
+            return doIt(errors);
+          }
+
+          var fieldsSchema = {};
+
+          if (rule.defaultField) {
+            for (var k in data.value) {
+              if (data.value.hasOwnProperty(k)) {
+                fieldsSchema[k] = rule.defaultField;
+              }
+            }
+          }
+
+          fieldsSchema = _extends({}, fieldsSchema, {}, data.rule.fields);
+
+          for (var f in fieldsSchema) {
+            if (fieldsSchema.hasOwnProperty(f)) {
+              var fieldSchema = Array.isArray(fieldsSchema[f]) ? fieldsSchema[f] : [fieldsSchema[f]];
+              fieldsSchema[f] = fieldSchema.map(addFullfield.bind(null, f));
+            }
+          }
+
+          var schema = new Schema(fieldsSchema);
+          schema.messages(options.messages);
+
+          if (data.rule.options) {
+            data.rule.options.messages = options.messages;
+            data.rule.options.error = options.error;
+          }
+
+          schema.validate(data.value, data.rule.options || options, function (errs) {
+            var finalErrors = [];
+
+            if (errors && errors.length) {
+              finalErrors.push.apply(finalErrors, errors);
+            }
+
+            if (errs && errs.length) {
+              finalErrors.push.apply(finalErrors, errs);
+            }
+
+            doIt(finalErrors.length ? finalErrors : null);
+          });
+        }
+      }
+
+      var res;
+
+      if (rule.asyncValidator) {
+        res = rule.asyncValidator(rule, data.value, cb, data.source, options);
+      } else if (rule.validator) {
+        res = rule.validator(rule, data.value, cb, data.source, options);
+
+        if (res === true) {
+          cb();
+        } else if (res === false) {
+          cb(rule.message || rule.field + " fails");
+        } else if (res instanceof Array) {
+          cb(res);
+        } else if (res instanceof Error) {
+          cb(res.message);
+        }
+      }
+
+      if (res && res.then) {
+        res.then(function () {
+          return cb();
+        }, function (e) {
+          return cb(e);
+        });
+      }
+    }, function (results) {
+      complete(results);
+    });
+  },
+  getType: function getType(rule) {
+    if (rule.type === undefined && rule.pattern instanceof RegExp) {
+      rule.type = 'pattern';
+    }
+
+    if (typeof rule.validator !== 'function' && rule.type && !validators.hasOwnProperty(rule.type)) {
+      throw new Error(format('Unknown rule type %s', rule.type));
+    }
+
+    return rule.type || 'string';
+  },
+  getValidationMethod: function getValidationMethod(rule) {
+    if (typeof rule.validator === 'function') {
+      return rule.validator;
+    }
+
+    var keys = Object.keys(rule);
+    var messageIndex = keys.indexOf('message');
+
+    if (messageIndex !== -1) {
+      keys.splice(messageIndex, 1);
+    }
+
+    if (keys.length === 1 && keys[0] === 'required') {
+      return validators.required;
+    }
+
+    return validators[this.getType(rule)] || false;
+  } };
+
+
+Schema.register = function register(type, validator) {
+  if (typeof validator !== 'function') {
+    throw new Error('Cannot register a validator by type, validator is not a function');
   }
 
-  var version = "1.3.9";
+  validators[type] = validator;
+};
 
-  var WeCropper = function WeCropper(params) {
-    var self = this;
-    var _default = {};
+Schema.warning = warning;
+Schema.messages = messages;var _default =
 
-    validator(self, DEFAULT);
-
-    Object.keys(DEFAULT).forEach(function (key) {
-      _default[key] = DEFAULT[key].default;
-    });
-    Object.assign(self, _default, params);
-
-    self.prepare();
-    self.attachPage();
-    self.createCtx();
-    self.observer();
-    self.cutt();
-    self.methods();
-    self.init();
-    self.update();
-
-    return self;
-  };
-
-  WeCropper.prototype.init = function init() {
-    var self = this;
-    var src = self.src;
-
-    self.version = version;
-
-    typeof self.onReady === 'function' && self.onReady(self.ctx, self);
-
-    if (src) {
-      self.pushOrign(src);
-    } else {
-      self.updateCanvas();
-    }
-    setTouchState(self, false, false, false);
-
-    self.oldScale = 1;
-    self.newScale = 1;
-
-    return self;
-  };
-
-  Object.assign(WeCropper.prototype, handle);
-
-  WeCropper.prototype.prepare = prepare;
-  WeCropper.prototype.observer = observer;
-  WeCropper.prototype.methods = methods;
-  WeCropper.prototype.cutt = cut;
-  WeCropper.prototype.update = update;
-
-  return WeCropper;
-
-});
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"], __webpack_require__(/*! ./../../../../../../../Applications/HBuilderX.app/Contents/HBuilderX/plugins/uniapp-cli/node_modules/webpack/buildin/global.js */ 3)))
+Schema;exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../../../Applications/HBuilderX.app/Contents/HBuilderX/plugins/uniapp-cli/node_modules/node-libs-browser/mock/process.js */ 28)))
 
 /***/ }),
 
-/***/ 80:
-/*!*******************************************************************************!*\
-  !*** /Users/chengyongming/WeChatProjects/mini-car/pages/example/js.config.js ***!
-  \*******************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = [
-{
-  groupName: '网络',
-  groupName_en: 'Network',
-  list: [
-  {
-    path: 'http',
-    icon: 'http',
-    title: 'Http 请求',
-    title_en: 'Http' }] },
-
-
-
-{
-  groupName: '全局变量',
-  groupName_en: 'Global variable',
-  list: [
-  {
-    path: 'globalVariable',
-    icon: 'globalVariable',
-    title: 'GlobalVariable 全局变量',
-    title_en: 'GlobalVariable' }] },
-
-
-
-{
-  groupName: '工具库',
-  groupName_en: 'Tool library',
-  list: [
-  {
-    path: 'debounce',
-    icon: 'debounce',
-    title: 'Throttle | Debounce 节流防抖',
-    title_en: 'Throttle | Debounce' },
-
-  {
-    path: 'deepMerge',
-    icon: 'deepMerge',
-    title: 'DeepMerge 对象深度合并',
-    title_en: 'DeepMerge' },
-  {
-    path: 'deepClone',
-    icon: 'deepClone',
-    title: 'DeepClone 对象深度克隆',
-    title_en: 'DeepClone' },
-
-  {
-    path: 'timeFormat',
-    icon: 'timeFormat',
-    title: 'TimeFormat 时间格式化',
-    title_en: 'TimeFormat' },
-  {
-    path: 'timeFrom',
-    icon: 'timeFrom',
-    title: 'TimeFrom 多久之前',
-    title_en: 'TimeFrom' },
-  {
-    path: 'guid',
-    icon: 'guid',
-    title: 'Guid 全局唯一id',
-    title_en: 'Guid' },
-  {
-    path: 'route',
-    icon: 'route',
-    title: 'Route 路由跳转',
-    title_en: 'Route' },
-  {
-    path: 'randomArray',
-    icon: 'randomArray',
-    title: 'RandomArray 数组乱序',
-    title_en: 'RandomArray' },
-  {
-    path: 'colorSwitch',
-    icon: 'colorSwitch',
-    title: 'ColorSwitch 颜色转换',
-    title_en: 'ColorSwitch' },
-  {
-    path: 'color',
-    icon: 'color',
-    title: 'Color 颜色值',
-    title_en: 'Color' },
-  {
-    path: 'queryParams',
-    icon: 'queryParams',
-    title: 'QueryParams 对象转URL参数',
-    title_en: 'QueryParams' },
-  {
-    path: 'test',
-    icon: 'test',
-    title: 'Test 规则校验',
-    title_en: 'Test' },
-  {
-    path: 'md5',
-    icon: 'md5',
-    title: 'Md5 md5加密',
-    title_en: 'Md5' },
-  {
-    path: 'random',
-    icon: 'random',
-    title: 'Random 随机数值',
-    title_en: 'Random' },
-  {
-    path: 'trim',
-    icon: 'trim',
-    title: 'Trim 去除空格',
-    title_en: 'Trim' },
-  {
-    path: 'getRect',
-    icon: 'getRect',
-    title: 'GetRect 节点信息',
-    title_en: 'GetRect' },
-  {
-    path: 'mpShare',
-    icon: 'mpShare',
-    title: 'MpShare 小程序分享',
-    title_en: 'MpShare' }] }];exports.default = _default;
-
-/***/ }),
-
-/***/ 91:
-/*!*************************************************************************************!*\
-  !*** /Users/chengyongming/WeChatProjects/mini-car/pages/example/template.config.js ***!
-  \*************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = [
-{
-  groupName: '部件',
-  groupName_en: 'Parts',
-  list: [
-  {
-    path: 'coupon',
-    icon: 'coupon',
-    title: 'Coupon 优惠券',
-    title_en: 'Coupon' }] },
-
-
-
-{
-  groupName: '页面',
-  groupName_en: 'Page',
-  list: [
-  {
-    path: '/pages/template/wxCenter/index',
-    icon: 'wxCenter',
-    title: 'WxCenter 仿微信个人中心',
-    title_en: 'WxCenter' },
-
-  // {
-  // 	path: '/pages/template/douyin/index',
-  // 	icon: 'douyin',
-  // 	title: 'Douyin 仿抖音',
-  // },
-  {
-    path: '/pages/template/keyboardPay/index',
-    icon: 'keyboardPay',
-    title: 'KeyboardPay 自定义键盘支付模板',
-    title_en: 'KeyboardPay' },
-
-  {
-    path: '/pages/template/mallMenu/index1',
-    icon: 'mall_menu_1',
-    title: 'MallMenu 垂直分类(左右独立)',
-    title_en: 'MallMenu 1' },
-  {
-    path: '/pages/template/mallMenu/index2',
-    icon: 'mall_menu_2',
-    title: 'MallMenu 垂直分类(左右联动)',
-    title_en: 'MallMenu 2' },
-  {
-    path: 'submitBar',
-    icon: 'submitBar',
-    title: 'SubmitBar 提交订单栏',
-    title_en: 'SubmitBar' },
-  {
-    path: 'comment',
-    icon: 'comment',
-    title: 'Comment 评论列表',
-    title_en: 'Comment' },
-  {
-    path: 'order',
-    icon: 'order',
-    title: 'Order 订单列表',
-    title_en: 'Order' },
-  {
-    path: 'login',
-    icon: 'login',
-    title: 'Login 登录界面',
-    title_en: 'Login' },
-  {
-    path: 'address',
-    icon: 'address',
-    title: 'Address 收货地址',
-    title_en: 'Address' },
-  {
-    path: 'citySelect',
-    icon: 'citySelect',
-    title: 'CitySelect 城市选择',
-    title_en: 'CitySelect' }] }];exports.default = _default;
-
-/***/ }),
-
-/***/ 983:
+/***/ 94:
 /*!*********************************************************************************************!*\
   !*** /Users/chengyongming/WeChatProjects/mini-car/components/zzx-calendar/generateDates.js ***!
   \*********************************************************************************************/

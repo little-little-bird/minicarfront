@@ -61,6 +61,9 @@
         }
     },
     "mp-weixin" : {
-        "appid" : "wxe70a1d2ba89f837f"
+        "appid" : "wxe70a1d2ba89f837f",
+        "setting" : {
+            "urlCheck" : false
+        }
     }
 }

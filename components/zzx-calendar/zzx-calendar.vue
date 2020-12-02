@@ -74,7 +74,7 @@
 				</swiper-item>			
 			</swiper>
 			<view class="mode-change" @click="changeMode">
-				<view :class="weekMode ? 'mode-arrow-bottom' : 'mode-arrow-top'">	
+				<view :class="weekMode ? 'mode-arrow-bottom' : 'mode-arrow-top'">
 				</view>
 			</view>
 		</view>
@@ -399,18 +399,18 @@
 		justify-content: center;
 		margin-top:10upx;
 		.mode-arrow-top {
-			width: 0;
-			height:0;
+			width: 20upx;
+			height:20upx;
 			border-left: 12upx solid transparent;
 		    border-right: 12upx solid transparent;
-		    border-bottom: 10upx solid #0092D5;
+		    border-bottom: 20upx solid #0092D5;
 		}
 		.mode-arrow-bottom {
-			width: 0;
-			height:0;
+			width: 20upx;
+			height:20upx;
 			border-left: 12upx solid transparent;
 			border-right: 12upx solid transparent;
-			border-top: 10upx solid #0092D5;
+			border-top: 20upx solid #0092D5;
 		}
 	}
 	.is-today {

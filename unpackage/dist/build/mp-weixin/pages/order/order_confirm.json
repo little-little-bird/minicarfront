@@ -1,0 +1,12 @@
+{
+  "navigationBarTitleText": "预约确认",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "u-form": "/uview-ui/components/u-form/u-form",
+    "u-form-item": "/uview-ui/components/u-form-item/u-form-item",
+    "u-input": "/uview-ui/components/u-input/u-input",
+    "zzx-calendar": "/components/zzx-calendar/zzx-calendar",
+    "time-selector": "/components/xiujun-time-selector/index",
+    "yn-gallery": "/components/YnComponents/ynGallery/ynGallery"
+  }
+}

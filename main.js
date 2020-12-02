@@ -1,10 +1,14 @@
 import Vue from 'vue'
 import App from './App'
+import * as $api from '@/common/api/api.js'
+import httpapi from '@/common/http.api.js'
 
 Vue.config.productionTip = false
+Vue.prototype.$httpapi = httpapi
 
 App.mpType = 'app'
 
+Vue.prototype.$api = $api
 // 此处为演示Vue.prototype使用，非uView的功能部分
 Vue.prototype.vuePrototype = '枣红'
 
@@ -52,6 +56,80 @@ const app = new Vue({
 	store,
 	...App
 })
+Vue.prototype.relogin = function() {
+
+	if (uni.getStorageSync("mini_car_token")) {
+		let setTimeputId = setTimeout(() => {
+			console.log(new Date() + ' refresh_mini_car_token')
+			uni.getSetting({
+				success(res) {
+					console.log("授权：", res);
+					if (!res.authSetting['scope.userInfo']) {
+						//这里调用授权
+						console.log("当前未授权");
+						//触发定时检测程序，如果授权了，那就跳转，没有的话就继续检测
+						console.log("未登录")
+					} else {
+						//用户已经授权过了
+						console.log("当前已授权了");
+						let that = this
+						uni.login({
+							provider: 'weixin',
+							success: function(loginRes) {
+								uni.getUserInfo({
+									provider: 'weixin',
+									success: function(infoRes) {
+										let data = {
+											code: loginRes.code,
+											encryptedData: infoRes.encryptedData,
+											iv: infoRes.iv,
+											userInfo: infoRes.userInfo,
+											rawData: infoRes.rawData,
+											signature: infoRes.signature,
+											channel: "wechat",
+											inviter: uni.getStorageSync("inviter_user_id")
+										}
+										uni.request({
+											url: 'https://chengym.com.cn/library/butt-auth',
+											method: 'POST',
+											header: {
+												"content-type": "application/json"
+											},
+											data: data,
+											success: async ress => {
+												if (ress && ress.statusCode === 200) {
+													uni.setStorageSync("mini_car_token", ress.data.token)
+													uni.setStorageSync("mini_car_userid", ress.data.userid)
+
+												} else {
+
+												}
+											},
+											fail: err => {
+												console.log(err)
+											}
+										})
+									}
+								})
+							}
+						})
+					}
+				}
+			})
+		})
+		// getApp().globalData.setTimeoutForRefreshToken = setTimeputId
+	} else {
+		console.log('未登录')
+	}
+}
+Vue.prototype.setRelogin = function() {
+	console.log('start refresh_token')
+	setInterval(() => {
+		let that = this
+		that.relogin()
+		// }, 1000);
+	}, 300000);
+}
 
 // http拦截器，将此部分放在new Vue()和app.$mount()之间，才能App.vue中正常使用
 import httpInterceptor from '@/common/http.interceptor.js'

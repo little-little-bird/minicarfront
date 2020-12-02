@@ -12,10 +12,26 @@
 	// },
 	"pages": [
 		{
+			"path": "pages/home/home",
+			"style": {
+				"navigationBarTitleText": "首页",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
 		    "path" : "pages/order/order",
 		    "style" :                                                                                    
 		    {
 		        "navigationBarTitleText": "预约",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},
+		{
+		    "path" : "pages/order/order_confirm",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "预约确认",
 		        "enablePullDownRefresh": false
 		    }
 		    
@@ -27,6 +43,12 @@
 				"navigationBarTitleText": "组件"
 			}
 		},
+		{
+			"path": "pages/userinfo/userInfo",
+			"style": {
+				"navigationBarTitleText": "信息"
+			}
+		},
 		// avatarCropper-头像裁剪
 		{
 			"path": "uview-ui/components/u-avatar-cropper/u-avatar-cropper",
@@ -36,12 +58,12 @@
 			}
 		},
 		// 演示-工具
-		{
-			"path": "pages/example/js",
-			"style": {
-				"navigationBarTitleText": "工具"
-			}
-		},
+		// {
+		// 	"path": "pages/example/js",
+		// 	"style": {
+		// 		"navigationBarTitleText": "工具"
+		// 	}
+		// },
 		// 演示-模板
 		{
 			"path": "pages/example/template",
@@ -49,6 +71,7 @@
 				"navigationBarTitleText": "模板"
 			}
 		},
+		
 		// fullScreen-压窗屏
 		{
 			"path": "uview-ui/components/u-full-screen/u-full-screen",
@@ -71,6 +94,15 @@
             }
             
         }
+		,{
+		    "path" : "pages/example/js",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "登录",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		}
         ,{
             "path" : "pages/user/user",
             "style" :                                                                                    
@@ -80,18 +112,19 @@
             }
             
         }
+        
         ,{
-            "path" : "pages/home/home",
+            "path" : "pages/learn/learn",
             "style" :                                                                                    
             {
-                "navigationBarTitleText": "首页",
+                "navigationBarTitleText": "",
                 "enablePullDownRefresh": false
             }
             
         }
-        
     ],
-	"subPackages": [{
+	"subPackages": [
+		{
 			"root": "pages/componentsC",
 			"pages": [
 				// test-测试
@@ -358,171 +391,6 @@
 					"path": "address/addSite",
 					"style": {
 						"navigationBarTitleText": "添加用户地址"
-					}
-				}
-			]
-		},
-		{
-			"root": "pages/library",
-			"pages": [
-				// debounce-节流防抖
-				{
-					"path": "debounce/index",
-					"style": {
-						"navigationBarTitleText": "throttle | debounce-节流防抖"
-					}
-				},
-				// deepClone-对象深度克隆
-				{
-					"path": "deepClone/index",
-					"style": {
-						"navigationBarTitleText": "deepClone-对象深度克隆"
-					}
-				},
-				// deepMerge-对象深度合并
-				{
-					"path": "deepMerge/index",
-					"style": {
-						"navigationBarTitleText": "deepMerge-对象深度合并"
-					}
-				},
-				// getRect-元素节点
-				{
-					"path": "getRect/index",
-					"style": {
-						"navigationBarTitleText": "getRect-元素节点"
-					}
-				},
-				// timeFrom-多久之前
-				{
-					"path": "timeFrom/index",
-					"style": {
-						"navigationBarTitleText": "timeFrom-多久之前"
-					}
-				},
-				// globalData-全局变量
-				{
-					"path": "globalVariable/globalData",
-					"style": {
-						"navigationBarTitleText": "globalData-全局变量"
-					}
-				},
-				// prototype-全局变量
-				{
-					"path": "globalVariable/prototype",
-					"style": {
-						"navigationBarTitleText": "prototype-全局变量"
-					}
-				},
-				// vuex-全局变量
-				{
-					"path": "globalVariable/vuex",
-					"style": {
-						"navigationBarTitleText": "vuex-全局变量"
-					}
-				},
-				// globalVariable-全局变量
-				{
-					"path": "globalVariable/index",
-					"style": {
-						"navigationBarTitleText": "globalVariable-全局变量"
-					}
-				},
-				// http-请求
-				{
-					"path": "http/index",
-					"style": {
-						"navigationBarTitleText": "http-请求"
-					}
-				},
-				// test-规则验证
-				{
-					"path": "test/index",
-					"style": {
-						"navigationBarTitleText": "test-规则验证"
-					}
-				},
-				// mpShare-小程序分享
-				{
-					"path": "mpShare/index",
-					"style": {
-						"navigationBarTitleText": "mpShare-小程序分享"
-					}
-				},
-				// color-JS调用颜色
-				{
-					"path": "color/index",
-					"style": {
-						"navigationBarTitleText": "color-JS调用颜色"
-					}
-				},
-				// trim-去除空格
-				{
-					"path": "trim/index",
-					"style": {
-						"navigationBarTitleText": "trim-去除空格"
-					}
-				},
-				// random-随机数生成
-				{
-					"path": "random/index",
-					"style": {
-						"navigationBarTitleText": "random-随机数生成"
-					}
-				},
-				// md5加密
-				{
-					"path": "md5/index",
-					"style": {
-						"navigationBarTitleText": "md5-加密"
-					}
-				},
-				// colorSwitch颜色转换
-				{
-					"path": "colorSwitch/index",
-					"style": {
-						"navigationBarTitleText": "colorSwitch-颜色转换"
-					}
-				},
-				// randomArray数组乱序
-				{
-					"path": "randomArray/index",
-					"style": {
-						"navigationBarTitleText": "randomArray-数组乱序"
-					}
-				},
-				// guid全局唯一标识符
-				{
-					"path": "guid/index",
-					"style": {
-						"navigationBarTitleText": "guid-全局唯一标识符"
-					}
-				},
-				// timeFormat时间格式化
-				{
-					"path": "timeFormat/index",
-					"style": {
-						"navigationBarTitleText": "timeFormat-时间格式化"
-					}
-				}, // route-路由
-				{
-					"path": "route/index",
-					"style": {
-						"navigationBarTitleText": "route-路由"
-					}
-				},
-				// route-路由跳转
-				{
-					"path": "route/routeTo",
-					"style": {
-						"navigationBarTitleText": "route-路由跳转"
-					}
-				},
-				// queryParams-对象转URL参数
-				{
-					"path": "queryParams/index",
-					"style": {
-						"navigationBarTitleText": "queryParams-对象转URL参数"
 					}
 				}
 			]
@@ -863,6 +731,8 @@
 				}
 			]
 		}
+		
+		
 	],
 	"preloadRule": {
 		"pages/example/components": {
@@ -881,12 +751,25 @@
 		"selectedColor": "#303133",
 		"backgroundColor": "#FFFFFF",
 		"borderStyle": "black",
-		"list": [{
-				"pagePath": "pages/order/order",
-				"iconPath": "static/car/img/order.png",
-				"selectedIconPath": "static/car/img/order_select.png",
-				"text": "预约"
+		"list": [
+			{
+				"pagePath": "pages/home/home",
+				"iconPath": "static/car/img/home.png",
+				"selectedIconPath": "static/car/img/home_select.png",
+				"text": "首页"
 			},
+			{
+				"pagePath": "pages/userinfo/userInfo",
+				"iconPath": "static/car/img/home.png",
+				"selectedIconPath": "static/car/img/home_select.png",
+				"text": "信息"
+			},
+			// {
+			// 	"pagePath": "pages/order/order",
+			// 	"iconPath": "static/car/img/order.png",
+			// 	"selectedIconPath": "static/car/img/order_select.png",
+			// 	"text": "预约"
+			// },
 			{
 					"pagePath": "pages/user/user",
 					"iconPath": "static/car/img/user.png",
@@ -901,15 +784,15 @@
 			},
 			{
 				"pagePath": "pages/example/js",
-				"iconPath": "static/uview/example/js.png",
-				"selectedIconPath": "static/uview/example/js_select.png",
-				"text": "工具"
-			},
-			{
-				"pagePath": "pages/example/template",
-				"iconPath": "static/uview/example/template.png",
-				"selectedIconPath": "static/uview/example/template_select.png",
-				"text": "模板"
+				"iconPath": "static/car/img/home.png",
+				"selectedIconPath": "static/car/img/home_select.png",
+				"text": "首页"
+			// },
+			// {
+			// 	"pagePath": "pages/userinfo/userInfo",
+			// 	"iconPath": "static/car/img/home.png",
+			// 	"selectedIconPath": "static/car/img/home_select.png",
+			// 	"text": "信息"
 			}
 		]
 	}

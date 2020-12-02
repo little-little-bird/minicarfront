@@ -9,6 +9,7 @@
           box-sizing: border-box;
 }
 .container scroll-view.data-v-0b67fea2 {
+  display: none !important;
   width: 100%;
   white-space: nowrap;
   height: 104rpx;

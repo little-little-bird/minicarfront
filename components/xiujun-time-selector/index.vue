@@ -1,7 +1,7 @@
 <template>
 	<view class="container">
 		<!-- tab栏 -->
-		<scroll-view class="scroll-view_H b-t b-b" scroll-x>
+	<!-- 	<scroll-view class="scroll-view_H b-t b-b" scroll-x>
 			<block v-for="(item, index) in dateArr" :key="index">
 				<div class="flex-box" @click="selectDateEvent(index, item)" :style="{ 'box-shadow': index == dateActive ? 'inset 0 -2px 0 0 ' + selectedTabColor : '' }">
 					<view class="date-box">
@@ -10,10 +10,10 @@
 					</view>
 				</div>
 			</block>
-		</scroll-view>
+		</scroll-view> -->
 		<!-- 时间选项 -->
 		<view class="time-box">
-			<block v-for="(item, _index) in timeArr" :key="_index">
+			<!-- <block v-for="(item, _index) in timeArr" :key="_index">
 				<view class="item">
 					<view
 						class="item-box"
@@ -23,14 +23,14 @@
 							filter: _index < timeActive[1] && _index > timeActive[0] ? 'opacity(0.3)' : ''
 						}"
 						@click="selectTimeEvent(_index, item)"
-					>
-						<text>{{ item.time }}</text>
-						<text class="all" v-if="item.disable">{{ disableText }}</text>
-						<text class="all" v-if="_index == timeActive[0] && !item.disable" style="font-size: 12upx;">开始时间</text>
+					> -->
+						<!-- <text>{{ item.time }}</text> -->
+						<!-- <text class="all" v-if="item.disable">{{ disableText }}</text> -->
+						<!-- <text class="all" v-if="_index == timeActive[0] && !item.disable" style="font-size: 12upx;">开始时间</text>
 						<text class="all" v-if="_index == timeActive[1] && !item.disable" style="font-size: 12upx;">结束时间</text>
 					</view>
 				</view>
-			</block>
+			</block> -->
 		</view>
 	</view>
 </template>
@@ -43,7 +43,7 @@ export default {
 		//开始时间选项
 		startTime: {
 			type: String,
-			default: '08:00'
+			default: '08:30'
 		},
 		//结束时间选项
 		endTime: {
@@ -174,7 +174,7 @@ export default {
 			}
 			// this.timeActive = index
 			// this.selectTime = this.timeArr[index]['time']
-			this.$emit('selectTime', `${this.selectDate}${this.selectTime.join('-')}`);
+			this.$emit('selectTime', `${this.selectTime.join('-')}`);
 		}
 	}
 };

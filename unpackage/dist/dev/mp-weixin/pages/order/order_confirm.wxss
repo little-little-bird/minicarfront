@@ -1,0 +1,129 @@
+@charset "UTF-8";
+/**
+ * 下方引入的为uView UI的集成样式文件，为scss预处理器，其中包含了一些"u-"开头的自定义变量
+ * 使用的时候，请将下面的一行复制到您的uniapp项目根目录的uni.scss中即可
+ * uView自定义的css类名和scss变量，均以"u-"开头，不会造成冲突，请放心使用 
+ */
+.item.data-v-6e930be5:first-child {
+  margin-top: 0;
+}
+.item.data-v-6e930be5:last-child {
+  margin-bottom: 0;
+}
+.item .title.data-v-6e930be5 {
+  font-size: 30rpx;
+  position: relative;
+  line-height: 1;
+  padding-left: 22rpx;
+}
+.item .title.data-v-6e930be5:before {
+  width: 4px;
+  height: 15px;
+  -webkit-border-radius: 100rpx;
+          border-radius: 100rpx;
+  background-color: #606266;
+  content: '';
+  position: absolute;
+  left: 6rpx;
+  top: -1px;
+}
+.item .order-confirm-result-txt.data-v-6e930be5 {
+  font-size: 12pt;
+  margin-left: 20rpx;
+  margin-top: 20rpx;
+  margin-bottom: 20rpx;
+  color: #16A6F8;
+}
+.item .ro-ul.data-v-6e930be5 {
+  width: 100%;
+  margin-top: 25rpx;
+  margin-bottom: 42rpx;
+}
+.item .ro-ul .ro-li.data-v-6e930be5 {
+  width: 100%;
+  height: 56rpx;
+  margin-top: 19rpx;
+}
+.item .ro-ul .ro-li.data-v-6e930be5:first-child {
+  margin-top: 0;
+}
+.item .ro-ul .ro-li .ro-rol.data-v-6e930be5 {
+  width: 50%;
+  height: 100%;
+  background: #fff;
+  -webkit-border-radius: 3rpx;
+          border-radius: 3rpx;
+  border: 1rpx solid #979797;
+  color: #818181;
+}
+.item .ro-ul .ro-li .ro-rol.rol-hover.data-v-6e930be5 {
+  background: #E1F5FE;
+  border: 1rpx solid #009CF8;
+  color: #16A6F8;
+}
+.item .ro-ul .ro-li .ro-rol text.data-v-6e930be5 {
+  width: 100%;
+  height: 100%;
+  font-size: 26rpx;
+  font-family: PingFangSC-Medium, PingFang SC;
+  font-weight: 500;
+  line-height: 56rpx;
+  text-indent: 22rpx;
+  display: block;
+}
+.item .color-box.data-v-6e930be5 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+          justify-content: space-between;
+  color: #fff;
+  text-align: center;
+  margin-top: 20rpx;
+}
+.item .color-box .color-item.data-v-6e930be5 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+          flex: 1;
+  margin: 0 8rpx;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+          flex-direction: column;
+  -webkit-border-radius: 6rpx;
+          border-radius: 6rpx;
+  padding: 12rpx 0;
+}
+.item .color-box .color-title.data-v-6e930be5 {
+  font-size: 28rpx;
+}
+.item .color-box .color-value.data-v-6e930be5 {
+  font-size: 24rpx;
+}
+.item .ygallery.data-v-6e930be5 {
+  width: 100%;
+}
+.demo-layout.data-v-6e930be5 {
+  height: 70rpx;
+  -webkit-border-radius: 8rpx;
+          border-radius: 8rpx;
+  border: 1rpx #303133 solid;
+  margin: 20rpx 0;
+}
+.bg-purple.data-v-6e930be5 {
+  background: #ffffff;
+}
+.bg-purple-light.data-v-6e930be5 {
+  background: #e5e9f2;
+}
+.bg-purple-dark.data-v-6e930be5 {
+  background: #99a9bf;
+}
+

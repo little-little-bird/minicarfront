@@ -113,18 +113,18 @@
   margin-top: 10rpx;
 }
 .zzx-calendar .mode-change .mode-arrow-top.data-v-6fe68864 {
-  width: 0;
-  height: 0;
+  width: 20rpx;
+  height: 20rpx;
   border-left: 12rpx solid transparent;
   border-right: 12rpx solid transparent;
-  border-bottom: 10rpx solid #0092D5;
+  border-bottom: 20rpx solid #0092D5;
 }
 .zzx-calendar .mode-change .mode-arrow-bottom.data-v-6fe68864 {
-  width: 0;
-  height: 0;
+  width: 20rpx;
+  height: 20rpx;
   border-left: 12rpx solid transparent;
   border-right: 12rpx solid transparent;
-  border-top: 10rpx solid #0092D5;
+  border-top: 20rpx solid #0092D5;
 }
 .zzx-calendar .is-today.data-v-6fe68864 {
   background: #ffffff;

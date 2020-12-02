@@ -1,14 +1,17 @@
 {
   "pages": [
+    "pages/home/home",
     "pages/order/order",
+    "pages/order/order_confirm",
     "pages/example/components",
+    "pages/userinfo/userInfo",
     "uview-ui/components/u-avatar-cropper/u-avatar-cropper",
-    "pages/example/js",
     "pages/example/template",
     "uview-ui/components/u-full-screen/u-full-screen",
     "pages/login/login",
+    "pages/example/js",
     "pages/user/user",
-    "pages/home/home"
+    "pages/learn/learn"
   ],
   "subPackages": [
     {
@@ -55,34 +58,6 @@
         "login/code",
         "address/index",
         "address/addSite"
-      ]
-    },
-    {
-      "root": "pages/library",
-      "pages": [
-        "debounce/index",
-        "deepClone/index",
-        "deepMerge/index",
-        "getRect/index",
-        "timeFrom/index",
-        "globalVariable/globalData",
-        "globalVariable/prototype",
-        "globalVariable/vuex",
-        "globalVariable/index",
-        "http/index",
-        "test/index",
-        "mpShare/index",
-        "color/index",
-        "trim/index",
-        "random/index",
-        "md5/index",
-        "colorSwitch/index",
-        "randomArray/index",
-        "guid/index",
-        "timeFormat/index",
-        "route/index",
-        "route/routeTo",
-        "queryParams/index"
       ]
     },
     {
@@ -156,10 +131,16 @@
     "borderStyle": "black",
     "list": [
       {
-        "pagePath": "pages/order/order",
-        "iconPath": "static/car/img/order.png",
-        "selectedIconPath": "static/car/img/order_select.png",
-        "text": "预约"
+        "pagePath": "pages/home/home",
+        "iconPath": "static/car/img/home.png",
+        "selectedIconPath": "static/car/img/home_select.png",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/userinfo/userInfo",
+        "iconPath": "static/car/img/home.png",
+        "selectedIconPath": "static/car/img/home_select.png",
+        "text": "信息"
       },
       {
         "pagePath": "pages/user/user",
@@ -175,15 +156,9 @@
       },
       {
         "pagePath": "pages/example/js",
-        "iconPath": "static/uview/example/js.png",
-        "selectedIconPath": "static/uview/example/js_select.png",
-        "text": "工具"
-      },
-      {
-        "pagePath": "pages/example/template",
-        "iconPath": "static/uview/example/template.png",
-        "selectedIconPath": "static/uview/example/template_select.png",
-        "text": "模板"
+        "iconPath": "static/car/img/home.png",
+        "selectedIconPath": "static/car/img/home_select.png",
+        "text": "首页"
       }
     ]
   },
@@ -198,5 +173,5 @@
     }
   },
   "usingComponents": {},
-  "sitemapLocation": "sitemap36.json"
+  "sitemapLocation": "sitemap46.json"
 }

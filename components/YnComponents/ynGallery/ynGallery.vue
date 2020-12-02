@@ -111,6 +111,8 @@
 
 		data() {
 			return {
+				//flagClick  点击
+				flagClick:false,
 				//bkstart bkend不能在组件内赋值 该元素做中转
 				bkstartcolor: this.bkstart,
 				bkendcolor: this.bkend,
@@ -212,9 +214,9 @@
 
 			//$emit 向上传递 所有父或者父父组件会依次接收到emit事件
 			clickimg(idx, imgviewobj) {
-				this.activeviewindex = idx			
+				this.activeviewindex = idx;			
 				this.scrollLeft = this.sviewlst.imgsview[idx].l - parseInt(this.screencenterpos) + parseInt(this.sviewlst.imgsview[idx].w / 2);
-				this.$emit('clickimg',imgviewobj)
+				this.$emit('clickimg',imgviewobj);
 			},
 
 			touchStartHandle(e) {
@@ -285,7 +287,7 @@
 								   w: 0,                 //该view宽度
 								   h: 0,                 //该view高度								
 								   l: 0,                 //该view块左边距scroll容器左边距离
-								   r: 0,                 //该view右边距scroll容器左边距离
+								   r: 0,                 //该view右边距scroll容器左边距离,
 							  }
 		
 					//合并外界传来image对象属性 若有重合的属性 后面的覆盖前面
@@ -404,7 +406,7 @@
 
 				this.activeviewindex = activeindex;
 				this.sviewlst = obj;
-
+				that.sviewlst.imgsview[that.activeviewindex].url = that.sviewlst.imgsview[that.activeviewindex].hoverUrl;
 
 				this.$nextTick(function() {
 					var that = this

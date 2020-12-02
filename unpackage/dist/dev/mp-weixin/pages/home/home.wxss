@@ -1,0 +1,148 @@
+
+page{
+	height: 100%;
+}
+.home_wrap{
+	width: 750rpx;
+	height: 100%;
+	position: relative;
+}
+.top_nav{
+	height: 332rpx;
+	z-index: 10;
+	overflow: hidden;
+	position: relative;
+}
+.top_img{
+	width: 100%;
+	height: 100%;
+}
+.home_content{
+	width: 670rpx;
+	height: 669rpx;
+	position: absolute;
+	top: 241rpx;
+	left: 41rpx;
+	/* margin:-89rpx 41rpx 0; */
+	z-index: 8;
+}
+.circle{
+	width: 100%;
+	height: 100%;
+	border: 1rpx solid #979797;
+	-webkit-border-radius: 50%;
+	        border-radius: 50%;
+	position: relative;
+}
+.yuyue_wrap{
+	width: 332rpx;
+	height: 332rpx;
+	background: rgba(39, 149, 255, .5);
+	margin: 169rpx 178rpx;
+	-webkit-border-radius: 50%;
+	        border-radius: 50%;
+	overflow: hidden;
+}
+.yuyue_middle{
+	width: 305rpx;
+	height: 306rpx;
+	background: #2795FF;
+	-webkit-border-radius: 50%;
+	        border-radius: 50%;
+	margin: 13rpx auto;
+}
+.yuyueImg1{
+	width: 186rpx;
+	height: 172rpx;
+	margin-top: 30rpx;
+	margin-left: 60rpx;
+}
+.yuyue_text{
+	width: 144rpx;
+	height: 50rpx;
+	font-size: 36rpx;
+	font-family: PingFangSC-Medium, PingFang SC;
+	font-weight: 500;
+	color: #FFFFFF;
+	line-height: 50rpx;
+	margin-top: 2rpx;
+	margin-left: 81rpx;
+}
+.sign_up_wrap{
+	position: absolute;
+	top: 476rpx;
+	left: 8rpx;
+	width: 222rpx;
+	height: 222rpx;
+	background: rgba(112, 146, 244, .5);
+	-webkit-border-radius: 50%;
+	        border-radius: 50%;
+	overflow: hidden;
+}
+.sign_up_middle{
+	width: 202rpx;
+	height: 202rpx;
+	background: #7092F4;
+	margin-top: 10rpx;
+	margin-left: 10rpx;
+	-webkit-border-radius: 50%;
+	        border-radius: 50%;
+	overflow: hidden;
+}
+.signUpImg1{
+	width: 80rpx;
+	height: 80rpx;
+	margin-top: 36rpx;
+	margin-left: 61rpx;
+}
+.signUp_text{
+	width: 104rpx;
+	height: 37rpx;
+	font-size: 26rpx;
+	font-family: PingFangSC-Medium, PingFang SC;
+	font-weight: 500;
+	color: #FFFFFF;
+	line-height: 37rpx;
+	margin-top: 17rpx;
+	margin-left: 49rpx;
+}
+.inform_wrap{
+	position: absolute;
+	top: 476rpx;
+	right: 1rpx;
+	width: 222rpx;
+	height: 222rpx;
+	background: rgba(241, 196, 56, .5);
+	-webkit-border-radius: 50%;
+	        border-radius: 50%;
+	overflow: hidden;
+}
+.inform_middle{
+	width: 202rpx;
+	height: 202rpx;
+	background: #F1C438;
+	margin-top: 10rpx;
+	margin-left: 10rpx;
+	-webkit-border-radius: 50%;
+	        border-radius: 50%;
+	overflow: hidden;
+}
+.informImg1{
+	width: 80rpx;
+	height: 80rpx;
+	margin-top: 36rpx;
+	margin-left: 61rpx;
+}
+.inform_text{
+	width: 104rpx;
+	height: 37rpx;
+	font-size: 26rpx;
+	font-family: PingFangSC-Medium, PingFang SC;
+	font-weight: 500;
+	color: #FFFFFF;
+	line-height: 37rpx;
+	margin-top: 17rpx;
+	margin-left: 49rpx;
+}
+	
+

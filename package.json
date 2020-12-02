@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/YanxinNet/uView#readme",
   "dependencies": {
+    "uni-axios": "^1.0.5",
     "vue-i18n": "^8.20.0"
   }
 }
