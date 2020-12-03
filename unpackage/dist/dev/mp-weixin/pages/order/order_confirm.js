@@ -176,8 +176,7 @@ var _httpApi = _interopRequireDefault(__webpack_require__(/*! @/common/http.api.
 
       errorType: ['toast'],
       rules: {
-        idCard: [
-        {
+        idCard: [{
           required: true,
           message: '请输入身份证号',
           trigger: ['change', 'blur'] },
@@ -190,8 +189,7 @@ var _httpApi = _interopRequireDefault(__webpack_require__(/*! @/common/http.api.
           trigger: ['change', 'blur'] }],
 
 
-        name: [
-        {
+        name: [{
           required: true,
           message: '请输入姓名',
           trigger: 'blur' },
@@ -213,8 +211,7 @@ var _httpApi = _interopRequireDefault(__webpack_require__(/*! @/common/http.api.
           trigger: ['change', 'blur'] }],
 
 
-        phone: [
-        {
+        phone: [{
           required: true,
           message: '请输入手机号',
           trigger: ['change', 'blur'] },
@@ -298,7 +295,7 @@ var _httpApi = _interopRequireDefault(__webpack_require__(/*! @/common/http.api.
       });
       if (val) {
         var data = {
-          orderTime: this.orderDate,
+          orderDate: this.orderDate,
           orderTimeIdsStr: this.timeSelectedId,
           areaId: this.areaSelectedId,
           carId: this.carSelectedId,
@@ -307,7 +304,27 @@ var _httpApi = _interopRequireDefault(__webpack_require__(/*! @/common/http.api.
 
         this.$u.post("/order/add", data).then(function (res) {
           console.log(res);
-          debugger;});
+          var contect = '';
+          if (res.data.newOrders) {
+            contect = '新增';
+            res.data.newOrders.forEach(function (item) {
+              contect += item.orderTimeStr + ',';
+            });
+            contect += '的预约，共计' + res.data.billInfo.orderLength + '小时';
+
+          }
+          if (res.data.hadOrders) {
+            res.data.hadOrders.forEach(function (item) {
+              contect += item.orderTimeStr + ',';
+            });
+            contect += '已经预约过，无需重复预约。';
+          }
+
+          uni.showModal({
+            content: contect,
+            showCancel: false });
+
+        });
       }
     } } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))

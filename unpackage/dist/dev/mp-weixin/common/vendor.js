@@ -4523,7 +4523,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });exports.get_qr_code = void 0;var _axios = _interopRequireDefault(__webpack_require__(/*! ./axios.js */ 15));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
-var get_qr_code = function get_qr_code() {return _axios.default.get("https://chengym.com.cn/library/system/user/qr-code", { showLoading: true });};exports.get_qr_code = get_qr_code;
+var get_qr_code = function get_qr_code() {return _axios.default.get("http://localhost:8080/library/system/user/qr-code", { showLoading: true });};exports.get_qr_code = get_qr_code;
 
 /***/ }),
 
@@ -4605,6 +4605,7 @@ _uniAxios.default.interceptors.last.use(function (config) {
 
 // 这里的config是axios合并过的config，可能会丢失自定义的配置
 _uniAxios.default.interceptors.request.use(function (config) {
+  debugger;
   var token = uni.getStorageSync('mini_car_token');
   config.headers = {
     'Authorization': 'Bearer ' + token };
@@ -14145,8 +14146,10 @@ var install = function install(Vue, vm) {
 {
   install: install,
   noNeedtokenUrl: ['/area/list', '/ordertime/list', '/iventendcar/cars', '/butt-auth'],
-  tokenUrl: 'https://chengym.com.cn/library/butt-auth',
-  baseUrl: 'https://chengym.com.cn/library' };exports.default = _default;
+  // tokenUrl:'https://chengym.com.cn/library/butt-auth',
+  // baseUrl: 'https://chengym.com.cn/library',
+  tokenUrl: 'http://localhost:8080/library/butt-auth',
+  baseUrl: 'http://localhost:8080/library' };exports.default = _default;
 
 /***/ }),
 
@@ -18499,11 +18502,15 @@ var install = function install(Vue, vm) {
 
     // 方式三，如果token放在了globalData，通过getApp().globalData获取
     // config.header.token = getApp().globalData.username;
-
     // 方式四，如果token放在了Storage本地存储中，拦截是每次请求都执行的，所以哪怕您重新登录修改了Storage，下一次的请求将会是最新值
+    console.log(config.url);
     if (_httpApi.default.noNeedtokenUrl.indexOf(config.url) != -1) {
+      console.log("uuuuuuu" + config.url);
 
+      config.header = '';
+      console.log(config);
     } else {
+      debugger;
       var token = uni.getStorageSync('mini_car_token');
       config.header.Authorization = 'Bearer ' + token;
     }
@@ -18517,7 +18524,7 @@ var install = function install(Vue, vm) {
               res.code == 200)) {_context.next = 4;break;}return _context.abrupt("return",
 
               res);case 4:if (!(
-              res.code == 401)) {_context.next = 10;break;}_context.next = 7;return (
+              res.code == 401 || res.code == 403)) {_context.next = 10;break;}_context.next = 7;return (
                 doRequest(res, config));case 7:return _context.abrupt("return", _context.sent);case 10:return _context.abrupt("return",
               false);case 11:case "end":return _context.stop();}}}, _callee);}));return function (_x3, _x4) {return _ref.apply(this, arguments);};}();
 

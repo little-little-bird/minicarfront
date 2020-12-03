@@ -51,7 +51,7 @@
 					<u-input :border="border" placeholder="请输入教练姓名" v-model="model.coachName" type="text"></u-input>
 				</u-form-item> -->
 			</u-form>
-			
+
 		</view>
 		<view class="item">
 			<view class="title">
@@ -75,69 +75,67 @@
 			timeSelector,
 			ynGallery
 		},
-		onLoad: function (option) { //option为object类型，会序列化上个页面传递的参数
-				uni.$on('toConfimOrder',function(data){
-				        console.log('监听到事件来自 update ，携带参数 msg 为：' + data.msg);
-				    })
-					this.orderDate = option.orderDate
-					this.timeSelected = option.orderConfigTime
-					this.timeSelectedId = option.orderTimeIdsStr
-					this.areaSelected = option.areaName
-					this.areaSelectedId = option.areaId
-					this.carSelected = option.carSelectedName
-					this.carSelectedId = option.carSelectedId
-		        console.log(option.orderTimeIdsStr); //打印出上个页面传递的参数。
-		    },
-			onReady() {
-				this.$refs.uForm.setRules(this.rules);
-			},
+		onLoad: function(option) { //option为object类型，会序列化上个页面传递的参数
+			uni.$on('toConfimOrder', function(data) {
+				console.log('监听到事件来自 update ，携带参数 msg 为：' + data.msg);
+			})
+			this.orderDate = option.orderDate
+			this.timeSelected = option.orderConfigTime
+			this.timeSelectedId = option.orderTimeIdsStr
+			this.areaSelected = option.areaName
+			this.areaSelectedId = option.areaId
+			this.carSelected = option.carSelectedName
+			this.carSelectedId = option.carSelectedId
+			console.log(option.orderTimeIdsStr); //打印出上个页面传递的参数。
+		},
+		onReady() {
+			this.$refs.uForm.setRules(this.rules);
+		},
 		data() {
 			return {
-				orderInfo:'',
+				orderInfo: '',
 				changeRolNum: 0,
 				orderDate: '',
 				span: 3,
 				offset: 0,
-				timeSelected:'',
-				timeSelectedId:'',
-				areaSelected:'',
-				areaSelectedId:'',
-				carSelected:'',
-				carSelectedId:'',
+				timeSelected: '',
+				timeSelectedId: '',
+				areaSelected: '',
+				areaSelectedId: '',
+				carSelected: '',
+				carSelectedId: '',
 				justify: 'start',
 				area_src: '@/static/car/img/order/area_sc.png',
 				room: [],
-				model:{
-					phone:'',
-					name:''
+				model: {
+					phone: '',
+					name: ''
 				},
 				errorType: ['toast'],
 				rules: {
-					idCard: [
-						{
+					idCard: [{
 							required: true,
 							message: '请输入身份证号',
-							trigger: ['change','blur'],
+							trigger: ['change', 'blur'],
 						},
 						{
 							validator: (rule, value, callback) => {
 								return this.$u.test.idCard(value);
 							},
 							message: '身份证号不正确',
-							trigger: ['change','blur'],
+							trigger: ['change', 'blur'],
 						}
 					],
-					name: [
-						{
+					name: [{
 							required: true,
 							message: '请输入姓名',
-							trigger: 'blur' ,
+							trigger: 'blur',
 						},
 						{
 							min: 2,
 							max: 5,
 							message: '姓名长度在2到5个字符',
-							trigger: ['change','blur'],
+							trigger: ['change', 'blur'],
 						},
 						{
 							// 此为同步验证，可以直接返回true或者false，如果是异步验证，稍微不同，见下方说明
@@ -147,14 +145,13 @@
 							},
 							message: '姓名必须为中文',
 							// 触发器可以同时用blur和change，二者之间用英文逗号隔开
-							trigger: ['change','blur'],
+							trigger: ['change', 'blur'],
 						},
 					],
-					phone: [
-						{
+					phone: [{
 							required: true,
 							message: '请输入手机号',
-							trigger: ['change','blur'],
+							trigger: ['change', 'blur'],
 						},
 						{
 							validator: (rule, value, callback) => {
@@ -163,7 +160,7 @@
 							},
 							message: '请确认手机格式',
 							// 触发器可以同时用blur和change，二者之间用英文逗号隔开
-							trigger: ['change','blur'],
+							trigger: ['change', 'blur'],
 						}
 					],
 				},
@@ -199,7 +196,7 @@
 									rawData: infoRes.rawData,
 									signature: infoRes.signature,
 									channel: "wechat",
-									inviter:uni.getStorageSync("inviter_user_id")
+									inviter: uni.getStorageSync("inviter_user_id")
 								}
 								uni.showToast({
 									title: '登录中，请稍候...',
@@ -209,7 +206,7 @@
 								this.$u.post('/butt-auth', data).then(res => {
 									if (res && res.code === 200) {
 										uni.setStorageSync("mini_car_token", res.token)
-										uni.setStorageSync("mini_car_userid",res.userid)
+										uni.setStorageSync("mini_car_userid", res.userid)
 										//跳转到订单确认页面
 
 									} else {
@@ -233,18 +230,38 @@
 						console.log('验证失败');
 					}
 				});
-				if(val){
+				if (val) {
 					let data = {
-						orderTime:this.orderDate,
-						orderTimeIdsStr:this.timeSelectedId,
-						areaId:this.areaSelectedId,
-						carId:this.carSelectedId,
-						userName:this.model.name,
-						userPhone:this.model.phone
+						orderDate: this.orderDate,
+						orderTimeIdsStr: this.timeSelectedId,
+						areaId: this.areaSelectedId,
+						carId: this.carSelectedId,
+						userName: this.model.name,
+						userPhone: this.model.phone
 					}
-					this.$u.post("/order/add",data).then(res => {
+					this.$u.post("/order/add", data).then(res => {
 						console.log(res)
-						debugger})
+						let contect = ''
+						if (res.data.newOrders) {
+							contect = '新增'
+							res.data.newOrders.forEach(item => {
+								contect += item.orderTimeStr + ','
+							})
+							contect += '的预约，共计' + res.data.billInfo.orderLength + '小时'
+
+						}
+						if (res.data.hadOrders) {
+							res.data.hadOrders.forEach(item => {
+								contect += item.orderTimeStr + ','
+							})
+							contect += '已经预约过，无需重复预约。'
+						}
+
+						uni.showModal({
+							content: contect,
+							showCancel: false
+						})
+					})
 				}
 			}
 		}
@@ -280,12 +297,14 @@
 				top: -1px;
 			}
 		}
-		.order-confirm-result-txt{
-			    font-size: 12pt;
-			    margin-left: 20rpx;
-			    margin-top: 20rpx;
-			    margin-bottom: 20rpx;
-				color: #16A6F8;
+
+		.order-confirm-result-txt {
+			font-size: 12pt;
+			margin-left: 20rpx;
+			margin-top: 20rpx;
+			margin-bottom: 20rpx;
+			color: #16A6F8;
+			word-break: break-all;
 		}
 
 		.ro-ul {
@@ -390,7 +409,7 @@
 		display: flex;
 		flex-wrap: wrap;
 	}
-	
+
 
 
 

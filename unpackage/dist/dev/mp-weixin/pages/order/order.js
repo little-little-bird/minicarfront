@@ -215,7 +215,10 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var _generateDates = __webpack_require__(/*! @/components/zzx-calendar/generateDates.js */ 94);var zzxCalendar = function zzxCalendar() {Promise.all(/*! require.ensure | components/zzx-calendar/zzx-calendar */[__webpack_require__.e("common/vendor"), __webpack_require__.e("components/zzx-calendar/zzx-calendar")]).then((function () {return resolve(__webpack_require__(/*! @/components/zzx-calendar/zzx-calendar.vue */ 851));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var timeSelector = function timeSelector() {Promise.all(/*! require.ensure | components/xiujun-time-selector/index */[__webpack_require__.e("common/vendor"), __webpack_require__.e("components/xiujun-time-selector/index")]).then((function () {return resolve(__webpack_require__(/*! @/components/xiujun-time-selector/index.vue */ 872));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var ynGallery = function ynGallery() {Promise.all(/*! require.ensure | components/YnComponents/ynGallery/ynGallery */[__webpack_require__.e("common/vendor"), __webpack_require__.e("components/YnComponents/ynGallery/ynGallery")]).then((function () {return resolve(__webpack_require__(/*! @/components/YnComponents/ynGallery/ynGallery.vue */ 880));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var _default =
+var _generateDates = __webpack_require__(/*! @/components/zzx-calendar/generateDates.js */ 94);
+
+
+var _httpApi = _interopRequireDefault(__webpack_require__(/*! @/common/http.api.js */ 45));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var zzxCalendar = function zzxCalendar() {Promise.all(/*! require.ensure | components/zzx-calendar/zzx-calendar */[__webpack_require__.e("common/vendor"), __webpack_require__.e("components/zzx-calendar/zzx-calendar")]).then((function () {return resolve(__webpack_require__(/*! @/components/zzx-calendar/zzx-calendar.vue */ 851));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var timeSelector = function timeSelector() {Promise.all(/*! require.ensure | components/xiujun-time-selector/index */[__webpack_require__.e("common/vendor"), __webpack_require__.e("components/xiujun-time-selector/index")]).then((function () {return resolve(__webpack_require__(/*! @/components/xiujun-time-selector/index.vue */ 872));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var ynGallery = function ynGallery() {Promise.all(/*! require.ensure | components/YnComponents/ynGallery/ynGallery */[__webpack_require__.e("common/vendor"), __webpack_require__.e("components/YnComponents/ynGallery/ynGallery")]).then((function () {return resolve(__webpack_require__(/*! @/components/YnComponents/ynGallery/ynGallery.vue */ 880));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var _default =
 {
   components: {
     zzxCalendar: zzxCalendar,
@@ -235,8 +238,12 @@ var _generateDates = __webpack_require__(/*! @/components/zzx-calendar/generateD
       area_src: '@/static/car/img/order/area_sc.png',
       room: [],
       testimgs: [],
-      amTimeList: [[]],
-      pmTimeList: [[]],
+      amTimeList: [
+      []],
+
+      pmTimeList: [
+      []],
+
       timeList: [],
       timeSelectedList: [],
       timeSelectedIdList: [],
@@ -245,7 +252,8 @@ var _generateDates = __webpack_require__(/*! @/components/zzx-calendar/generateD
       roomSelectedId: '',
       roomSelectedName: '',
       carSelectedId: '',
-      carSelectedName: '' };
+      carSelectedName: '',
+      canCarSelected: true };
 
   },
   watch: {
@@ -281,69 +289,81 @@ var _generateDates = __webpack_require__(/*! @/components/zzx-calendar/generateD
     },
     getRoom: function getRoom() {
       var that = this;
-      this.$u.get("/area/list").then(function (res) {
-        if (res) {
-          that.room = [];
-          res.data.forEach(function (item) {
-            that.room.push({
-              name: item.name,
-              label: item.id });
+      uni.request({
+        url: _httpApi.default.baseUrl + '/area/list',
+        header: {},
+        success: function success(res) {
+          if (res.statusCode == 200) {
+            that.room = [];
+            res.data.data.forEach(function (item) {
+              that.room.push({
+                name: item.name,
+                label: item.id });
 
-          });
-          that.roomSelectedId = that.room[that.changeRolNum].label;
-          that.roomSelectedName = that.room[that.changeRolNum].name;
-        }
-      });
+            });
+            that.roomSelectedId = that.room[that.changeRolNum].label;
+            that.roomSelectedName = that.room[that.changeRolNum].name;
+          }
+        } });
+
     },
     getOrderTime: function getOrderTime() {var _this2 = this;
-      this.$u.get("/ordertime/list").then(function (res) {
-        if (res) {
-          _this2.timeList = [];
-          _this2.amTimeList = [[]];
-          var amTimeListTmp = [];
-          _this2.pmTimeList = [[]];
-          var pmTimeListTmp = [];
-          var amTimeSize = 0;
-          var pmTimeSize = 0;
-          //统计am pm分别的数量
-          res.data.forEach(function (item) {
-            _this2.timeList.push(item);
-            if (item.intervalStr === "am") {
-              amTimeSize++;
-              amTimeListTmp.push(item);
-            } else if (item.intervalStr === "pm") {
-              pmTimeSize++;
-              pmTimeListTmp.push(item);
-            }
+      uni.request({
+        url: _httpApi.default.baseUrl + '/ordertime/list',
+        header: {},
+        success: function success(res) {
+          if (res.statusCode == 200) {
+            _this2.timeList = [];
+            _this2.amTimeList = [
+            []];
 
-          });
-          var amRowCount = amTimeSize / 3;
-          var pmRowCount = pmTimeSize / 3;
-          //开始分组
-          var amRow = 0;
-          var amCol = 0;
-          var pmRow = 0;
-          var pmCol = 0;
-          var pmCount = 0;
-          for (amRow = 0; amRow < amRowCount; amRow++) {
-            _this2.amTimeList[amRow] = new Array();
-            for (amCol = 0; amCol < 3; amCol++) {
-              _this2.amTimeList[amRow][amCol] = amTimeListTmp[amRow * 3 + amCol];
-            }
-          }
-          for (pmRow = 0; pmRow < pmRowCount; pmRow++) {
-            _this2.pmTimeList[pmRow] = new Array();
-            for (pmCol = 0; pmCol < 3; pmCol++) {
-              if (pmTimeListTmp[pmRow * 3 + pmCol]) {
-                _this2.pmTimeList[pmRow][pmCol] = pmTimeListTmp[pmRow * 3 + pmCol];
-              } else {
-                _this2.pmTimeList[pmRow][pmCol] = null;
+            var amTimeListTmp = [];
+            _this2.pmTimeList = [
+            []];
+
+            var pmTimeListTmp = [];
+            var amTimeSize = 0;
+            var pmTimeSize = 0;
+            //统计am pm分别的数量
+            res.data.data.forEach(function (item) {
+              _this2.timeList.push(item);
+              if (item.intervalStr === "am") {
+                amTimeSize++;
+                amTimeListTmp.push(item);
+              } else if (item.intervalStr === "pm") {
+                pmTimeSize++;
+                pmTimeListTmp.push(item);
               }
 
+            });
+            var amRowCount = amTimeSize / 3;
+            var pmRowCount = pmTimeSize / 3;
+            //开始分组
+            var amRow = 0;
+            var amCol = 0;
+            var pmRow = 0;
+            var pmCol = 0;
+            var pmCount = 0;
+            for (amRow = 0; amRow < amRowCount; amRow++) {
+              _this2.amTimeList[amRow] = new Array();
+              for (amCol = 0; amCol < 3; amCol++) {
+                _this2.amTimeList[amRow][amCol] = amTimeListTmp[amRow * 3 + amCol];
+              }
+            }
+            for (pmRow = 0; pmRow < pmRowCount; pmRow++) {
+              _this2.pmTimeList[pmRow] = new Array();
+              for (pmCol = 0; pmCol < 3; pmCol++) {
+                if (pmTimeListTmp[pmRow * 3 + pmCol]) {
+                  _this2.pmTimeList[pmRow][pmCol] = pmTimeListTmp[pmRow * 3 + pmCol];
+                } else {
+                  _this2.pmTimeList[pmRow][pmCol] = null;
+                }
+
+              }
             }
           }
-        }
-      });
+        } });
+
     },
     getCars: function getCars() {
       var that = this;
@@ -352,28 +372,46 @@ var _generateDates = __webpack_require__(/*! @/components/zzx-calendar/generateD
         orderDate: this.orderDate ? orderDate : (0, _generateDates.formatDate)(new Date(), 'yyyy-MM-dd'),
         areaId: this.roomSelectedId };
 
-      this.$u.get("/iventendcar/cars", data).then(function (res) {
-        if (res) {
-          that.testimgs = [];
-          res.data.forEach(function (item) {
-            var url = '../../../static/car/img/order/car_def' + item.sort + '.png';
-            var hoverUrl = '../../../static/car/img/order/' + (item.canCarInvented ? 'car_hov' : 'car_def') + item.sort + '.png';
-            var defurl = '../../../static/car/img/order/car_def' + item.sort + '.png';
-            that.testimgs.push({
-              index: item.id,
-              dec: item.displayName, //图像描述信息
-              badeg: '', //角标文字
-              badegcolor: '', //角标颜色
-              url: url, //图源  
-              hoverUrl: hoverUrl,
-              defurl: defurl,
-              dominant: '' });
+      uni.request({
+        url: _httpApi.default.baseUrl + '/iventendcar/cars',
+        data: data,
+        header: {},
+        success: function success(res) {
+          if (res.statusCode == 200) {
+            that.testimgs = [];
+            res.data.data.forEach(function (item) {
+              var url = '../../../static/car/img/order/car_def' + item.sort + '.png';
+              var hoverUrl = '../../../static/car/img/order/' + (item.canCarInvented ? 'car_hov' : 'car_def') + item.sort +
+              '.png';
+              var defurl = '../../../static/car/img/order/car_def' + item.sort + '.png';
+              that.testimgs.push({
+                index: item.id,
+                dec: item.displayName, //图像描述信息
+                badeg: '', //角标文字
+                badegcolor: '', //角标颜色
+                url: url, //图源  
+                hoverUrl: hoverUrl,
+                defurl: defurl,
+                dominant: '',
+                canCarInvented: item.canCarInvented });
 
-          });
-          that.carSelectedId = that.testimgs[0].index;
-          that.carSelectedName = that.testimgs[0].dec;
-        }
-      });
+            });
+            if (!that.carSelectedId) {
+              that.carSelectedId = that.testimgs[0].index;
+              that.carSelectedName = that.testimgs[0].dec;
+              that.canCarSelected = that.testimgs[0].canCarInvented;
+            } else {
+              res.data.data.forEach(function (item) {
+                if (item.id == that.carSelectedId) {
+                  that.carSelectedName = item.displayName;
+                  that.canCarSelected = item.canCarInvented;
+                }
+              });
+            }
+
+          }
+        } });
+
     },
     datechange: function datechange(e) {// 获取年月日
       this.orderDate = e.fullDate;
@@ -399,7 +437,7 @@ var _generateDates = __webpack_require__(/*! @/components/zzx-calendar/generateD
           });
           this.timeSelectedIdList.some(function (itemid, iId) {
             if (itemid == selecteOne.id) {
-              _this3.timeSelectedList.splice(iId, 1);
+              _this3.timeSelectedIdList.splice(iId, 1);
               return true;
             }
           });
@@ -420,6 +458,7 @@ var _generateDates = __webpack_require__(/*! @/components/zzx-calendar/generateD
       var that = this;
       that.carSelectedId = e.index;
       that.carSelectedName = e.dec;
+      that.canCarSelected = e.canCarInvented;
     },
     changeRol: function changeRol(item, i) {// 选择场地
       this.changeRolNum = i; // 替换选中样式
@@ -472,7 +511,6 @@ var _generateDates = __webpack_require__(/*! @/components/zzx-calendar/generateD
           console.log("授权：", res);
           if (!res.authSetting['scope.userInfo']) {
             //这里调用授权
-            debugger;
             console.log("当前未授权");
             //触发定时检测程序，如果授权了，那就跳转，没有的话就继续检测
             // that.checkUserAuthSetting();
@@ -491,26 +529,37 @@ var _generateDates = __webpack_require__(/*! @/components/zzx-calendar/generateD
 
     },
     checkAndToOrder: function checkAndToOrder() {
+
       if (this.timeSelectedList && this.timeSelectedList.length > 0) {
-        var data = {
-          orderTimeIdsStr: this.timeSelectedIdList.join(','),
-          orderDate: this.orderDate ? this.orderDate : (0, _generateDates.formatDate)(new Date(), 'yyyy-MM-dd') };
+        if (this.canCarSelected) {
+          var data = {
+            orderTimeIdsStr: this.timeSelectedIdList.join(','),
+            orderDate: this.orderDate ? this.orderDate : (0, _generateDates.formatDate)(new Date(), 'yyyy-MM-dd') };
 
-        var param = 'orderTimeIdsStr=' + this.timeSelectedIdList.join(",") + '&orderDate=' + (this.orderDate ? this.orderDate : (0, _generateDates.formatDate)(new Date(), 'yyyy-MM-dd')) + '&orderConfigTime=' + this.timeSelectedconfigTimeNameList.join(",") + '&area=';
-        param = param + '&areaId=' + this.roomSelectedId + '&areaName=' + this.roomSelectedName;
-        param = param + '&carSelectedId=' + this.carSelectedId + '&carSelectedName=' + this.carSelectedName;
-        uni.navigateTo({
-          url: './order_confirm?' + param,
-          success: function success() {
-            uni.$emit('toConfimOrder', data);
-          },
-          fail: function fail(e) {
-            console.error(e);
-          },
-          complete: function complete() {
-            uni.$emit('toConfimOrder', data);
-          } });
+          var param = 'orderTimeIdsStr=' + this.timeSelectedIdList.join(",") + '&orderDate=' + (this.orderDate ? this.orderDate :
+          (0, _generateDates.formatDate)(new Date(), 'yyyy-MM-dd')) + '&orderConfigTime=' + this.timeSelectedconfigTimeNameList.join(",") +
+          '&area=';
+          param = param + '&areaId=' + this.roomSelectedId + '&areaName=' + this.roomSelectedName;
+          param = param + '&carSelectedId=' + this.carSelectedId + '&carSelectedName=' + this.carSelectedName;
+          uni.navigateTo({
+            url: './order_confirm?' + param,
+            success: function success() {
+              uni.$emit('toConfimOrder', data);
+            },
+            fail: function fail(e) {
+              console.error(e);
+            },
+            complete: function complete() {
+              uni.$emit('toConfimOrder', data);
+            } });
 
+        } else {
+          uni.showToast({
+            title: '车辆已经被约满，请更改预约时间',
+            icon: 'none',
+            duration: 3000 });
+
+        }
       } else {
         uni.showToast({
           title: '请选择预约时间',
@@ -518,7 +567,9 @@ var _generateDates = __webpack_require__(/*! @/components/zzx-calendar/generateD
           duration: 3000 });
 
       }
+
     } } };exports.default = _default;
+
 
 
 function sortBykey(ary, key) {

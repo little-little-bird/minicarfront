@@ -33,6 +33,7 @@
   margin-top: 20rpx;
   margin-bottom: 20rpx;
   color: #16A6F8;
+  word-break: break-all;
 }
 .item .ro-ul.data-v-6e930be5 {
   width: 100%;

@@ -76,11 +76,15 @@ const install = (Vue, vm) => {
 		
 		// 方式三，如果token放在了globalData，通过getApp().globalData获取
 		// config.header.token = getApp().globalData.username;
-		
 		// 方式四，如果token放在了Storage本地存储中，拦截是每次请求都执行的，所以哪怕您重新登录修改了Storage，下一次的请求将会是最新值
+		console.log(config.url)
 		if(api.noNeedtokenUrl.indexOf(config.url)!=-1){
+			console.log("uuuuuuu"+config.url)
 			
+			config.header=''
+			console.log(config)
 		}else{
+			debugger
 			const token = uni.getStorageSync('mini_car_token');
 			config.header.Authorization = 'Bearer ' + token;
 		}
@@ -94,7 +98,7 @@ const install = (Vue, vm) => {
 		if(res.code == 200) {
 			// 如果把originalData设置为了true，这里return回什么，this.$u.post的then回调中就会得到什么
 			return res;  
-		}else if(res.code ==401){
+		}else if(res.code ==401||res.code ==403){
 			return  await doRequest(res,config)
 		} else return false;
 	}

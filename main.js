@@ -90,7 +90,7 @@ Vue.prototype.relogin = function() {
 											inviter: uni.getStorageSync("inviter_user_id")
 										}
 										uni.request({
-											url: 'https://chengym.com.cn/library/butt-auth',
+											url: 'http://localhost:8080/library/butt-auth',
 											method: 'POST',
 											header: {
 												"content-type": "application/json"
