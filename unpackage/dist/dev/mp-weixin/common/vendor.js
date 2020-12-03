@@ -4523,7 +4523,8 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });exports.get_qr_code = void 0;var _axios = _interopRequireDefault(__webpack_require__(/*! ./axios.js */ 15));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
-var get_qr_code = function get_qr_code() {return _axios.default.get("http://localhost:8080/library/system/user/qr-code", { showLoading: true });};exports.get_qr_code = get_qr_code;
+// export const get_qr_code = () => axios.get("http://localhost:8080/library/system/user/qr-code", {showLoading: true})
+var get_qr_code = function get_qr_code() {return _axios.default.get("https://chengym.com.cn/library/system/user/qr-code", { showLoading: true });};exports.get_qr_code = get_qr_code;
 
 /***/ }),
 
@@ -14146,10 +14147,11 @@ var install = function install(Vue, vm) {
 {
   install: install,
   noNeedtokenUrl: ['/area/list', '/ordertime/list', '/iventendcar/cars', '/butt-auth'],
-  // tokenUrl:'https://chengym.com.cn/library/butt-auth',
-  // baseUrl: 'https://chengym.com.cn/library',
-  tokenUrl: 'http://localhost:8080/library/butt-auth',
-  baseUrl: 'http://localhost:8080/library' };exports.default = _default;
+  tokenUrl: 'https://chengym.com.cn/library/butt-auth',
+  baseUrl: 'https://chengym.com.cn/library'
+  // tokenUrl:'http://localhost:8080/library/butt-auth',
+  // baseUrl: 'http://localhost:8080/library'
+};exports.default = _default;
 
 /***/ }),
 
