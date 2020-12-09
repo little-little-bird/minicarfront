@@ -20,7 +20,7 @@
 			<view class="slide-bar">
 				<ul>
 					<li>
-						<view class="lists">
+						<view class="lists" @click="turnToOrderRecords()">
 							<view class="imgWrap">
 								<image src="../../static/car/img/user/order.png" mode="" class="margin1"></image>
 							</view>
@@ -40,15 +40,15 @@
 							<view class="imgWrap" @click="personalQRCode()">
 								<image src="../../static/car/img/user/link.png" mode="" class="margin1"></image>
 							</view>
-							<text>专属推广页</text>
+							<text>专属邀请码</text>
 						</view>
 					</li>
 					<li>
-						<view class="lists">
+						<view class="lists"  @click="turnToInviterRecords()">
 							<view class="imgWrap">
 								<image src="../../static/car/img/user/time.png" mode="" class="margin1"></image>
 							</view>
-							<text>推广记录</text>
+							<text>邀请记录</text>
 						</view>
 					</li>
 				</ul>
@@ -166,7 +166,7 @@
 			showMoneyMessage(){
 				uni.showModal({
 				    title: '费用说明',
-				    content: '车辆联系费用为100元/每小时，具体费用按照实际计时产生费用计算。',
+				    content: '车辆练习费用为100元/小时，在线预约可享受折扣优惠，具体费用按照实际练车计时产生费用计算。',
 				    success: function (res) {
 				        if (res.confirm) {
 				            console.log('用户点击确定');
@@ -175,6 +175,30 @@
 				        }
 				    }
 				});
+			},
+			turnToOrderRecords(){
+				uni.navigateTo({
+					url: '../order/order_records/order_records',
+					success: function() {
+					},
+					fail: function(e) {
+						console.error(e)
+					},
+					complete() {
+					}
+				})
+			},
+			turnToInviterRecords(){
+				uni.navigateTo({
+					url: './inviter_records/inviter_records',
+					success: function() {
+					},
+					fail: function(e) {
+						console.error(e)
+					},
+					complete() {
+					}
+				})
 			},
 			
 		}

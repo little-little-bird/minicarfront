@@ -30,6 +30,14 @@
 
 <script>
 	export default {
+		onShareAppMessage() {
+			let path = '/pages/userinfo/userInfo?inviter='+getUserId()
+			return {
+				title: '轻松约车，不排队',
+				imageUrl: '../../static/car/img/home/banner.png',
+				path: path //分享的页面路径
+			}
+		},
 		data() {
 			return {
 				
@@ -48,6 +56,55 @@
 			}
 		}
 			
+	}
+	function getUserId(){
+		let that = this
+		let userId = uni.getStorageSync("mini_car_userid");
+		if(userId){
+			
+		}else{
+			uni.login({
+				provider: 'weixin',
+				success: function(loginRes) {
+					uni.getUserInfo({
+						provider: 'weixin',
+						success: function(infoRes) {
+							uni.showToast({
+								title: '预约梳理中，请稍候...',
+								icon: 'none',
+								duration: 5000
+							})
+							let data = {
+								code: loginRes.code,
+								encryptedData: infoRes.encryptedData,
+								iv: infoRes.iv,
+								userInfo: infoRes.userInfo,
+								rawData: infoRes.rawData,
+								signature: infoRes.signature,
+								channel: "wechat",
+								inviter: uni.getStorageSync("inviter_user_id")
+							}
+							uni.request({
+								url: api.baseUrl + '/butt-auth',
+								method:'POST',
+								data: data,
+								header: {},
+								success: (res) => {
+							// that.$u.post('/butt-auth', data).then(res => {
+								if (res && res.statusCode === 200) {
+									userId = res.data.userid
+								} else {
+			
+								}
+								}
+			
+							})
+						}
+					})
+				}
+			})
+		}
+		return userId;
 	}
 </script>
 

@@ -203,7 +203,12 @@
 									icon: 'none',
 									duration: 3000
 								})
-								this.$u.post('/butt-auth', data).then(res => {
+								uni.request({
+									url: api.baseUrl + '/butt-auth',
+									method:'POST',
+									data: data,
+									header: {},
+									success: (res) => {
 									if (res && res.code === 200) {
 										uni.setStorageSync("mini_car_token", res.token)
 										uni.setStorageSync("mini_car_userid", res.userid)
@@ -213,6 +218,7 @@
 
 									}
 
+								},
 								})
 							}
 						})
@@ -231,7 +237,7 @@
 					}
 				});
 				if (val) {
-					let data = {
+					let orderData = {
 						orderDate: this.orderDate,
 						orderTimeIdsStr: this.timeSelectedId,
 						areaId: this.areaSelectedId,
@@ -239,30 +245,116 @@
 						userName: this.model.name,
 						userPhone: this.model.phone
 					}
-					this.$u.post("/order/add", data).then(res => {
-						console.log(res)
-						let contect = ''
-						if (res.data.newOrders) {
-							contect = '新增'
-							res.data.newOrders.forEach(item => {
-								contect += item.orderTimeStr + ','
-							})
-							contect += '的预约，共计' + res.data.billInfo.orderLength + '小时'
-
-						}
-						if (res.data.hadOrders) {
-							res.data.hadOrders.forEach(item => {
-								contect += item.orderTimeStr + ','
-							})
-							contect += '已经预约过，无需重复预约。'
-						}
-
-						uni.showModal({
-							content: contect,
-							showCancel: false
-						})
-					})
+					uni.showModal({
+					    title: '费用说明',
+					    content: '车辆练习费用为100元/小时，在线预约可享受折扣优惠，具体费用按照实际练车计时产生费用计算。',
+						confirmText:'确认预约',
+					    success: function (res) {
+					        if (res.confirm) {
+					            console.log('用户点击确定');
+								that.userConfirmOrder(orderData)
+					        } else if (res.cancel) {
+					            console.log('用户点击取消');
+					        }
+					    }
+					});
+					
 				}
+			},
+			userConfirmOrder(orderData){
+				let that = this
+				uni.login({
+					provider: 'weixin',
+					success: function(loginRes) {
+						uni.getUserInfo({
+							provider: 'weixin',
+							success: function(infoRes) {
+								let data = {
+									code: loginRes.code,
+									encryptedData: infoRes.encryptedData,
+									iv: infoRes.iv,
+									userInfo: infoRes.userInfo,
+									rawData: infoRes.rawData,
+									signature: infoRes.signature,
+									channel: "wechat",
+									inviter: uni.getStorageSync("inviter_user_id")
+								}
+								uni.showToast({
+									title: '预约确认中，请稍候...',
+									icon: 'none',
+									duration: 3000
+								})
+								uni.request({
+									url: api.baseUrl + '/butt-auth',
+									method:'POST',
+									data: data,
+									header: {},
+									success: (res) => {
+									if (res && res.statusCode === 200) {
+										uni.setStorageSync("mini_car_token", res.data.token)
+										uni.setStorageSync("mini_car_userid", res.data.userid)
+										//跳转到订单确认页面
+											uni.request({
+												url: api.baseUrl + '/order/add',
+												method:'POST',
+												data: orderData,
+												header: {
+													'Authorization' : 'Bearer ' + res.data.token
+												},
+												success: (result) => {
+											console.log(result)
+											let contect = ''
+											if (result.data.data.newOrders.length>0) {
+												contect = '新增'
+												result.data.data.newOrders.forEach(item => {
+													contect += item.orderTimeStr + ','
+												})
+												contect += '的预约，共计' + result.data.data.billInfo.orderLength + '小时'
+										
+											}
+											if (result.data.data.hadOrders.length>0) {
+												result.data.data.hadOrders.forEach(item => {
+													contect += item.orderTimeStr + ','
+												})
+												contect += '已经预约过，无需重复预约。'
+											}
+										
+											uni.showModal({
+												content: contect,
+												showCancel: false,
+												success: (modal) => {
+													if(modal.confirm){
+														uni.switchTab({
+														    url: '/pages/home/home'
+														});
+														}
+													
+												}
+											})
+										},
+										})
+				
+									} else {
+				uni.showModal({
+					content: '您的认证信息有问题',
+					showCancel: false,
+					success: (modale) => {
+						if(modale.confirm){
+							uni.switchTab({
+							    url: '/pages/home/home'
+							});
+							}
+						
+					}
+				})
+									}
+				
+								},
+								})
+							}
+						})
+					}
+				})
 			}
 		}
 	}

@@ -22,8 +22,8 @@ const install = (Vue, vm) => {
 export default {
 	install,
 	noNeedtokenUrl:['/area/list','/ordertime/list','/iventendcar/cars','/butt-auth',],
-	tokenUrl:'https://chengym.com.cn/library/butt-auth',
-	baseUrl: 'https://chengym.com.cn/library',
-	// tokenUrl:'http://localhost:8080/library/butt-auth',
-	// baseUrl: 'http://localhost:8080/library'
+	tokenUrl:'https://chengym.com.cn/minicar/butt-auth',
+	baseUrl: 'https://chengym.com.cn/minicar',
+	// tokenUrl:'http://localhost:8080/minicar/butt-auth',
+	// baseUrl: 'http://localhost:8080/minicar'
 }

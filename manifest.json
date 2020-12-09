@@ -65,5 +65,11 @@
         "setting" : {
             "urlCheck" : false
         }
+    },
+    "h5" : {
+        "router" : {
+            "mode" : "hash",
+            "base" : "/mobile/"
+        }
     }
 }

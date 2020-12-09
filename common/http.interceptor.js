@@ -84,7 +84,6 @@ const install = (Vue, vm) => {
 			config.header=''
 			console.log(config)
 		}else{
-			debugger
 			const token = uni.getStorageSync('mini_car_token');
 			config.header.Authorization = 'Bearer ' + token;
 		}

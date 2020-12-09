@@ -68,7 +68,6 @@ axios.interceptors.last.use(function (config){
 
 // 这里的config是axios合并过的config，可能会丢失自定义的配置
 axios.interceptors.request.use(function (config){
-	debugger
 	const token = uni.getStorageSync('mini_car_token');
 	config.headers={
 		'Authorization':'Bearer ' + token

@@ -336,6 +336,11 @@
 						uni.getUserInfo({
 							provider: 'weixin',
 							success: function(infoRes) {
+								uni.showToast({
+									title: '预约梳理中，请稍候...',
+									icon: 'none',
+									duration: 5000
+								})
 								let data = {
 									code: loginRes.code,
 									encryptedData: infoRes.encryptedData,
@@ -346,14 +351,21 @@
 									channel: "wechat",
 									inviter: uni.getStorageSync("inviter_user_id")
 								}
-								that.$u.post('/butt-auth', data).then(res => {
-									if (res && res.code === 200) {
-										uni.setStorageSync("mini_car_token", res.token)
-										uni.setStorageSync("mini_car_userid", res.userid)
+								uni.request({
+									url: api.baseUrl + '/butt-auth',
+									method:'POST',
+									data: data,
+									header: {},
+									success: (res) => {
+								// that.$u.post('/butt-auth', data).then(res => {
+									if (res && res.statusCode === 200) {
+										uni.setStorageSync("mini_car_token", res.data.token)
+										uni.setStorageSync("mini_car_userid", res.data.userid)
 										//跳转到订单确认页面
 										that.checkAndToOrder()
 									} else {
 
+									}
 									}
 
 								})

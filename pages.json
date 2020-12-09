@@ -122,6 +122,24 @@
             }
             
         }
+        ,{
+            "path" : "pages/order/order_records/order_records",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "预约记录",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/user/inviter_records/inviter_records",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "邀请记录",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"subPackages": [
 		{
@@ -758,12 +776,18 @@
 				"selectedIconPath": "static/car/img/home_select.png",
 				"text": "首页"
 			},
-			{
-				"pagePath": "pages/userinfo/userInfo",
-				"iconPath": "static/car/img/home.png",
-				"selectedIconPath": "static/car/img/home_select.png",
-				"text": "信息"
-			},
+			// {
+			// 	"pagePath": "pages/example/template",
+			// 	"iconPath": "static/uview/example/template.png",
+			// 	"selectedIconPath": "static/uview/example/template_select.png",
+			// 	"text": "模板"
+			// },
+			// {
+			// 	"pagePath": "pages/userinfo/userInfo",
+			// 	"iconPath": "static/car/img/home.png",
+			// 	"selectedIconPath": "static/car/img/home_select.png",
+			// 	"text": "信息"
+			// },
 			// {
 			// 	"pagePath": "pages/order/order",
 			// 	"iconPath": "static/car/img/order.png",
@@ -775,18 +799,18 @@
 					"iconPath": "static/car/img/user.png",
 					"selectedIconPath": "static/car/img/user_select.png",
 					"text": "我的"
-				},
-			{
-				"pagePath": "pages/example/components",
-				"iconPath": "static/uview/example/component.png",
-				"selectedIconPath": "static/uview/example/component_select.png",
-				"text": "组件"
-			},
-			{
-				"pagePath": "pages/example/js",
-				"iconPath": "static/car/img/home.png",
-				"selectedIconPath": "static/car/img/home_select.png",
-				"text": "首页"
+				// },
+			// {
+			// 	"pagePath": "pages/example/components",
+			// 	"iconPath": "static/uview/example/component.png",
+			// 	"selectedIconPath": "static/uview/example/component_select.png",
+			// 	"text": "组件"
+			// },
+			// {
+			// 	"pagePath": "pages/example/js",
+			// 	"iconPath": "static/car/img/home.png",
+			// 	"selectedIconPath": "static/car/img/home_select.png",
+			// 	"text": "首页"
 			// },
 			// {
 			// 	"pagePath": "pages/userinfo/userInfo",

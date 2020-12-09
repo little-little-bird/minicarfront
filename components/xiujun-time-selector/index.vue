@@ -147,7 +147,6 @@ export default {
 				});
 			}
 			this.dateActive = index;
-			debugger
 			this.selectDate = `${this.dateArr[index]['date']}`;
 			this.$emit('selectTime', `${this.selectDate}`);
 			this.selectDate = `${this.dateArr[index]['date']}(${this.dateArr[index]['week']})`;
